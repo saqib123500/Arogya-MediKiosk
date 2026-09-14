@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Medical Document Result</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            color: #1f2937;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2563eb;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #374151;
+        }
+
+        .success {
+            padding: 15px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* ========================================= */
+        /* RAW OCR TEXT                              */
+        /* ========================================= */
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+
+            background: #f3f4f6;
+
+            padding: 20px;
+
+            border-radius: 8px;
+
+            overflow-x: auto;
+
+            color: #1f2937;
+
+            font-family: monospace;
+
+            line-height: 1.6;
+        }
+
+        /* ========================================= */
+        /* STRUCTURED DATA                            */
+        /* ========================================= */
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+
+            margin-bottom: 12px;
+
+            padding-bottom: 8px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+        .info-item {
+            background: #f9fafb;
+
+            padding: 14px;
+
+            border-radius: 8px;
+        }
+
+        .label {
+            display: block;
+
+            font-size: 13px;
+
+            color: #6b7280;
+
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 15px;
+
+            color: #111827;
+
+            font-weight: 500;
+        }
+
+        .list {
+            margin: 0;
+
+            padding-left: 20px;
+        }
+
+        .list li {
+            margin-bottom: 7px;
+        }
+
+        .empty {
+            color: #9ca3af;
+
+            font-style: italic;
+        }
+
+        /* ========================================= */
+        /* BUTTON                                     */
+        /* ========================================= */
+
+        .back-button {
+            display: inline-block;
+
+            padding: 12px 22px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            background: #1d4ed8;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ========================================= -->
+    <!-- HEADER                                    -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h1>
+            Medical Document Processed
+        </h1>
+
+        <div class="success">
+
+            ✓ Your medical document was
+            successfully processed.
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- EXTRACTED TEXT                            -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h2>
+            Extracted Text
+        </h2>
+
+        <pre>{{ raw_text }}</pre>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- STRUCTURED INFORMATION                    -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h2>
+            Structured Medical Information
+        </h2>
+
+
+        <!-- ===================================== -->
+        <!-- DOCUMENT INFORMATION                  -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Document Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Document Type
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.document.document_type|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Report Date
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.document.report_date|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Doctor
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.document.doctor|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Hospital
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.document.hospital|default:"Not available" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- PATIENT INFORMATION                   -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Patient Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Name
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.name|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Age
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.age|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Gender
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.gender|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Date of Birth
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.date_of_birth|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        ABHA ID
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.abha_id|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Phone
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.phone|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Blood Group
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.patient.blood_group|default:"Not available" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- CHIEF COMPLAINT                       -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Chief Complaint
+            </div>
+
+            {% if structured_data.chief_complaint %}
+
+                <p>
+                    {{ structured_data.chief_complaint }}
+                </p>
+
+            {% else %}
+
+                <p class="empty">
+                    No chief complaint detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- MEDICAL HISTORY                       -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Medical History
+            </div>
+
+            {% if structured_data.medical_history %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.medical_history %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No medical history detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- SURGICAL HISTORY                      -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Surgical History
+            </div>
+
+            {% if structured_data.surgical_history %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.surgical_history %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No surgical history detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- ALLERGIES                             -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Allergies
+            </div>
+
+            {% if structured_data.allergies %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.allergies %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No allergies detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- MEDICATIONS                           -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Medications
+            </div>
+
+            {% if structured_data.medications %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.medications %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No medications detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- DIAGNOSES                             -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Diagnoses
+            </div>
+
+            {% if structured_data.diagnoses %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.diagnoses %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No diagnoses detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- VITALS                                -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Vitals
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Blood Pressure
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.blood_pressure|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Pulse
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.pulse|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Temperature
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.temperature|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Respiratory Rate
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.respiratory_rate|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Oxygen Saturation
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.oxygen_saturation|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Height
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.height|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        Weight
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.weight|default:"Not available" }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="label">
+                        BMI
+                    </span>
+
+                    <span class="value">
+                        {{ structured_data.vitals.bmi|default:"Not available" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- CLINICAL OBSERVATIONS                 -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Clinical Observations
+            </div>
+
+            {% if structured_data.clinical_observations %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.clinical_observations %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No clinical observations detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- FOLLOW UP                             -->
+        <!-- ===================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Follow-up
+            </div>
+
+            {% if structured_data.follow_up %}
+
+                <ul class="list">
+
+                    {% for item in structured_data.follow_up %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty">
+                    No follow-up information detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- UPLOAD ANOTHER DOCUMENT                   -->
+    <!-- ========================================= -->
+
+    <a
+        href="{% url 'medical_document_upload' %}"
+        class="back-button"
+    >
+        Upload Another Document
+    </a>
+
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arogya Medi Kiosk</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #F6F1E7;
+    --sage: #4A5A3C;
+    --sage-light: #5C6B4F;
+    --terracotta: #A1462F;
+    --terracotta-deep: #8A3A26;
+    --stone: #8A8272;
+    --ink: #23261F;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+  }
+
+  .wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Header / Wordmark ---------- */
+
+  .brand-bar {
+    padding: 32px 24px 24px;
+    text-align: center;
+    background: var(--cream);
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mark svg {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .mark span {
+    font-family: 'Lora', serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+
+  .tagline {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--stone);
+  }
+
+  /* ---------- Split doorway ---------- */
+
+  .doorway {
+    flex: 1;
+    display: flex;
+    min-height: 560px;
+  }
+
+  .panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+    text-decoration: none;
+    position: relative;
+    transition: filter 0.18s ease;
+  }
+
+  .panel-patient {
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  .panel-doctor {
+    background: var(--sage);
+    color: #fff;
+  }
+
+  .panel:hover,
+  .panel:focus-visible {
+    filter: brightness(1.06);
+  }
+
+  .panel:active {
+    filter: brightness(0.96);
+  }
+
+  .panel-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .panel-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .panel h2 {
+    font-family: 'Lora', serif;
+    font-weight: 600;
+    font-size: 28px;
+    margin: 0 0 10px;
+  }
+
+  .panel p {
+    margin: 0 0 28px;
+    font-size: 15px;
+    max-width: 320px;
+    text-align: center;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .panel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 30px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    transition: transform 0.15s ease;
+  }
+
+  .panel:hover .panel-cta {
+    transform: translateY(-2px);
+  }
+
+  .panel-patient .panel-cta { color: var(--terracotta-deep); }
+  .panel-doctor .panel-cta { color: var(--sage); }
+
+  .divider {
+    width: 1px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  /* ---------- Footer ---------- */
+
+  .foot-note {
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12.5px;
+    color: var(--stone);
+    background: var(--cream);
+  }
+
+  @media (max-width: 760px) {
+    .doorway { flex-direction: column; min-height: auto; }
+    .divider { width: auto; height: 1px; }
+    .panel { padding: 40px 24px; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="brand-bar">
+    <div class="mark">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="23" stroke="#4A5A3C" stroke-width="2"/>
+        <path d="M24 12C24 12 15 18 15 27C15 32 19 35.5 24 35.5C29 35.5 33 32 33 27C33 18 24 12 24 12Z" fill="#A1462F"/>
+        <path d="M24 16C24 16 19 20.5 19 27C19 30 21 32 24 32" stroke="#F6F1E7" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>Arogya Medi Kiosk</span>
+    </div>
+    <p class="tagline">Ayurvedic care, digitally guided</p>
+  </div>
+
+  <div class="doorway">
+
+    <a href="{% url 'myapp:patient_login' %}" class="panel panel-patient">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H7L9 6L13 18L15 12H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Patient</h2>
+      <p>Check in with your ABHA ID and OTP to begin your visit.</p>
+      <span class="panel-cta">Continue as Patient</span>
+    </a>
+
+    <div class="divider"></div>
+
+    <a href="{% url 'login' %}" class="panel panel-doctor"></a>
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 3V8C9 10.2 10.8 12 13 12C15.2 12 17 10.2 17 8V3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 12V16C13 18.2 11.2 20 9 20C6.8 20 5 18.2 5 16V14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="19" cy="15" r="2" stroke="#fff" stroke-width="2"/>
+        </svg>
+      </div>
+      <h2>Doctor</h2>
+      <p>Sign in to view today's patients and your dashboard.</p>
+      <span class="panel-cta">Sign in as Doctor</span>
+    </a>
+
+  </div>
+
+  <div class="foot-note">Arogya Medi Kiosk &middot; Ayurvedic Outpatient Care</div>
+
+</div>
+
+</body>
+</html>

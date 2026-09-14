@@ -1,0 +1,26 @@
+$kind: http-request
+name: Verify OTP
+order: 3000
+url: 'http://localhost:9000/api/verify-otp'
+method: POST
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "userId": "{{userId}}",
+      "otp": "{{otp}}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200", function () {
+        pm.response.to.have.status(200);
+      });
+      pm.test("OTP verified successfully", function () {
+        const json = pm.response.json();
+        pm.expect(json.success).to.be.true;
+      });

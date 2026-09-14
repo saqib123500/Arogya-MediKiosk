@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MediKiosk{% endblock %}</title>
+  <style>
+    :root { --ink: #243447; --brand: #3f5f80; --background: #f4f7fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); background: var(--background); }
+    .public-header { padding: 18px 24px; background: #fff; border-bottom: 1px solid #d8e0e5; }
+    .public-header a { color: var(--brand); font-size: 20px; font-weight: 700; text-decoration: none; }
+    main { padding: 32px 20px; }
+    .public-footer { padding: 20px; color: #71808c; font-size: 13px; text-align: center; }
+    {% block extra_style %}{% endblock %}
+  </style>
+</head>
+<body>
+  <header class="public-header"><a href="{% url 'myapp:patient_login' %}">MediKiosk</a></header>
+  {% block content %}{% endblock %}
+  <footer class="public-footer">New patient registration — no ABHA ID required</footer>
+</body>
+</html>

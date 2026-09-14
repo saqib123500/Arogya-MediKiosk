@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Patient Case-Taking Form</title>
+
+<style>
+
+:root {
+    --background: #f4f6f3;
+    --card: #ffffff;
+    --soft: #f8faf8;
+    --ink: #26332c;
+    --muted: #748078;
+    --line: #dce3de;
+    --accent: #5c6b4f;
+    --accent-dark: #46543c;
+    --accent-light: #e9eee6;
+    --danger: #b24a3a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    padding: 45px 18px 60px;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: var(--ink);
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(92,107,79,0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(92,107,79,0.07),
+            transparent 30%
+        ),
+        var(--background);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-title {
+    max-width: 780px;
+
+    margin: 0 auto 30px;
+
+    text-align: center;
+}
+
+.page-title .icon {
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #718166,
+            #46543c
+        );
+
+    color: white;
+
+    font-size: 23px;
+
+    box-shadow:
+        0 8px 20px rgba(70,84,60,0.16);
+}
+
+.page-title h1 {
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 30px;
+
+    font-weight: 500;
+
+    letter-spacing: -0.3px;
+
+    color: #26352d;
+}
+
+.page-title p {
+    margin: 8px 0 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   MAIN FORM CARD
+   ========================================================= */
+
+form {
+    width: 100%;
+    max-width: 780px;
+
+    margin: 0 auto;
+
+    padding: 34px;
+
+    background:
+        rgba(255,255,255,0.96);
+
+    border: 1px solid var(--line);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(40,55,45,0.08),
+        0 4px 12px rgba(40,55,45,0.04);
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+h2 {
+    position: relative;
+
+    margin: 32px 0 22px;
+
+    padding: 14px 17px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--accent-light),
+            #f7f9f7
+        );
+
+    border-left: 4px solid var(--accent);
+
+    color: #394b3e;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 18px;
+
+    font-weight: 500;
+}
+
+h2:first-of-type {
+    margin-top: 0;
+}
+
+
+/* =========================================================
+   FIELD LABELS
+   ========================================================= */
+
+label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #3c4a42;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.required {
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   NORMAL INPUTS
+   ========================================================= */
+
+input,
+select,
+textarea {
+
+    width: 100%;
+
+    padding: 13px 14px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid var(--line);
+
+    border-radius: 9px;
+
+    background: #fcfdfc;
+
+    color: var(--ink);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: #c5cec8;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+
+    background: #ffffff;
+
+    border-color: var(--accent);
+
+    box-shadow:
+        0 0 0 4px rgba(92,107,79,0.09);
+}
+
+textarea {
+    min-height: 100px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+}
+
+textarea::placeholder,
+input::placeholder {
+    color: #a0aaa4;
+}
+
+
+/* =========================================================
+   DASHAVIDHA FIELD CARDS
+   ========================================================= */
+
+.field {
+
+    margin-bottom: 16px;
+
+    padding: 19px 19px 2px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            var(--soft)
+        );
+
+    border: 1px solid var(--line);
+
+    border-radius: 12px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.field:hover {
+
+    border-color: #c2cec5;
+
+    box-shadow:
+        0 6px 18px rgba(40,55,45,0.05);
+
+    transform: translateY(-1px);
+}
+
+.field:focus-within {
+
+    border-color: #9aaa9a;
+
+    box-shadow:
+        0 0 0 4px rgba(92,107,79,0.06);
+}
+
+
+/* =========================================================
+   MEANING / DESCRIPTION
+   ========================================================= */
+
+.meaning {
+
+    display: block;
+
+    margin: -2px 0 13px;
+
+    color: var(--muted);
+
+    font-size: 11.5px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SELECT ARROW
+   ========================================================= */
+
+select {
+
+    appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #718078 50%),
+        linear-gradient(135deg, #718078 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 13px) 50%;
+
+    background-size:
+        5px 5px,
+        5px 5px;
+
+    background-repeat: no-repeat;
+
+    padding-right: 40px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.submit-btn {
+
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent-dark)
+        );
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(70,84,60,0.18);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.submit-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 11px 25px rgba(70,84,60,0.23);
+}
+
+.submit-btn:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* =========================================================
+   FORM FOOTER
+   ========================================================= */
+
+.form-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 17px;
+
+    color: #87928b;
+
+    font-size: 11px;
+
+    text-align: center;
+}
+
+.form-footer span {
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 28px 12px 40px;
+    }
+
+    .page-title {
+        margin-bottom: 22px;
+    }
+
+    .page-title .icon {
+        width: 46px;
+        height: 46px;
+
+        border-radius: 13px;
+
+        font-size: 20px;
+    }
+
+    .page-title h1 {
+        font-size: 25px;
+    }
+
+    .page-title p {
+        font-size: 12px;
+    }
+
+    form {
+        padding: 24px 18px 27px;
+
+        border-radius: 15px;
+    }
+
+    h2 {
+        font-size: 16px;
+
+        padding: 12px 14px;
+
+        margin-top: 27px;
+    }
+
+    label {
+        font-size: 12.5px;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 13px;
+
+        padding: 12px 13px;
+    }
+
+    .field {
+        padding: 16px 15px 1px;
+    }
+
+    .meaning {
+        font-size: 11px;
+    }
+
+    .submit-btn {
+        padding: 14px;
+
+        font-size: 13px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     PAGE TITLE
+     ========================================================= -->
+
+<div class="page-title">
+
+    <div class="icon">
+        ✚
+    </div>
+
+    <h1>
+        Patient Case-Taking Form
+    </h1>
+
+    <p>
+        Enter patient information and clinical assessment details
+        securely and accurately.
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     FORM
+     ========================================================= -->
+
+<form method="POST" action="{% url 'patient_form' %}">
+
+    {% csrf_token %}
+
+
+    <!-- =====================================================
+         BASIC DETAILS
+         ===================================================== -->
+
+    <h2>
+        Basic Details
+    </h2>
+
+
+    <label for="name">
+        Full Name
+        <span class="required">*</span>
+    </label>
+
+    <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Enter patient's full name"
+        autocomplete="name"
+        required
+    >
+
+
+    <label for="age">
+        Age
+        <span class="required">*</span>
+    </label>
+
+    <input
+        type="number"
+        id="age"
+        name="age"
+        min="0"
+        max="120"
+        placeholder="Enter age"
+        required
+    >
+
+
+    <label for="gender">
+        Gender
+        <span class="required">*</span>
+    </label>
+
+    <select
+        id="gender"
+        name="gender"
+        required
+    >
+
+        <option value="" disabled selected>
+            Select gender
+        </option>
+
+        <option value="male">
+            Male
+        </option>
+
+        <option value="female">
+            Female
+        </option>
+
+        <option value="other">
+            Other
+        </option>
+
+    </select>
+
+
+    <label for="contact">
+        Contact Number
+        <span class="required">*</span>
+    </label>
+
+    <input
+        type="tel"
+        id="contact"
+        name="contact"
+        placeholder="Enter 10-digit mobile number"
+        pattern="[0-9]{10}"
+        maxlength="10"
+        inputmode="numeric"
+        required
+    >
+
+
+    <label for="address">
+        Address
+        <span class="required">*</span>
+    </label>
+
+    <textarea
+        id="address"
+        name="address"
+        placeholder="Enter patient's residential address"
+        required
+    ></textarea>
+
+
+    <!-- =====================================================
+         CHIEF COMPLAINT
+         ===================================================== -->
+
+    <h2>
+        Chief Complaint
+    </h2>
+
+    <label for="complaint">
+        Primary Complaint
+        <span class="required">*</span>
+    </label>
+
+    <textarea
+        id="complaint"
+        name="complaint"
+        placeholder="Describe the patient's main complaint..."
+        required
+    ></textarea>
+
+
+    <!-- =====================================================
+         DASHAVIDHA PARIKSHA
+         ===================================================== -->
+
+    <h2>
+        Dashavidha Pariksha
+    </h2>
+
+
+    <!-- 1 -->
+
+    <div class="field">
+
+        <label>
+            1. Prakriti
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Constitution — the individual's inborn dosha-based
+            body-mind type, fixed at birth.
+        </span>
+
+        <select name="prakriti" required>
+
+            <option value="" disabled selected>
+                Select Constitution
+            </option>
+
+            <option value="vata">
+                Vata (Air + Space)
+            </option>
+
+            <option value="pitta">
+                Pitta (Fire + Water)
+            </option>
+
+            <option value="kapha">
+                Kapha (Earth + Water)
+            </option>
+
+            <option value="vata_pitta">
+                Vata-Pitta
+            </option>
+
+            <option value="pitta_kapha">
+                Pitta-Kapha
+            </option>
+
+            <option value="vata_kapha">
+                Vata-Kapha
+            </option>
+
+            <option value="tridoshaja">
+                Tridoshaja
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 2 -->
+
+    <div class="field">
+
+        <label>
+            2. Vikriti
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Pathology — the current imbalance of doshas
+            associated with disease.
+        </span>
+
+        <select name="vikriti" required>
+
+            <option value="" disabled selected>
+                Select Pathological State
+            </option>
+
+            <option value="vata">
+                Vata Vikriti
+            </option>
+
+            <option value="pitta">
+                Pitta Vikriti
+            </option>
+
+            <option value="kapha">
+                Kapha Vikriti
+            </option>
+
+            <option value="dwidoshaja">
+                Dwidoshaja
+            </option>
+
+            <option value="sannipataja">
+                Sannipataja
+            </option>
+
+            <option value="none">
+                No significant Vikriti
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 3 -->
+
+    <div class="field">
+
+        <label>
+            3. Sara
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Tissue quality — the degree of excellence
+            of the seven bodily tissues (dhatus).
+        </span>
+
+        <select name="sara" required>
+
+            <option value="" disabled selected>
+                Select Tissue Quality
+            </option>
+
+            <option value="pravara">
+                Pravara (excellent)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate)
+            </option>
+
+            <option value="avara">
+                Avara (poor)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 4 -->
+
+    <div class="field">
+
+        <label>
+            4. Samhanana
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Compactness — how well-knit and firm
+            the body frame and joints are.
+        </span>
+
+        <select name="samhanana" required>
+
+            <option value="" disabled selected>
+                Select Compactness
+            </option>
+
+            <option value="pravara">
+                Pravara (well-compact, firm)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate)
+            </option>
+
+            <option value="avara">
+                Avara (loose, poor)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 5 -->
+
+    <div class="field">
+
+        <label>
+            5. Pramana
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Measurements — the body's proportions
+            and dimensions relative to ideal standards.
+        </span>
+
+        <select name="pramana" required>
+
+            <option value="" disabled selected>
+                Select Measurement Status
+            </option>
+
+            <option value="pravara">
+                Pravara (proportionate, adequate)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate)
+            </option>
+
+            <option value="avara">
+                Avara (disproportionate, inadequate)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 6 -->
+
+    <div class="field">
+
+        <label>
+            6. Satmya
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Adaptability — how well the person tolerates
+            and adjusts to foods, climates, and circumstances.
+        </span>
+
+        <select name="satmya" required>
+
+            <option value="" disabled selected>
+                Select Adaptability
+            </option>
+
+            <option value="pravara">
+                Pravara (high adaptability)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate adaptability)
+            </option>
+
+            <option value="avara">
+                Avara (low adaptability)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 7 -->
+
+    <div class="field">
+
+        <label>
+            7. Satva
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Mental strength — the clarity, courage,
+            and psychological resilience of the mind.
+        </span>
+
+        <select name="satva" required>
+
+            <option value="" disabled selected>
+                Select Mental Strength
+            </option>
+
+            <option value="pravara">
+                Pravara (strong)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate)
+            </option>
+
+            <option value="avara">
+                Avara (weak)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 8 -->
+
+    <div class="field">
+
+        <label>
+            8. Ahara Shakti
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Digestive capacity — the strength of Agni
+            and the amount of food one can properly digest.
+        </span>
+
+        <select name="ahara_shakti" required>
+
+            <option value="" disabled selected>
+                Select Digestive Capacity
+            </option>
+
+            <option value="pravara">
+                Pravara (strong Agni)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate Agni)
+            </option>
+
+            <option value="avara">
+                Avara (weak Agni)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 9 -->
+
+    <div class="field">
+
+        <label>
+            9. Vyayama Shakti
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Exercise capacity — the physical stamina
+            and tolerance for exertion.
+        </span>
+
+        <select name="vyayama_shakti" required>
+
+            <option value="" disabled selected>
+                Select Exercise Capacity
+            </option>
+
+            <option value="pravara">
+                Pravara (high capacity)
+            </option>
+
+            <option value="madhyama">
+                Madhyama (moderate capacity)
+            </option>
+
+            <option value="avara">
+                Avara (low capacity)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- 10 -->
+
+    <div class="field">
+
+        <label>
+            10. Vaya
+            <span class="required">*</span>
+        </label>
+
+        <span class="meaning">
+            Age category — the patient's stage of life.
+        </span>
+
+        <select name="vaya" required>
+
+            <option value="" disabled selected>
+                Select Age Category
+            </option>
+
+            <option value="bala">
+                Bala (childhood: up to 16 years)
+            </option>
+
+            <option value="madhya">
+                Madhya (middle age: 16–70 years)
+            </option>
+
+            <option value="vriddha">
+                Vriddha (old age: above 70 years)
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUBMIT
+         ===================================================== -->
+
+    <button
+        type="submit"
+        class="submit-btn"
+    >
+        Submit Patient Form
+    </button>
+
+
+    <div class="form-footer">
+
+        <span>🔒</span>
+
+        Patient information should be handled
+        securely and confidentially.
+
+    </div>
+
+</form>
+
+</body>
+</html>
+

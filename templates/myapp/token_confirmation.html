@@ -1,0 +1,141 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+{% block title %}Token Confirmation{% endblock %}
+
+{% block extra_style %}
+  .confirm-wrap {
+    max-width: 480px;
+    margin: 40px auto 0;
+    text-align: center;
+  }
+
+  .confirm-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .check-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 16px;
+  }
+
+  .confirm-card h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+
+  .confirm-card .patient-name {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0 0 28px;
+  }
+
+  .token-number {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .token-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+
+  .doctor-box {
+    background: var(--primary-light);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .doctor-box .doc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-dark);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .doctor-box .doc-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .doctor-box .doc-specialty {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .confirm-actions a {
+    flex: 1;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 16px;
+    border-radius: 8px;
+  }
+
+  .btn-primary-full {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary-full:hover { background: var(--primary-dark); }
+
+  .btn-secondary-full {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+  }
+  .btn-secondary-full:hover { background: #d4e9e4; }
+{% endblock %}
+
+{% block content %}
+
+<div class="confirm-wrap">
+  <div class="confirm-card">
+    <div class="check-icon">✓</div>
+    <h1>Patient Registered</h1>
+    <p class="patient-name">{{ token.patient.name }}</p>
+
+    <div class="token-number">{{ token.token_number }}</div>
+    <div class="token-label">Token Number · {{ token.date|date:"d M Y" }}</div>
+
+    <div class="doctor-box">
+      <div class="doc-label">Forwarded To</div>
+      <div class="doc-name">Dr. {{ token.doctor.name }}</div>
+      <div class="doc-specialty">{{ token.doctor.get_specialty_display }}</div>
+    </div>
+
+    <div class="confirm-actions">
+      <a class="btn-secondary-full" href="{% url 'myapp:patient_list' %}">Patient List</a>
+      <a class="btn-primary-full" href="{% url 'myapp:patient_form' %}">Add Another</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

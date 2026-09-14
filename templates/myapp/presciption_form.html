@@ -1,0 +1,197 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+{% block title %}Checkup — {{ token.patient.name }}{% endblock %}
+{% block nav_doctor %}active{% endblock %}
+
+{% block extra_style %}
+  .rx-wrap { max-width: 800px; margin: 0 auto; }
+
+  .patient-banner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .patient-banner .token-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .patient-banner .name { font-size: 18px; font-weight: 700; }
+  .patient-banner .meta { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .patient-banner .complaint { font-size: 13px; color: var(--text); margin-top: 6px; }
+
+  .rx-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .rx-card h2 {
+    font-size: 15px;
+    color: var(--primary-dark);
+    margin: 0 0 16px;
+  }
+
+  .rx-field { margin-bottom: 16px; }
+  .rx-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .rx-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  table.med-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.med-table th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.med-table td {
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  table.med-table input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  table.med-table input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .delete-row-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .rx-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .rx-submit {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .rx-submit:hover { background: var(--primary-dark); }
+  .rx-back {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .rx-back:hover { background: #f3f4f6; }
+{% endblock %}
+
+{% block content %}
+<div class="rx-wrap">
+
+  <div class="patient-banner">
+    <div class="token-badge">#{{ token.token_number }}</div>
+    <div>
+      <div class="name">{{ token.patient.name }}</div>
+      <div class="meta">{{ token.patient.age }} yrs · {{ token.patient.get_gender_display }} · {{ token.patient.get_prakriti_display }}</div>
+      <div class="complaint">{{ token.patient.complaint }}</div>
+    </div>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="rx-card">
+      <h2>Diagnosis & Notes</h2>
+      <div class="rx-field">
+        <label for="{{ form.diagnosis.id_for_label }}">Diagnosis</label>
+        {{ form.diagnosis }}
+      </div>
+      <div class="rx-field">
+        <label for="{{ form.notes.id_for_label }}">Additional Notes</label>
+        {{ form.notes }}
+      </div>
+    </div>
+
+    <div class="rx-card">
+      <h2>Medicines</h2>
+      {{ formset.management_form }}
+      <table class="med-table">
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Timing</th>
+            <th>Duration</th>
+            {% if formset.can_delete %}<th>Remove</th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for item_form in formset %}
+          <tr>
+            <td>{{ item_form.medicine_name }}</td>
+            <td>{{ item_form.dosage }}</td>
+            <td>{{ item_form.timing }}</td>
+            <td>{{ item_form.duration }}</td>
+            {% if formset.can_delete %}
+            <td>
+              <label class="delete-row-label">{{ item_form.DELETE }} Remove</label>
+            </td>
+            {% endif %}
+            {{ item_form.id }}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rx-actions">
+      <button type="submit" class="rx-submit">Save Prescription & Mark Seen</button>
+      <a class="rx-back" href="{% url 'myapp:doctor_queue' %}">Back to Queue</a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

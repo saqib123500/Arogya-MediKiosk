@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Review Medical Information</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            color: #1f2937;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section:first-child {
+            margin-top: 0;
+        }
+
+        .section-title {
+            font-size: 19px;
+            font-weight: bold;
+            color: #2563eb;
+
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            display: block;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            color: #6b7280;
+
+            margin-bottom: 6px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 15px;
+
+            color: #111827;
+
+            background: #ffffff;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 16px;
+        }
+
+        .list-item {
+            margin-bottom: 12px;
+        }
+
+        .list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 13px 25px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            display: inline-block;
+        }
+
+        .confirm {
+            background: #16a34a;
+            color: white;
+        }
+
+        .confirm:hover {
+            background: #15803d;
+        }
+
+        .back {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .back:hover {
+            background: #d1d5db;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ========================================= -->
+    <!-- HEADER                                    -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h1>
+            Review & Confirm Medical Information
+        </h1>
+
+        <p class="description">
+
+            Please review the information extracted
+            from the medical document.
+
+            You can correct any information before
+            confirming it.
+
+        </p>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- MEDICAL INFORMATION FORM                 -->
+    <!-- ========================================= -->
+
+    <form 
+    method="POST"
+    action="{% url 'medical_document_confirm' %}"
+
+    >
+
+        {% csrf_token %}
+        <input
+    type="hidden"
+    name="document_id"
+    value="{{ medical_document.id }}"
+>
+
+
+        <!-- ===================================== -->
+        <!-- DOCUMENT INFORMATION                  -->
+        <!-- ===================================== -->
+
+        {% if structured_data.document.document_type or structured_data.document.report_date or structured_data.document.doctor or structured_data.document.hospital or structured_data.document.department %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Document Information
+            </div>
+
+            <div class="info-grid">
+
+
+                {% if structured_data.document.document_type %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Document Type
+                    </label>
+
+                    <input
+                        type="text"
+                        name="document_type"
+                        value="{{ structured_data.document.document_type }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.document.report_date %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Report Date
+                    </label>
+
+                    <input
+                        type="text"
+                        name="report_date"
+                        value="{{ structured_data.document.report_date }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.document.doctor %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Doctor
+                    </label>
+
+                    <input
+                        type="text"
+                        name="doctor"
+                        value="{{ structured_data.document.doctor }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.document.hospital %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Hospital
+                    </label>
+
+                    <input
+                        type="text"
+                        name="hospital"
+                        value="{{ structured_data.document.hospital }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.document.department %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        name="department"
+                        value="{{ structured_data.document.department }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- PATIENT INFORMATION                   -->
+        <!-- ===================================== -->
+
+        {% if structured_data.patient.name or structured_data.patient.age or structured_data.patient.date_of_birth or structured_data.patient.gender or structured_data.patient.abha_id or structured_data.patient.phone or structured_data.patient.address or structured_data.patient.blood_group %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Patient Information
+            </div>
+
+            <div class="info-grid">
+
+
+                {% if structured_data.patient.name %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_name"
+                        value="{{ structured_data.patient.name }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.age %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Age
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_age"
+                        value="{{ structured_data.patient.age }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.date_of_birth %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_date_of_birth"
+                        value="{{ structured_data.patient.date_of_birth }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.gender %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Gender
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_gender"
+                        value="{{ structured_data.patient.gender }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.abha_id %}
+
+                <div class="field">
+
+                    <label class="label">
+                        ABHA ID
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_abha_id"
+                        value="{{ structured_data.patient.abha_id }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.phone %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_phone"
+                        value="{{ structured_data.patient.phone }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.address %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Address
+                    </label>
+
+                    <textarea name="patient_address">{{ structured_data.patient.address }}</textarea>
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.patient.blood_group %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Blood Group
+                    </label>
+
+                    <input
+                        type="text"
+                        name="patient_blood_group"
+                        value="{{ structured_data.patient.blood_group }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- CHIEF COMPLAINT                       -->
+        <!-- ===================================== -->
+
+        {% if structured_data.chief_complaint %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Chief Complaint
+            </div>
+
+            <textarea name="chief_complaint">{{ structured_data.chief_complaint }}</textarea>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- MEDICAL HISTORY                       -->
+        <!-- ===================================== -->
+
+        {% if structured_data.medical_history %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Medical History
+            </div>
+
+            {% for item in structured_data.medical_history %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="medical_history"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- SURGICAL HISTORY                      -->
+        <!-- ===================================== -->
+
+        {% if structured_data.surgical_history %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Surgical History
+            </div>
+
+            {% for item in structured_data.surgical_history %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="surgical_history"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- ALLERGIES                             -->
+        <!-- ===================================== -->
+
+        {% if structured_data.allergies %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Allergies
+            </div>
+
+            {% for item in structured_data.allergies %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="allergies"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- MEDICATIONS                           -->
+        <!-- ===================================== -->
+
+        {% if structured_data.medications %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Medications
+            </div>
+
+            {% for item in structured_data.medications %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="medications"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- DIAGNOSES                             -->
+        <!-- ===================================== -->
+
+        {% if structured_data.diagnoses %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Diagnoses
+            </div>
+
+            {% for item in structured_data.diagnoses %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="diagnoses"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- VITALS                                -->
+        <!-- ===================================== -->
+
+        {% if structured_data.vitals.blood_pressure or structured_data.vitals.pulse or structured_data.vitals.temperature or structured_data.vitals.respiratory_rate or structured_data.vitals.oxygen_saturation or structured_data.vitals.height or structured_data.vitals.weight or structured_data.vitals.bmi %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Vitals
+            </div>
+
+            <div class="info-grid">
+
+
+                {% if structured_data.vitals.blood_pressure %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Blood Pressure
+                    </label>
+
+                    <input
+                        type="text"
+                        name="blood_pressure"
+                        value="{{ structured_data.vitals.blood_pressure }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.pulse %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Pulse
+                    </label>
+
+                    <input
+                        type="text"
+                        name="pulse"
+                        value="{{ structured_data.vitals.pulse }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.temperature %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Temperature
+                    </label>
+
+                    <input
+                        type="text"
+                        name="temperature"
+                        value="{{ structured_data.vitals.temperature }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.respiratory_rate %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Respiratory Rate
+                    </label>
+
+                    <input
+                        type="text"
+                        name="respiratory_rate"
+                        value="{{ structured_data.vitals.respiratory_rate }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.oxygen_saturation %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Oxygen Saturation
+                    </label>
+
+                    <input
+                        type="text"
+                        name="oxygen_saturation"
+                        value="{{ structured_data.vitals.oxygen_saturation }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.height %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Height
+                    </label>
+
+                    <input
+                        type="text"
+                        name="height"
+                        value="{{ structured_data.vitals.height }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.weight %}
+
+                <div class="field">
+
+                    <label class="label">
+                        Weight
+                    </label>
+
+                    <input
+                        type="text"
+                        name="weight"
+                        value="{{ structured_data.vitals.weight }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+                {% if structured_data.vitals.bmi %}
+
+                <div class="field">
+
+                    <label class="label">
+                        BMI
+                    </label>
+
+                    <input
+                        type="text"
+                        name="bmi"
+                        value="{{ structured_data.vitals.bmi }}"
+                    >
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- CLINICAL OBSERVATIONS                 -->
+        <!-- ===================================== -->
+
+        {% if structured_data.clinical_observations %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Clinical Observations
+            </div>
+
+            {% for item in structured_data.clinical_observations %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="clinical_observations"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- FOLLOW-UP                             -->
+        <!-- ===================================== -->
+
+        {% if structured_data.follow_up %}
+
+        <div class="card section">
+
+            <div class="section-title">
+                Follow-up
+            </div>
+
+            {% for item in structured_data.follow_up %}
+
+            <div class="list-item">
+
+                <input
+                    type="text"
+                    name="follow_up"
+                    value="{{ item }}"
+                >
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ===================================== -->
+        <!-- ACTIONS                               -->
+        <!-- ===================================== -->
+
+        <div class="card">
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'medical_document_upload' %}"
+                    class="button back"
+                >
+                    Upload Again
+                </a>
+
+                <button
+                    type="submit"
+                    class="button confirm"
+                >
+                    Confirm Information
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,467 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+{% block title %}Patient List{% endblock %}
+{% block nav_patients %}active{% endblock %}
+
+{% block extra_style %}
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .page-header p {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: background 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 2px 6px rgba(47, 125, 107, 0.25);
+  }
+
+  .btn-add:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-add::before {
+    content: "+";
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 760px;
+  }
+
+  thead th {
+    text-align: left;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s ease;
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: #fafbfb;
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    color: var(--text);
+  }
+
+  .patient-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .complaint-cell {
+    color: var(--text-muted);
+    max-width: 220px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-male { background: #e8f1fb; color: #2563eb; }
+  .badge-female { background: #fce8f3; color: #db2777; }
+  .badge-other { background: #f1f0fb; color: #6d28d9; }
+
+  .dosha-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fef3e2;
+    color: #b45309;
+    white-space: nowrap;
+  }
+
+  .doctor-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    white-space: nowrap;
+  }
+
+  .doctor-tag.unassigned {
+    background: #f1f2f4;
+    color: var(--text-muted);
+  }
+
+  .status-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .status-waiting { background: #fef3e2; color: #b45309; }
+  .status-seen { background: #e6f4ea; color: #1e7e34; }
+  .status-cancelled { background: #fdecea; color: #b91c1c; }
+  .status-none { background: #f1f2f4; color: var(--text-muted); }
+
+  .date-cell {
+    color: var(--text-muted);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state .emoji {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .empty-state p {
+    margin: 4px 0 0;
+    font-size: 14px;
+  }
+
+  .btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    background: var(--primary-light);
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+
+  .btn-edit:hover {
+    background: #d4e9e4;
+  }
+
+  .count-pill {
+    display: inline-block;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .page-header h1 { font-size: 22px; }
+  }
+{% endblock %}
+
+{% block content %}
+
+<div class="page-wrap">
+
+    <div class="page-header">
+      <div>
+        <h1>Patient List <span class="count-pill" id="patient-count">{{ patients|length }}</span></h1>
+        <p>All registered patients and their Dashavidha Pariksha records</p>
+      </div>
+      <a class="btn-add" href="{% url 'myapp:patient_form' %}">Add New Patient</a>
+    </div>
+
+    <div class="card" style="margin-bottom:16px; padding:14px 16px;">
+      <input
+        type="text"
+        id="patient-search"
+        placeholder="Search by name or mobile number..."
+        style="width:100%; padding:9px 14px; border:1px solid var(--border); border-radius:8px; font-size:14px;"
+      >
+    </div>
+
+    <div class="card">
+      <div id="patient-table-container">
+        {% include "myapp/_patient_table.html" %}
+      </div>
+    </div>
+</div>
+
+
+<div id="booking-modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center;">
+  <div class="card" style="width:100%; max-width:420px; padding:24px; position:relative;">
+    <button id="booking-modal-close" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted);">&times;</button>
+
+    <h3 id="booking-modal-title" style="margin:0 0 4px; font-size:18px;">Book Appointment</h3>
+    <p id="booking-patient-name" style="margin:0 0 18px; color:var(--text-muted); font-size:14px;"></p>
+
+    <div id="booking-error" style="display:none; background:#fdecea; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:13px; margin-bottom:14px;"></div>
+
+    <form id="booking-form">
+      {% csrf_token %}
+      <input type="hidden" id="booking-patient-id" name="patient_id">
+
+      <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Doctor</label>
+      <select id="booking-doctor" name="doctor_id" required style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:16px;">
+        <option value="">Select a doctor...</option>
+        {% for doctor in doctors %}
+          <option value="{{ doctor.id }}">Dr. {{ doctor.name }}</option>
+        {% endfor %}
+      </select>
+
+      <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Date &amp; Time</label>
+      <input type="datetime-local" id="booking-datetime" name="appointment_datetime" required
+        style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:20px;">
+
+      <button type="submit" class="btn-add" style="width:100%; justify-content:center;">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<div id="tokens-modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:20px;">
+  <div class="card" style="width:100%; max-width:900px; max-height:88vh; overflow-y:auto; padding:28px; position:relative;">
+    <button id="tokens-modal-close" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted);">&times;</button>
+    <div id="tokens-modal-content">
+      <p style="text-align:center; color:var(--text-muted); padding:20px;">Loading...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const input = document.getElementById("patient-search");
+    const container = document.getElementById("patient-table-container");
+    const countEl = document.getElementById("patient-count");
+    const searchUrl = "{% url 'myapp:patient_list' %}";
+    let debounceTimer = null;
+    let currentController = null;
+
+    input.addEventListener("input", function () {
+      clearTimeout(debounceTimer);
+      const query = input.value.trim();
+
+      debounceTimer = setTimeout(function () {
+        if (currentController) currentController.abort();
+        currentController = new AbortController();
+
+        fetch(`${searchUrl}?q=${encodeURIComponent(query)}`, {
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+          signal: currentController.signal,
+        })
+          .then((res) => res.text())
+          .then((html) => {
+            container.innerHTML = html;
+          })
+          .catch((err) => {
+            if (err.name !== "AbortError") console.error("Search failed:", err);
+          });
+      }, 300); // 300ms debounce
+    });
+  })();
+
+  (function () {
+    const backdrop = document.getElementById("booking-modal-backdrop");
+    const closeBtn = document.getElementById("booking-modal-close");
+    const form = document.getElementById("booking-form");
+    const errorBox = document.getElementById("booking-error");
+    const patientNameEl = document.getElementById("booking-patient-name");
+    const patientIdInput = document.getElementById("booking-patient-id");
+    const titleEl = document.getElementById("booking-modal-title");
+    const submitBtn = form.querySelector("button[type=submit]");
+    const doctorSelect = document.getElementById("booking-doctor");
+    const datetimeInput = document.getElementById("booking-datetime");
+    const bookingUrl = "{% url 'myapp:book_appointment_ajax' 0 %}";
+
+    window.openBookingModal = function (patientId, patientName, doctorId, appointmentDatetime) {
+      errorBox.style.display = "none";
+      form.reset();
+      patientIdInput.value = patientId; // reset() clears hidden input too, so re-set after
+      patientNameEl.textContent = "for " + patientName;
+
+      const isEdit = !!doctorId;
+      if (titleEl) titleEl.textContent = isEdit ? "Edit Appointment" : "Book Appointment";
+      submitBtn.textContent = isEdit ? "Update Booking" : "Confirm Booking";
+
+      if (isEdit) {
+        doctorSelect.value = doctorId;
+        // appointmentDatetime arrives pre-formatted as YYYY-MM-DDTHH:MM for the input
+        datetimeInput.value = appointmentDatetime || "";
+      }
+
+      backdrop.style.display = "flex";
+    };
+
+    function closeModal() {
+      backdrop.style.display = "none";
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", function (e) {
+      if (e.target === backdrop) closeModal();
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      errorBox.style.display = "none";
+
+      const patientId = patientIdInput.value;
+      const formData = new FormData(form);
+      const csrfToken = form.querySelector("[name=csrfmiddlewaretoken]").value;
+
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = "Saving...";
+
+      fetch(bookingUrl.replace("/0/", `/${patientId}/`), {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken, "X-Requested-With": "XMLHttpRequest" },
+        body: formData,
+      })
+        .then((res) => res.json().then((data) => ({ status: res.status, data })))
+        .then(({ status, data }) => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+
+          if (!data.success) {
+            errorBox.textContent = data.error || "Something went wrong.";
+            errorBox.style.display = "block";
+            return;
+          }
+
+          closeModal();
+          // simplest refresh: re-trigger the search/reload of the table
+          document.getElementById("patient-search").dispatchEvent(new Event("input"));
+          alert(data.message); // swap for a nicer toast if you have one
+        })
+        .catch(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+          errorBox.textContent = "Network error. Please try again.";
+          errorBox.style.display = "block";
+        });
+    });
+  })();
+
+  (function () {
+    const backdrop = document.getElementById("tokens-modal-backdrop");
+    const closeBtn = document.getElementById("tokens-modal-close");
+    const content = document.getElementById("tokens-modal-content");
+    const tokensUrlTemplate = "{% url 'myapp:patient_tokens_ajax' 0 %}";
+
+    window.openTokensModal = function (patientId) {
+      content.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">Loading...</p>';
+      backdrop.style.display = "flex";
+
+      fetch(tokensUrlTemplate.replace("/0/", `/${patientId}/`), {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Request failed");
+          return res.text();
+        })
+        .then((html) => {
+          content.innerHTML = html;
+        })
+        .catch(() => {
+          content.innerHTML = '<p style="text-align:center; color:#b91c1c; padding:20px;">Couldn\'t load appointment history. Please try again.</p>';
+        });
+    };
+
+    function closeModal() {
+      backdrop.style.display = "none";
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", function (e) {
+      if (e.target === backdrop) closeModal();
+    });
+  })();
+</script>
+{% endblock %}

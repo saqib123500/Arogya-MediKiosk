@@ -1,0 +1,300 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block extra_style %}
+  .hero {
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    margin: 0 0 6px;
+  }
+  .hero p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .stat-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .stat-card .value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-top: 6px;
+  }
+
+  .actions-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(47, 125, 107, 0.25);
+  }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary::before { content: "+"; font-size: 16px; line-height: 1; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+  }
+  .btn-secondary:hover { background: #d4e9e4; }
+
+  .actions-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header h2 {
+    font-size: 15px;
+    margin: 0;
+    color: var(--primary-dark);
+  }
+  .card-header a {
+    font-size: 13px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .card-header a:hover { text-decoration: underline; }
+
+  ul.recent-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  ul.recent-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  ul.recent-list li:last-child { border-bottom: none; }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .recent-name { font-weight: 600; flex: 1; }
+  .recent-date { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .doctor-group {
+    border-bottom: 1px solid var(--border);
+  }
+  .doctor-group:last-child { border-bottom: none; }
+
+  .doctor-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--primary-light);
+  }
+  .doctor-group-header h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+  .doctor-group-header span {
+    font-size: 12px;
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+
+  .appt-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .appt-row:last-child { border-bottom: none; }
+
+  .appt-token {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 13px;
+    width: 36px;
+    flex-shrink: 0;
+  }
+
+  .appt-name { font-weight: 600; flex: 1; }
+
+  .appt-time {
+    color: var(--text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .appt-status {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .appt-status-waiting { background: #fef3e2; color: #b45309; }
+  .appt-status-seen { background: #e6f4ea; color: #1e7e34; }
+
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: 1fr; }
+    .actions-row { flex-direction: column; }
+  }
+{% endblock %}
+
+{% block content %}
+
+<div class="page-wrap">
+
+  <div class="hero">
+    <h1>Ayurvedic Case-Taking</h1>
+    <p>Manage patient records and Dashavidha Pariksha assessments</p>
+  </div>
+
+  <div class="grid">
+    <div class="stat-card">
+      <div class="label">Total Patients</div>
+      <div class="value">{{ total_patients }}</div>
+    </div>
+    <div class="stat-card actions-card">
+      <a class="btn-primary" href="{% url 'myapp:patient_form' %}">Add New Patient</a>
+    </div>
+    <div class="stat-card actions-card">
+      <a class="btn-secondary" href="{% url 'myapp:patient_list' %}">View Full Patient List</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:28px;">
+    <div class="card-header">
+      <h2>Today's Appointments — {{ today|date:"d M Y" }}</h2>
+    </div>
+    {% if todays_tokens %}
+      {% regroup todays_tokens by doctor as doctor_groups %}
+      {% for group in doctor_groups %}
+      <div class="doctor-group">
+        <div class="doctor-group-header">
+          <h3>Dr. {{ group.grouper.name }}</h3>
+          <span>{{ group.list|length }} appointment{{ group.list|length|pluralize }}</span>
+        </div>
+        {% for token in group.list %}
+        <div class="appt-row">
+          <span class="appt-token">#{{ token.token_number }}</span>
+          <span class="appt-name">{{ token.patient.name }}</span>
+          <span class="appt-time">
+            {% if token.appointment_datetime %}
+              {{ token.appointment_datetime|date:"h:i A" }}
+            {% else %}
+              Walk-in
+            {% endif %}
+          </span>
+          <span class="appt-status appt-status-{{ token.status }}">{{ token.get_status_display }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="empty-state">No appointments scheduled for today.</div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Recently Added Patients</h2>
+      <a href="{% url 'myapp:patient_list' %}">View all →</a>
+    </div>
+    {% if recent_patients %}
+    <ul class="recent-list">
+      {% for patient in recent_patients %}
+      <li>
+        <span class="avatar">{{ patient.name|slice:":1"|upper }}</span>
+        <span class="recent-name">{{ patient.name }}</span>
+        <span class="recent-date">{{ patient.created_at|date:"d M Y" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state">No patients registered yet.</div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

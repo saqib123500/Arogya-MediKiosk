@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medical Documents</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            padding: 45px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        p {
+            color: #6b7280;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .upload-area {
+            margin-top: 30px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Medical Documents</h1>
+
+        <p>
+            Upload any previous medical reports,
+            prescriptions, or other medical documents.
+        </p>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            <div class="upload-area">
+
+                {{ form.document }}
+
+                <br><br>
+
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Upload & Process
+                </button>
+
+            </div>
+
+        </form>
+
+        {% if form.errors %}
+
+            <div class="error">
+                {{ form.errors }}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
+

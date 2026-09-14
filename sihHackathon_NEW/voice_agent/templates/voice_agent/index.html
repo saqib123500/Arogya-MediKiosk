@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Patient Voice Agent</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        #status {
+            margin: 25px 0;
+            font-size: 18px;
+        }
+
+        #initialQuestion {
+            margin: 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        button {
+            padding: 16px 28px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #5c6b4f;
+            color: white;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #resetButton {
+            margin-top: 15px;
+            background: #a1462f;
+        }
+
+        #conversation {
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        .message {
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 10px;
+        }
+
+        .patient {
+            background: #eee9dd;
+        }
+
+        .assistant {
+            background: #e3eadf;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>AI Patient Voice Agent</h1>
+
+    <p>Press the button and speak.</p>
+
+    <button id="recordButton">
+        🎙️ Start Speaking
+    </button>
+
+    <br>
+
+    <button id="resetButton">
+        🔄 Start New Interview
+    </button>
+
+    <div id="status">
+        Ready
+    </div>
+
+    <div id="initialQuestion"></div>
+
+    <div id="conversation"></div>
+
+    <script>
+        const recordButton = document.getElementById("recordButton");
+        const resetButton = document.getElementById("resetButton");
+        const status = document.getElementById("status");
+        const conversation = document.getElementById("conversation");
+        const initialQuestion = document.getElementById("initialQuestion");
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let stream;
+
+        /*
+         * Initial question supplied by Django.
+         */
+        const initialQuestionText = "{{ initial_question|escapejs }}";
+
+        /*
+         * Display and speak the initial question
+         * when starting a new interview.
+         */
+        if (initialQuestionText) {
+            showInitialQuestion(initialQuestionText);
+        }
+
+
+        /*
+         * Start / stop recording.
+         */
+        recordButton.addEventListener("click", async () => {
+
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                return;
+            }
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+
+                audioChunks = [];
+
+                const mimeTypes = [
+                    "audio/webm;codecs=opus",
+                    "audio/webm",
+                    "audio/mp4"
+                ];
+
+                const supportedType = mimeTypes.find(type =>
+                    MediaRecorder.isTypeSupported(type)
+                );
+
+                mediaRecorder = supportedType
+                    ? new MediaRecorder(stream, {
+                        mimeType: supportedType
+                    })
+                    : new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstart = () => {
+                    status.textContent = "🎙️ Listening...";
+                    recordButton.textContent = "⏹️ Stop Speaking";
+                };
+
+                mediaRecorder.onstop = async () => {
+
+                    stream.getTracks().forEach(track => track.stop());
+
+                    status.textContent = "⏳ Processing...";
+                    recordButton.disabled = true;
+
+                    const audioBlob = new Blob(
+                        audioChunks,
+                        {
+                            type: mediaRecorder.mimeType
+                        }
+                    );
+
+                    const formData = new FormData();
+
+                    formData.append(
+                        "audio",
+                        audioBlob,
+                        "recording.webm"
+                    );
+
+                    try {
+
+                        const response = await fetch(
+                            "/voice/process/",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(
+                                data.error ||
+                                "Something went wrong."
+                            );
+                        }
+
+                        addMessage(
+                            "Patient",
+                            data.transcript
+                        );
+
+                        addMessage(
+                            "Assistant",
+                            data.response
+                        );
+
+                        const audio = new Audio(
+                            "data:" +
+                            data.audio_type +
+                            ";base64," +
+                            data.audio
+                        );
+
+                        status.textContent = "🔊 Speaking...";
+
+                        audio.onended = () => {
+                            status.textContent = "Ready";
+                        };
+
+                        await audio.play();
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        status.textContent =
+                            "❌ Error: " + error.message;
+
+                    } finally {
+
+                        recordButton.disabled = false;
+
+                        recordButton.textContent =
+                            "🎙️ Start Speaking";
+                    }
+                };
+
+                mediaRecorder.start();
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.textContent =
+                    "❌ Microphone access denied or unavailable.";
+            }
+        });
+
+
+        /*
+         * Reset the entire interview.
+         */
+        resetButton.addEventListener("click", async () => {
+
+            try {
+
+                resetButton.disabled = true;
+                recordButton.disabled = true;
+
+                status.textContent = "🔄 Starting new interview...";
+
+                /*
+                 * Stop any active recording.
+                 */
+                if (mediaRecorder &&
+                    mediaRecorder.state === "recording") {
+
+                    mediaRecorder.stop();
+                }
+
+                /*
+                 * Stop microphone stream.
+                 */
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+
+                /*
+                 * Stop any currently playing speech.
+                 */
+                window.speechSynthesis.cancel();
+
+                /*
+                 * Clear old conversation.
+                 */
+                conversation.innerHTML = "";
+
+                /*
+                 * Clear old initial question.
+                 */
+                initialQuestion.textContent = "";
+
+                /*
+                 * Tell Django to reset the session.
+                 */
+                const response = await fetch(
+                    "/voice/reset/",
+                    {
+                        method: "POST"
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error ||
+                        "Could not reset the interview."
+                    );
+                }
+
+                /*
+                 * Display the new initial question.
+                 */
+                if (data.initial_question) {
+                    showInitialQuestion(
+                        data.initial_question
+                    );
+                }
+
+                status.textContent = "Ready";
+
+            } catch (error) {
+
+                console.error(error);
+
+                status.textContent =
+                    "❌ Reset failed: " + error.message;
+
+            } finally {
+
+                resetButton.disabled = false;
+                recordButton.disabled = false;
+
+                recordButton.textContent =
+                    "🎙️ Start Speaking";
+            }
+        });
+
+
+        /*
+         * Display and speak an initial question.
+         */
+        function showInitialQuestion(text) {
+
+            initialQuestion.textContent = text;
+
+            addMessage(
+                "Assistant",
+                text
+            );
+
+            const speech =
+                new SpeechSynthesisUtterance(text);
+
+            speech.lang = "en-US";
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(speech);
+        }
+
+
+        /*
+         * Add a message to the conversation.
+         */
+        function addMessage(sender, text) {
+
+            const message =
+                document.createElement("div");
+
+            message.className =
+                "message " +
+                (sender === "Patient"
+                    ? "patient"
+                    : "assistant");
+
+            message.innerHTML =
+                "<strong>" +
+                sender +
+                ":</strong> " +
+                escapeHtml(text);
+
+            conversation.appendChild(message);
+        }
+
+
+        /*
+         * Prevent HTML injection.
+         */
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent = text;
+
+            return div.innerHTML;
+        }
+
+    </script>
+
+</body>
+</html>
+

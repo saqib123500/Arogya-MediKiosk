@@ -1,0 +1,31 @@
+$kind: http-request
+name: Register & Send OTP
+order: 2000
+url: 'http://localhost:9000/api/register'
+method: POST
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "phone": "+911234567890"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 201", function () {
+        pm.response.to.have.status(201);
+      });
+      pm.test("OTP is returned", function () {
+        const json = pm.response.json();
+        pm.expect(json.otp).to.exist;
+        pm.expect(json.userId).to.exist;
+      });
+      // Save userId and otp as collection variables for the verify step
+      const json = pm.response.json();
+      pm.collectionVariables.set("userId", json.userId);
+      pm.collectionVariables.set("otp", json.otp);
+      console.log("Saved userId:", json.userId, "OTP:", json.otp);

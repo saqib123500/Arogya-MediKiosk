@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Clinic Management System{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <!-- your existing page content goes here, without <html>/<head>/<body> tags -->
+
+  <div class="hero">
+    <h1>Clinic Management System</h1>
+    <p>Select a module to get started</p>
+  </div>
+
+  <div class="grid">
+
+    <a class="module-card" href="/myapp/">
+      <div class="module-icon">🩺</div>
+      <h2>Patient Management</h2>
+      <p>Register patients and record Dashavidha Pariksha case-taking assessments.</p>
+    </a>
+
+    <div class="module-card disabled">
+      <div class="module-icon">📅</div>
+      <h2>Appointments</h2>
+      <p>Schedule and manage patient visits and follow-ups.</p>
+      <span class="soon-tag">Coming Soon</span>
+    </div>
+
+    <div class="module-card disabled">
+      <div class="module-icon">💊</div>
+      <h2>Prescriptions</h2>
+      <p>Create and track Ayurvedic prescriptions and treatment plans.</p>
+      <span class="soon-tag">Coming Soon</span>
+    </div>
+
+    <div class="module-card disabled">
+      <div class="module-icon">🧾</div>
+      <h2>Billing</h2>
+      <p>Manage invoices, payments, and patient billing history.</p>
+      <span class="soon-tag">Coming Soon</span>
+    </div>
+
+  </div>
+
+  <footer>Clinic Management System</footer>
+
+
+</div>
+{% endblock %}
+

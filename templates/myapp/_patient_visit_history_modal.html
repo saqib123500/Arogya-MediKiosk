@@ -1,0 +1,68 @@
+<h3 style="margin:0 0 4px; font-size:18px;">Visit History</h3>
+<p style="margin:0 0 20px; color:#6b7280; font-size:14px;">
+  {{ patient.name }} &nbsp;•&nbsp; {{ patient.get_gender_display }}, {{ patient.age }} &nbsp;•&nbsp; {{ patient.contact }}
+</p>
+
+{% for token in tokens %}
+<div class="visit-card">
+  <div class="visit-card-header">
+    <div>
+      <span class="token-number">#{{ token.token_number }}</span>
+      <span style="color:#6b7280; font-size:13px; margin-left:8px;">Dr. {{ token.doctor.name }}</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="status status-{{ token.status }}">{{ token.get_status_display }}</span>
+      <span style="color:#9ca3af; font-size:12px;">
+        {{ token.date|date:"d M Y" }}{% if token.appointment_datetime %} • {{ token.appointment_datetime|date:"h:i A" }}{% endif %}
+      </span>
+    </div>
+  </div>
+
+  {% if token.prescription %}
+    {% with rx=token.prescription %}
+    <div class="visit-card-body">
+      <div style="margin-bottom:8px;">
+        <strong style="font-size:13px; color:#1f2937;">Diagnosis:</strong>
+        <span style="font-size:13px; color:#374151;">{{ rx.diagnosis|default:"—" }}</span>
+      </div>
+      {% if rx.notes %}
+      <div style="margin-bottom:12px;">
+        <strong style="font-size:13px; color:#1f2937;">Notes:</strong>
+        <span style="font-size:13px; color:#374151;">{{ rx.notes }}</span>
+      </div>
+      {% endif %}
+
+      {% if rx.items.all %}
+      <table class="queue-table" style="margin-top:6px;">
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Timing</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in rx.items.all %}
+          <tr>
+            <td>{{ item.medicine_name }}</td>
+            <td>{{ item.dosage|default:"—" }}</td>
+            <td>{{ item.timing|default:"—" }}</td>
+            <td>{{ item.duration|default:"—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+    {% endwith %}
+  {% else %}
+    <div class="visit-card-body">
+      <span style="color:#9ca3af; font-size:13px;">No prescription recorded for this visit.</span>
+    </div>
+  {% endif %}
+</div>
+{% empty %}
+<div class="empty-state">No visits recorded for this patient.</div>
+{% endfor %}
+

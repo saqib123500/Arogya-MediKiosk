@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medical Documents</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            padding: 45px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        p {
+            color: #6b7280;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 14px 28px;
+
+            background: #2563eb;
+            color: white;
+
+            text-decoration: none;
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .skip {
+            display: block;
+            margin-top: 20px;
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .skip:hover {
+            color: #374151;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Medical Documents</h1>
+
+        <p>
+            Do you have any previous medical reports,
+            prescriptions, or other medical documents?
+        </p>
+
+        <a
+            href="{% url 'medical_document_upload' %}"
+            class="button"
+        >
+            Upload Medical Document
+        </a>
+
+        <a
+            href="{% url 'home' %}"
+            class="skip"
+        >
+            Skip for now
+        </a>
+
+    </div>
+
+</body>
+
+</html>
+

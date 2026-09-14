@@ -1,0 +1,80 @@
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Patient</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Contact</th>
+        <th>Complaint</th>
+
+        <th>Assigned Doctor</th>
+        <th>Status</th>
+        <th>Appt. Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for patient in patients %}
+      <tr>
+        <td class="date-cell">{{ forloop.counter }}</td>
+        <td>
+          <div class="patient-name" style="cursor:pointer;" onclick="openTokensModal({{ patient.pk }})" title="View appointment history">
+            <span class="avatar">{{ patient.name|slice:":1"|upper }}</span>
+            {{ patient.name }}
+          </div>
+        </td>
+        <td>{{ patient.age }}</td>
+        <td>
+          <span class="badge badge-{{ patient.gender }}">{{ patient.get_gender_display }}</span>
+        </td>
+        <td>{{ patient.phone_number }}</td>
+        <td class="complaint-cell">{{ patient.complaint|truncatewords:10 }}</td>
+
+        {% with token=patient.latest_tokens.0 active_token=patient.active_tokens.0 %}
+        <td>
+            {% if token %}
+            <span class="doctor-tag">Dr. {{ token.doctor.name }} — #{{ token.token_number }}</span>
+            {% else %}
+            <span class="doctor-tag unassigned">No active appointment</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if token %}
+            <span class="status-tag status-{{ token.status }}">{{ token.get_status_display }}</span>
+            {% else %}
+            <span class="status-tag status-none">—</span>
+            {% endif %}
+        </td>
+        <td class="date-cell">
+            {% if token and token.appointment_datetime %}
+                {{ token.appointment_datetime|date:"d M Y, h:i A" }}
+            {% else %}
+                —
+            {% endif %}
+        </td>
+        <td>
+            <a class="btn-edit" href="{% url 'myapp:patient_edit' patient.pk %}">Edit</a>
+            {% if active_token and active_token.appointment_datetime %}
+            <a href="#" class="btn-book" onclick="openBookingModal({{ patient.pk }}, '{{ patient.name|escapejs }}', {{ active_token.doctor.pk }}, '{{ active_token.appointment_datetime|date:'Y-m-d\TH:i' }}'); return false;">Edit Appointment</a>
+            {% else %}
+            <a href="#" class="btn-book" onclick="openBookingModal({{ patient.pk }}, '{{ patient.name|escapejs }}'); return false;">Book Appointment</a>
+            {% endif %}
+        </td>
+        {% endwith %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="10">
+          <div class="empty-state">
+            <span class="emoji">🗂️</span>
+            No patients found.
+            <p>Get started by adding your first patient.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

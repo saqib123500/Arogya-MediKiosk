@@ -1,0 +1,129 @@
+<style>
+  .profile-panel { display: flex; flex-direction: column; gap: 24px; }
+  .profile-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .profile-header-left { display: flex; align-items: center; gap: 14px; }
+  .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .profile-header h3 { margin: 0; font-size: 19px; }
+  .profile-header p { margin: 2px 0 0; color: var(--text-muted); font-size: 13px; }
+
+  .print-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; border: none;
+    background: var(--primary); color: #fff; font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .print-btn:hover { background: var(--primary-dark); }
+
+  .info-section h4 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary-dark); font-weight: 700; }
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-row { display: flex; justify-content: space-between; gap: 16px; padding: 8px 12px; background: #fafbfb; border-radius: 8px; font-size: 14px; }
+  .info-row .label { color: var(--text-muted); font-weight: 600; }
+  .info-row .value { color: var(--text); text-align: right; }
+
+  .pain-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .pain-card h5 { margin: 0 0 10px; font-size: 14px; color: var(--primary-dark); text-transform: capitalize; }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #fafbfb; border-radius: 8px; font-size: 13px; }
+
+  @media print {
+    .print-btn, #tokens-modal-close { display: none !important; }
+    .profile-panel { gap: 16px; }
+  }
+</style>
+
+<div class="profile-panel" id="printable-profile">
+
+  <div class="profile-header">
+    <div class="profile-header-left">
+      <div class="profile-avatar">{{ patient.name|slice:":1"|upper }}</div>
+      <div>
+        <h3>{{ patient.name }}</h3>
+        <p>{{ patient.age }} yrs · {{ patient.get_gender_display }}</p>
+      </div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 Print</button>
+  </div>
+
+  <div class="info-section">
+    <h4>Basic Details</h4>
+    <div class="info-list">
+      <div class="info-row"><span class="label">Contact</span><span class="value">{{ patient.phone_number }}</span></div>
+      <div class="info-row"><span class="label">Address</span><span class="value">{{ patient.address }}</span></div>
+      <div class="info-row"><span class="label">ABHA Number</span><span class="value">{{ patient.abha_number|default:"—" }}</span></div>
+      <div class="info-row"><span class="label">Complaint</span><span class="value">{{ patient.complaint }}</span></div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h4>Dashavidha Pariksha</h4>
+    <div class="info-list">
+      <div class="info-row"><span class="label">Prakriti</span><span class="value">{{ patient.get_prakriti_display }}</span></div>
+      <div class="info-row"><span class="label">Vikriti</span><span class="value">{{ patient.get_vikriti_display }}</span></div>
+      <div class="info-row"><span class="label">Sara</span><span class="value">{{ patient.get_sara_display }}</span></div>
+      <div class="info-row"><span class="label">Samhanana</span><span class="value">{{ patient.get_samhanana_display }}</span></div>
+      <div class="info-row"><span class="label">Pramana</span><span class="value">{{ patient.get_pramana_display }}</span></div>
+      <div class="info-row"><span class="label">Satmya</span><span class="value">{{ patient.get_satmya_display }}</span></div>
+      <div class="info-row"><span class="label">Satva</span><span class="value">{{ patient.get_satva_display }}</span></div>
+      <div class="info-row"><span class="label">Ahara Shakti</span><span class="value">{{ patient.get_ahara_shakti_display }}</span></div>
+      <div class="info-row"><span class="label">Vyayama Shakti</span><span class="value">{{ patient.get_vyayama_shakti_display }}</span></div>
+      <div class="info-row"><span class="label">Vaya</span><span class="value">{{ patient.get_vaya_display }}</span></div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h4>Reported Symptoms</h4>
+    {% if symptom_record %}
+      <div class="info-list">
+        <div class="info-row"><span class="label">Symptoms</span><span class="value">{{ symptom_record.non_pain_symptoms|join:", "|default:"—" }}</span></div>
+        {% if symptom_record.fever_temperature or symptom_record.fever_duration %}
+          <div class="info-row"><span class="label">Fever</span><span class="value">{{ symptom_record.fever_temperature|default:"—" }}, {{ symptom_record.fever_duration|default:"—" }}</span></div>
+        {% endif %}
+        {% if symptom_record.other_symptoms %}
+          <div class="info-row"><span class="label">Other</span><span class="value">{{ symptom_record.other_symptoms }}</span></div>
+        {% endif %}
+      </div>
+    {% else %}
+      <p style="color:var(--text-muted); font-size:14px;">No symptoms recorded yet.</p>
+    {% endif %}
+  </div>
+
+  {% if pain_symptoms %}
+  <div class="info-section">
+    <h4>Pain History (SOCRATES)</h4>
+    {% for pain in pain_symptoms %}
+    <div class="pain-card">
+      <h5>{{ pain.location }}</h5>
+      <div class="info-list">
+        <div class="info-row"><span class="label">Site</span><span class="value">{{ pain.site|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Onset</span><span class="value">{{ pain.onset|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Character</span><span class="value">{{ pain.character|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Radiation</span><span class="value">{{ pain.radiation|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Associations</span><span class="value">{{ pain.associations|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Time Course</span><span class="value">{{ pain.time_course|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Exac./Reliev.</span><span class="value">{{ pain.exacerbating_relieving|default:"—" }}</span></div>
+        <div class="info-row"><span class="label">Severity</span><span class="value">{{ pain.severity|default:"—" }}/10</span></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="info-section">
+    <h4>Appointment History</h4>
+    <div class="history-list">
+      {% for token in tokens %}
+      <div class="history-item">
+        <span>Token #{{ token.token_number }} — Dr. {{ token.doctor.name }}</span>
+        <span>
+          <span class="status-tag status-{{ token.status }}">{{ token.get_status_display }}</span>
+          {{ token.date|date:"d M Y" }}
+        </span>
+      </div>
+      {% empty %}
+      <p style="color:var(--text-muted); font-size:14px;">No tokens for this patient yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+

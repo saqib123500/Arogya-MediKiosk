@@ -1,0 +1,12 @@
+$kind: http-request
+name: http://localhost:9000/api/register
+description: ""
+url: http://localhost:9000/api/register
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "abhaId": "12-3456-7890-1234"
+    }
+order: 4221544109703355
