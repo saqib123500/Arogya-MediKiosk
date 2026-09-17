@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from myapp.models import Patient, Doctor, Token, Prescription, PrescriptionItem
+from myapp.models import Patient, Doctor, Token, Prescription, PrescriptionItem, PatientHistory
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -140,9 +140,14 @@ def patient_visit_history_ajax(request, patient_id):
         .prefetch_related("prescription__items")
         .order_by("-created_at")
     )
+
+    history = PatientHistory.objects.filter(
+        patient=patient
+    ).order_by("-visit_date")
  
     return render(request, "myapp/_patient_visit_history_modal.html", {
         "patient": patient,
         "tokens": tokens,
+        "history": history,
     })
  

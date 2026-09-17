@@ -124,6 +124,51 @@
       {% endfor %}
     </div>
   </div>
+  <div class="info-section">
+    <h4>Patient History</h4>
 
+    <div class="history-list">
+      {% for record in history %}
+
+      <div class="pain-card">
+        <strong>{{ record.visit_date|date:"d M Y, h:i A" }}</strong>
+
+        <div class="info-list" style="margin-top:10px;">
+
+          <div class="info-row">
+            <span class="label">Chief Complaint</span>
+            <span class="value">{{ record.complaint|default:"—" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Symptoms</span>
+            <span class="value">{{ record.symptoms|join:", "|default:"—" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Other Symptoms</span>
+            <span class="value">{{ record.other_symptoms|default:"—" }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Fever</span>
+            <span class="value">
+              {{ record.fever_temperature|default:"—" }},
+              {{ record.fever_duration|default:"—" }}
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      {% empty %}
+
+      <p style="color:var(--text-muted); font-size:14px;">
+        No patient history recorded yet.
+      </p>
+
+      {% endfor %}
+    </div>
+  </div>
 </div>
 

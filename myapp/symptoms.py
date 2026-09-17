@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from myapp.models import Patient, Symptom, PainSymptom
+from myapp.models import Patient, Symptom, PainSymptom, PatientHistory
 
 
 def symptoms_form(request, patient_id):
@@ -66,6 +66,15 @@ def save_symptoms(request, patient_id):
             exacerbating_relieving=socrates.get("E", ""),
             severity=socrates.get("S2", ""),
         )
+
+    PatientHistory.objects.create(
+        patient=patient,
+        complaint=patient.complaint,
+        symptoms=data.get("non_pain_symptoms", []),
+        other_symptoms=data.get("other_symptoms", ""),
+        fever_temperature=data.get("fever_temperature", ""),
+        fever_duration=data.get("fever_duration", ""),
+    )    
 
     current_token = patient.tokens.order_by('-created_at').first()
 

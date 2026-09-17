@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from myapp.models import Patient, Token, Doctor
+from myapp.models import Patient, Token, Doctor, PatientHistory
 from myapp.forms import PatientForm
 from myapp.utils import assign_doctor, generate_token
 from django.contrib.auth.decorators import login_required
@@ -189,11 +189,13 @@ def patient_tokens_ajax(request, patient_id):
     tokens = Token.objects.filter(patient=patient).select_related("doctor").order_by("-created_at")
     symptom_record = getattr(patient, "symptom_record", None)
     pain_symptoms = symptom_record.pain_symptoms.all() if symptom_record else []
+    history = PatientHistory.objects.filter(patient=patient).order_by("-visit_date")
     return render(request, "myapp/_patient_tokens_modal.html", {
         "patient": patient,
         "tokens": tokens,
         "symptom_record": symptom_record,
         "pain_symptoms": pain_symptoms,
+        "history": history,
     })
     
 

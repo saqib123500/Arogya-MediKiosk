@@ -270,3 +270,20 @@ class PainSymptom(models.Model):
 
     def __str__(self):
         return f"{self.location} — {self.symptom_record.patient.name}"
+
+        
+class PatientHistory(models.Model):
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        related_name="history"
+    )
+    complaint = models.TextField(blank=True)
+    symptoms = models.JSONField(default=list, blank=True)
+    other_symptoms = models.TextField(blank=True)
+    fever_temperature = models.CharField(max_length=50, blank=True)
+    fever_duration = models.CharField(max_length=50, blank=True)
+    visit_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"History — {self.patient.name} — {self.visit_date:%d %b %Y}"
