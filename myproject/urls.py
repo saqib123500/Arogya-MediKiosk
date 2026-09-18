@@ -17,14 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from myapp.landing import landing, DoctorLoginView
+from myapp.landing import landing, DoctorLoginView, StaffLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', landing, name='project_index'),
     path("myapp/", include("myapp.urls")),
     path("login/", DoctorLoginView.as_view(), name="login"),
+    path("staff/login/", StaffLoginView.as_view(), name="staff_login"),
     path("logout/", auth_views.LogoutView.as_view(next_page='project_index'), name="logout"),
 ]
-
 

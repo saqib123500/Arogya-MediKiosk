@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Patient Verification</title>
+<title>Patient Login</title>
 
 <style>
   :root {
@@ -178,64 +178,6 @@
     line-height: 1.5;
   }
 
-  .steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 28px;
-  }
-
-  .step {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    font-size: 11px;
-    color: var(--muted);
-
-    transition: 0.3s ease;
-  }
-
-  .step-number {
-    width: 26px;
-    height: 26px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid var(--line);
-
-    background: #fff;
-
-    font-size: 11px;
-    font-weight: 600;
-
-    transition: 0.3s ease;
-  }
-
-  .step.active {
-    color: var(--accent-dark);
-  }
-
-  .step.active .step-number {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .step-line {
-    width: 55px;
-    height: 1px;
-
-    margin: 0 10px;
-
-    background: var(--line);
-  }
-
   .field {
     margin-bottom: 20px;
   }
@@ -297,14 +239,21 @@
     color: #a1a1a1;
   }
 
-  .hint {
-    display: block;
-
+  .field-meta {
+    display: flex;
+    justify-content: flex-end;
     margin-top: 7px;
+  }
 
-    color: #8a8a8a;
+  .field-meta a {
+    color: var(--accent-dark);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+  }
 
-    font-size: 10.5px;
+  .field-meta a:hover {
+    text-decoration: underline;
   }
 
   .primary-button {
@@ -386,146 +335,11 @@
     letter-spacing: 1px;
   }
 
-  .otp-section {
-    display: none;
-
-    padding-top: 23px;
-
-    margin-top: 22px;
-
-    border-top: 1px solid #eeeeee;
-
-    animation: otpAppear 0.4s ease;
-  }
-
-  .otp-section.active {
-    display: block;
-  }
-
-  .otp-header {
-    text-align: center;
-
-    margin-bottom: 18px;
-  }
-
-  .otp-header h3 {
-    margin: 0 0 5px;
-
-    font-family:
-      Georgia,
-      "Times New Roman",
-      serif;
-
-    font-size: 18px;
-    font-weight: 500;
-  }
-
-  .otp-header p {
-    margin: 0;
-
-    color: var(--muted);
-
-    font-size: 11px;
-
-    line-height: 1.5;
-  }
-
-  .otp-input {
-    text-align: center;
-
-    letter-spacing: 9px;
-
-    font-size: 20px;
-
-    font-weight: 600;
-
-    padding-left: 18px;
-
-    background: #fafafa;
-  }
-
-  .otp-input::placeholder {
-    letter-spacing: 7px;
-  }
-
-  .otp-message {
-    display: none;
-
-    margin-bottom: 18px;
-
-    padding: 11px 13px;
-
-    border-radius: 7px;
-
-    border: 1px solid #d8e0d2;
-
-    background: var(--accent-light);
-
-    color: var(--accent-dark);
-
-    font-size: 11px;
-
-    line-height: 1.4;
-
-    text-align: center;
-  }
-
-  .otp-message.show {
-    display: block;
-  }
-
-  .timer {
-    margin-top: 13px;
-
-    text-align: center;
-
-    color: #888;
-
-    font-size: 10.5px;
-  }
-
-  .timer strong {
-    color: var(--danger);
-
-    font-weight: 600;
-  }
-
-  .resend {
-    margin-top: 13px;
-
-    text-align: center;
-  }
-
-  .resend button {
-    padding: 0;
-
-    border: none;
-
-    background: transparent;
-
-    color: var(--danger);
-
-    font-family: inherit;
-
-    font-size: 11px;
-
-    text-decoration: underline;
-
-    cursor: pointer;
-  }
-
-  .resend button:disabled {
-    color: #aaa;
-
-    cursor: not-allowed;
-
-    text-decoration: none;
-  }
-
   .status {
     min-height: 18px;
 
-    margin-top: 13px;
+    margin-top: 4px;
+    margin-bottom: 16px;
 
     text-align: center;
 
@@ -536,19 +350,23 @@
 
   .status.error {
     color: var(--danger);
+
+    padding: 11px 13px;
+
+    border-radius: 7px;
+
+    border: 1px solid #e6cfc7;
+
+    background: #fbf1ee;
   }
 
-  .status.success {
-    color: var(--accent-dark);
-  }
-
-  .no-abha {
+  .no-account {
     text-align: center;
 
     margin-top: 21px;
   }
 
-  .no-abha p {
+  .no-account p {
     margin: 0 0 8px;
 
     color: #8a8a8a;
@@ -556,7 +374,7 @@
     font-size: 10.5px;
   }
 
-  .no-abha a {
+  .no-account a {
     color: var(--accent-dark);
 
     font-size: 11.5px;
@@ -568,7 +386,7 @@
     transition: 0.2s ease;
   }
 
-  .no-abha a:hover {
+  .no-account a:hover {
     text-decoration: underline;
   }
 
@@ -618,20 +436,6 @@
 
   }
 
-  @keyframes otpAppear {
-
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-  }
-
   @media (max-width: 500px) {
 
     body {
@@ -649,11 +453,6 @@
     .card {
       padding: 26px 21px;
       border-radius: 13px;
-    }
-
-    .step-line {
-      width: 40px;
-      margin: 0 7px;
     }
 
   }
@@ -677,10 +476,10 @@
       ✚
     </div>
 
-    <h1>Patient Verification</h1>
+    <h1>Patient Login</h1>
 
     <p>
-      Securely verify your identity to continue
+      Sign in to view your records and continue your care
     </p>
 
   </div>
@@ -704,250 +503,94 @@
       <div class="card-header">
 
         <h2>
-          Welcome
+          Welcome back
         </h2>
 
         <p>
-          Enter your ABHA ID to securely access
-          your patient information.
+          Enter your username and password to
+          access your patient dashboard.
         </p>
 
       </div>
 
 
       <!-- =====================================================
-           STEPS
+           ERROR
            ===================================================== -->
 
-      <div class="steps">
+      {% if error %}
 
-        <div
-          class="step {% if not otp_sent %}active{% endif %}"
-          id="stepOne"
-        >
-
-          <span class="step-number">
-            1
-          </span>
-
-          <span>
-            ABHA ID
-          </span>
-
-        </div>
-
-
-        <div class="step-line"></div>
-
-
-        <div
-          class="step {% if otp_sent %}active{% endif %}"
-          id="stepTwo"
-        >
-
-          <span class="step-number">
-            2
-          </span>
-
-          <span>
-            OTP
-          </span>
-
-        </div>
-
+      <div class="status error">
+        {{ error }}
       </div>
+
+      {% endif %}
 
 
       <!-- =====================================================
-           ABHA ID
+           USERNAME
            ===================================================== -->
 
       <div class="field">
 
-        <label for="abha">
-          ABHA ID
+        <label for="username">
+          Username
         </label>
 
         <div class="input-wrapper">
 
           <input
             type="text"
-            id="abha"
-            name="abha"
-            value="{{ abha|default:'' }}"
-            placeholder="Enter your ABHA ID"
-            maxlength="17"
-            autocomplete="off"
+            id="username"
+            name="username"
+            value="{{ username|default:'' }}"
+            placeholder="Enter your username"
+            autocomplete="username"
             required
           >
 
         </div>
 
-        <span class="hint">
-          Example: 12-3456-7890-1234
-        </span>
+      </div>
+
+
+      <!-- =====================================================
+           PASSWORD
+           ===================================================== -->
+
+      <div class="field">
+
+        <label for="password">
+          Password
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          >
+
+        </div>
 
       </div>
 
 
       <!-- =====================================================
-           SEND OTP
+           LOGIN BUTTON
            ===================================================== -->
-          <button
+
+      <button
         type="submit"
         class="primary-button"
-        id="sendOtpButton"
-        name="action"
-        value="send_otp"
+        id="loginButton"
       >
-        Send OTP
+        Log In
       </button>
-            
-
-      <!-- =====================================================
-           OTP SECTION
-           ===================================================== -->
-
-      <section
-        class="otp-section{% if otp_sent or error %} active{% endif %}"
-        id="otpSection"
-      >
-
-        <div class="otp-header">
-
-          <h3>
-            Verify OTP
-          </h3>
-
-          <p>
-            Enter the 6-digit OTP sent to your
-            registered mobile number.
-          </p>
-
-        </div>
-
-
-        <!-- OTP SUCCESS MESSAGE -->
-
-        {% if otp_sent %}
-
-        <div
-          class="otp-message show"
-          id="otpMessage"
-        >
-          ✓ OTP generated successfully.
-          Please enter the OTP sent to your
-          registered mobile number.
-        </div>
-
-        {% endif %}
-
-
-        <!-- =================================================
-             OTP ERROR
-             ================================================= -->
-
-        {% if error %}
-
-        <div
-          class="status error"
-          style="margin-bottom: 18px;"
-        >
-          {{ error }}
-        </div>
-
-        {% endif %}
-
-
-        <!-- =================================================
-             OTP INPUT
-             ================================================= -->
-
-        <div class="field">
-
-          <label for="otp">
-            One-Time Password
-          </label>
-
-          <input
-            type="text"
-            id="otp"
-            name="otp"
-            class="otp-input"
-            placeholder="••••••"
-            maxlength="6"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-          >
-
-        </div>
-
-
-        <!-- =================================================
-             VERIFY BUTTON
-             ================================================= -->
-
-        <button
-          type="submit"
-          class="primary-button"
-          id="verifyButton"
-          name="action"
-          value="verify_otp"
-        >
-          Verify & Continue
-        </button>
-
-
-        <!-- =================================================
-             TIMER
-             ================================================= -->
-
-        <div
-          class="timer"
-          id="timer"
-        >
-
-          OTP expires in
-
-          <strong id="countdown">
-            02:00
-          </strong>
-
-        </div>
-
-
-        <!-- =================================================
-             RESEND
-             ================================================= -->
-
-        <div class="resend">
-
-          <button
-            type="submit"
-            name="action"
-            value="send_otp"
-            id="resendButton"
-          >
-            Resend OTP
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <!-- =====================================================
-           STATUS
-           ===================================================== -->
-
-      {% if not error and not otp_sent %}
-
-      <div
-        class="status"
-        id="status"
-      ></div>
-
-      {% endif %}
 
 
       <!-- =====================================================
@@ -964,19 +607,23 @@
 
 
       <!-- =====================================================
-           NO ABHA
+           NO ACCOUNT
            ===================================================== -->
 
-      <div class="no-abha">
+      <div class="no-account">
 
         <p>
-          Don't have an ABHA ID?
+          Don't have an account?
         </p>
 
         <a href="{% url 'myapp:patient_registration' %}">
-          Continue without ABHA ID →
+          Create a new account →
         </a>
 
+      </div>
+
+      <div class="no-account">
+        <a href="{% url 'project_index' %}">← Back to Arogya Medi Kiosk</a>
       </div>
 
     </form>
@@ -995,7 +642,7 @@
     </span>
 
     Your information is handled securely.
-    Never share your OTP with anyone.
+    Never share your password with anyone.
 
   </div>
 
@@ -1004,193 +651,6 @@
 
 <script>
 
-  /*
-  ============================================================
-  DJANGO OTP VERIFICATION
-  ============================================================
-
-  The OTP is now verified by Django.
-
-  The browser DOES NOT decide whether
-  the OTP is correct.
-
-  Flow:
-
-      ABHA
-        ↓
-      Django
-        ↓
-      OTP
-        ↓
-      Django verifies OTP
-        ↓
-      Correct → Patient Form
-      Wrong   → "Wrong OTP"
-
-  ============================================================
-  */
-
-
-  /* ============================================================
-     OTP — ONLY NUMBERS
-     ============================================================ */
-
-  const otpInput =
-    document.getElementById("otp");
-
-  if (otpInput) {
-
-    otpInput.addEventListener(
-      "input",
-      function () {
-
-        this.value =
-          this.value
-            .replace(/\D/g, "")
-            .slice(0, 6);
-
-      }
-    );
-
-  }
-
-
-  /* ============================================================
-     ABHA INPUT FORMATTING
-     ============================================================ */
-
-  const abhaInput =
-    document.getElementById("abha");
-
-  if (abhaInput) {
-
-    abhaInput.addEventListener(
-      "input",
-      function () {
-
-        let value =
-          this.value
-            .replace(/\D/g, "")
-            .slice(0, 14);
-
-
-        /*
-          Format:
-
-          12-3456-7890-1234
-        */
-
-        if (value.length > 2) {
-
-          value =
-            value.slice(0, 2) +
-            "-" +
-            value.slice(2);
-
-        }
-
-        if (value.length > 7) {
-
-          value =
-            value.slice(0, 7) +
-            "-" +
-            value.slice(7);
-
-        }
-
-        if (value.length > 12) {
-
-          value =
-            value.slice(0, 12) +
-            "-" +
-            value.slice(12);
-
-        }
-
-
-        this.value = value;
-
-      }
-    );
-
-  }
-
-
-  /* ============================================================
-     OTP COUNTDOWN
-     ============================================================ */
-
-  let remainingSeconds = 120;
-
-  const countdown =
-    document.getElementById("countdown");
-
-  const otpSent =
-    {% if otp_sent %}true{% else %}false{% endif %};
-
-
-  function updateCountdown() {
-
-    if (!countdown) {
-      return;
-    }
-
-    const minutes =
-      Math.floor(
-        remainingSeconds / 60
-      );
-
-    const seconds =
-      remainingSeconds % 60;
-
-
-    countdown.textContent =
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(seconds).padStart(2, "0");
-
-  }
-
-
-  function startCountdown() {
-
-    if (!countdown) {
-      return;
-    }
-
-
-    remainingSeconds = 120;
-
-    updateCountdown();
-
-
-    const interval =
-      setInterval(() => {
-
-        remainingSeconds--;
-
-        updateCountdown();
-
-
-        if (remainingSeconds <= 0) {
-
-          clearInterval(interval);
-
-          countdown.textContent =
-            "Expired";
-
-        }
-
-      }, 1000);
-
-  }
-
-
-  if (otpSent) {
-
-    startCountdown();
-
-  }
   /* ============================================================
      SMOOTH FADE ON SUBMIT (masks the page reload)
      ============================================================ */
@@ -1200,6 +660,7 @@
     .addEventListener("submit", function () {
       document.body.classList.add("leaving");
     });
+
 </script>
 
 </body>

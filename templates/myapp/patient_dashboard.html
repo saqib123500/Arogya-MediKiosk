@@ -1,0 +1,1323 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Patient Dashboard | Clinic Management System{% endblock %}
+
+{% block extra_style %}
+
+.dashboard-header {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #235e50;
+}
+
+.dashboard-header p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.print-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.print-btn:hover {
+  background: var(--primary-dark);
+}
+
+.print-btn::before {
+  content: "🖨️";
+}
+
+.patient-info {
+  background: #e6f2ef;
+  border: 1px solid #cce5df;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 25px;
+}
+
+.patient-info strong {
+  color: #235e50;
+}
+
+.patient-details {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* Sections */
+
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.section-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: #f9fafb;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--primary-dark);
+}
+
+.section-content {
+  padding: 20px;
+}
+
+/* Dashavidha */
+
+.dashavidha-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.dashavidha-item {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.dashavidha-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.dashavidha-value {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Symptoms */
+
+.symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.symptom-tag {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.no-symptoms {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Tables */
+
+.tokens-table,
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tokens-table th,
+.tokens-table td,
+.history-table th,
+.history-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.tokens-table th,
+.history-table th {
+  background: #f9fafb;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tokens-table tr:last-child td,
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.token-number {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-waiting {
+  background: #fef3e2;
+  color: #b45309;
+}
+
+.status-active {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status-completed {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------
+   EDIT PATIENT BUTTON
+--------------------------------------------------------- */
+
+.edit-patient-btn {
+  display: inline-block;
+  margin-bottom: 24px;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.edit-patient-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* ---------------------------------------------------------
+   MEDICAL DOCUMENT BUTTON
+--------------------------------------------------------- */
+
+.medical-document-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #235e50;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.medical-document-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   MEDICAL DOCUMENT MODAL
+--------------------------------------------------------- */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.medical-modal {
+  width: 100%;
+  max-width: 850px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+/* Modal Header */
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #235e50;
+  font-size: 21px;
+}
+
+.modal-close {
+  border: none;
+  background: #f3f4f6;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  color: #374151;
+}
+
+.modal-close:hover {
+  background: #e5e7eb;
+}
+
+/* Modal Body */
+
+.modal-body {
+  padding: 22px;
+}
+
+.document-meta {
+  background: #f0f7f5;
+  border: 1px solid #d6e9e4;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.document-meta p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.document-meta strong {
+  color: #235e50;
+}
+
+/* Information Grid */
+
+.medical-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.medical-info-card {
+  border: 1px solid #e1e5e3;
+  border-radius: 10px;
+  padding: 15px;
+  background: #fafbfb;
+}
+
+.medical-info-card h3 {
+  margin: 0 0 10px;
+  color: #235e50;
+  font-size: 15px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.medical-info-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.medical-info-card li {
+  margin-bottom: 6px;
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+.medical-info-value {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.no-medical-data {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Modal Footer */
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.modal-print-btn {
+  background: #235e50;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-print-btn:hover {
+  background: #1b4b40;
+}
+
+.modal-cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Loading */
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+
+  .dashavidha-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .medical-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tokens-table,
+  .history-table {
+    font-size: 13px;
+  }
+
+  .tokens-table th,
+  .tokens-table td,
+  .history-table th,
+  .history-table td {
+    padding: 10px 12px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+}
+
+/* ---------------------------------------------------------
+   PRINT MEDICAL POPUP
+--------------------------------------------------------- */
+
+@media print {
+
+  body * {
+    visibility: hidden;
+  }
+
+  #medicalModal,
+  #medicalModal * {
+    visibility: visible;
+  }
+
+  #medicalModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+  }
+
+  .modal-header {
+    position: static;
+  }
+
+  .modal-footer,
+  .modal-close {
+    display: none !important;
+  }
+
+  .medical-modal {
+    max-height: none;
+    overflow: visible;
+    box-shadow: none;
+  }
+
+}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-wrap">
+
+  <!-- Dashboard Header -->
+
+  <div class="dashboard-header">
+
+    <div>
+
+      <h1>
+        Patient Dashboard
+      </h1>
+
+      <p>
+        Welcome back, {{ patient.name }}
+      </p>
+
+    </div>
+
+    <button
+      class="print-btn"
+      onclick="window.print()"
+    >
+      Print Dashboard
+    </button>
+
+  </div>
+
+
+  <!-- Patient Information -->
+
+  <div class="patient-info">
+
+    <strong>
+      {{ patient.name }}
+    </strong>
+
+    <div class="patient-details">
+
+      {{ patient.phone_number }}
+
+      |
+
+      {% if patient.age %}
+        {{ patient.age }} years old
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+  <!-- Dashavidha Pariksha -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <h2>
+        Dashavidha Pariksha (Ten-fold Examination)
+      </h2>
+
+    </div>
+
+    <div class="section-content">
+
+      <div class="dashavidha-grid">
+
+        {% for label, value in dashavidha %}
+
+        <div class="dashavidha-item">
+
+          <div class="dashavidha-label">
+            {{ label }}
+          </div>
+
+          <div class="dashavidha-value">
+            {{ value|default:"Not assessed" }}
+          </div>
+
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Symptoms -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <h2>
+        Reported Symptoms
+      </h2>
+
+    </div>
+
+    <div class="section-content">
+
+      {% if selected_symptoms %}
+
+      <div class="symptoms-list">
+
+        {% for symptom in selected_symptoms %}
+
+        <span class="symptom-tag">
+          {{ symptom }}
+        </span>
+
+        {% endfor %}
+
+      </div>
+
+      {% else %}
+
+      <p class="no-symptoms">
+        No symptoms reported yet.
+      </p>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+  <!-- Consultation Tokens -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <h2>
+        Consultation Tokens
+      </h2>
+
+    </div>
+
+    <div class="section-content">
+
+      {% if tokens %}
+
+      <table class="tokens-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Token #
+            </th>
+
+            <th>
+              Doctor
+            </th>
+
+            <th>
+              Date
+            </th>
+
+            <th>
+              Time
+            </th>
+
+            <th>
+              Status
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {% for token in tokens %}
+
+          <tr>
+
+            <td class="token-number">
+              #{{ token.token_number }}
+            </td>
+
+            <td>
+              Dr. {{ token.doctor.name }}
+            </td>
+
+            <td>
+              {{ token.created_at|date:"d M Y" }}
+            </td>
+
+            <td>
+              {{ token.created_at|date:"h:i A" }}
+            </td>
+
+            <td>
+
+              <span class="status-badge status-{{ token.status }}">
+
+                {{ token.get_status_display }}
+
+              </span>
+
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+      {% else %}
+
+      <div class="empty-state">
+        No consultation tokens yet.
+      </div>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+  <!-- Visit History -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <h2>
+        Visit History
+      </h2>
+
+    </div>
+
+    <div class="section-content">
+
+      {% if history %}
+
+      <table class="history-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Date
+            </th>
+
+            <th>
+              Doctor
+            </th>
+
+            <th>
+              Diagnosis
+            </th>
+
+            <th>
+              Prescription
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {% for visit in history %}
+
+          <tr>
+
+            <td>
+              {{ visit.visit_date|date:"d M Y" }}
+            </td>
+
+            <td>
+              Dr. {{ visit.doctor.name }}
+            </td>
+
+            <td>
+              {{ visit.diagnosis|default:"-" }}
+            </td>
+
+            <td>
+              {{ visit.prescription|default:"-" }}
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+      {% else %}
+
+      <div class="empty-state">
+        No visit history recorded yet.
+      </div>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+  <!-- Edit Patient Information -->
+
+  <a
+    href="{% url 'myapp:patient_form' %}"
+    class="edit-patient-btn"
+  >
+    Edit Patient Information
+  </a>
+
+
+  <!-- =====================================================
+       MEDICAL DOCUMENTS
+  ====================================================== -->
+
+  <div class="section">
+
+    <div class="section-header">
+
+      <h2>
+        Medical Documents
+      </h2>
+
+    </div>
+
+    <div class="section-content">
+
+      {% if medical_documents %}
+
+      <table class="history-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Document
+            </th>
+
+            <th>
+              Uploaded Date
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {% for doc in medical_documents %}
+
+          <tr>
+
+            <td>
+
+              <button
+                type="button"
+                class="medical-document-btn"
+                onclick="openMedicalDocument({{ doc.id }})"
+              >
+                {{ doc.document_type|default:"Medical Document" }}
+              </button>
+
+            </td>
+
+            <td>
+
+              {{ doc.uploaded_at|date:"d M Y, h:i A" }}
+
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+      {% else %}
+
+      <div class="empty-state">
+        No medical documents uploaded yet.
+      </div>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     MEDICAL DOCUMENT MODAL
+========================================================== -->
+
+<div
+  id="medicalModal"
+  class="modal-overlay"
+  onclick="closeMedicalDocument(event)"
+>
+
+  <div
+    class="medical-modal"
+    onclick="event.stopPropagation()"
+  >
+
+    <!-- Modal Header -->
+
+    <div class="modal-header">
+
+      <h2>
+        Significant Medical Information
+      </h2>
+
+      <button
+        type="button"
+        class="modal-close"
+        onclick="closeMedicalDocument()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- Modal Body -->
+
+    <div
+      id="medicalModalBody"
+      class="modal-body"
+    >
+
+      <div class="loading">
+        Loading medical information...
+      </div>
+
+    </div>
+
+
+    <!-- Modal Footer -->
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="modal-cancel-btn"
+        onclick="closeMedicalDocument()"
+      >
+        Close
+      </button>
+
+      <button
+        type="button"
+        class="modal-print-btn"
+        onclick="printMedicalDocument()"
+      >
+        Print Medical Information
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+function openMedicalDocument(documentId) {
+
+  const modal = document.getElementById(
+    "medicalModal"
+  );
+
+  const body = document.getElementById(
+    "medicalModalBody"
+  );
+
+  modal.classList.add("show");
+
+  body.innerHTML = `
+    <div class="loading">
+      Loading medical information...
+    </div>
+  `;
+
+  fetch(
+    `/myapp/patients/medical-document/${documentId}/info/`
+  )
+
+    .then(response => {
+
+      if (!response.ok) {
+        throw new Error(
+          "Unable to load medical document."
+        );
+      }
+
+      return response.json();
+
+    })
+
+    .then(data => {
+
+      if (!data.success) {
+
+        body.innerHTML = `
+          <p class="no-medical-data">
+            ${data.error || "No information available."}
+          </p>
+        `;
+
+        return;
+      }
+
+      renderMedicalInformation(data);
+
+    })
+
+    .catch(error => {
+
+      body.innerHTML = `
+        <p class="no-medical-data">
+          Unable to load medical information.
+        </p>
+      `;
+
+      console.error(error);
+
+    });
+
+}
+
+
+function renderMedicalInformation(data) {
+
+  const body = document.getElementById(
+    "medicalModalBody"
+  );
+
+  const structuredData =
+    data.structured_data || {};
+
+  let html = `
+
+    <div class="document-meta">
+
+      <p>
+        <strong>Document:</strong>
+        ${escapeHtml(data.document_type || "Medical Document")}
+      </p>
+
+      <p>
+        <strong>Uploaded:</strong>
+        ${escapeHtml(data.uploaded_at || "-")}
+      </p>
+
+    </div>
+
+    <div class="medical-info-grid">
+  `;
+
+
+  const labels = {
+
+    patient_information:
+      "Patient Information",
+
+    diagnosis:
+      "Diagnosis",
+
+    symptoms:
+      "Symptoms",
+
+    medications:
+      "Medications",
+
+    allergies:
+      "Allergies",
+
+    vital_signs:
+      "Vital Signs",
+
+    blood_tests:
+      "Blood Tests",
+
+    urine_tests:
+      "Urine Tests",
+
+    imaging_findings:
+      "Imaging Findings",
+
+    abnormal_findings:
+      "Abnormal Findings",
+
+    clinical_findings:
+      "Clinical Findings",
+
+    recommendations:
+      "Recommendations",
+
+    other_significant_information:
+      "Other Significant Information"
+
+  };
+
+
+  let foundInformation = false;
+
+
+  for (
+    const [key, label]
+    of Object.entries(labels)
+  ) {
+
+    const value =
+      structuredData[key];
+
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+
+      continue;
+
+    }
+
+
+    foundInformation = true;
+
+
+    html += `
+
+      <div class="medical-info-card">
+
+        <h3>
+          ${label}
+        </h3>
+
+        ${formatMedicalValue(value)}
+
+      </div>
+
+    `;
+
+  }
+
+
+  html += `
+    </div>
+  `;
+
+
+  if (!foundInformation) {
+
+    html = `
+
+      <div class="document-meta">
+
+        <p class="no-medical-data">
+          No significant medical information
+          was extracted from this document.
+        </p>
+
+      </div>
+
+    `;
+
+  }
+
+
+  body.innerHTML = html;
+
+}
+
+
+function formatMedicalValue(value) {
+
+  if (Array.isArray(value)) {
+
+    return `
+
+      <ul>
+
+        ${value.map(item => `
+
+          <li>
+            ${escapeHtml(String(item))}
+          </li>
+
+        `).join("")}
+
+      </ul>
+
+    `;
+
+  }
+
+
+  if (typeof value === "object") {
+
+    return `
+
+      <ul>
+
+        ${Object.entries(value).map(
+          ([key, val]) => `
+
+            <li>
+              <strong>
+                ${escapeHtml(key)}:
+              </strong>
+
+              ${escapeHtml(String(val))}
+            </li>
+
+          `
+        ).join("")}
+
+      </ul>
+
+    `;
+
+  }
+
+
+  return `
+
+    <div class="medical-info-value">
+
+      ${escapeHtml(String(value))}
+
+    </div>
+
+  `;
+
+}
+
+
+function escapeHtml(value) {
+
+  const div = document.createElement(
+    "div"
+  );
+
+  div.textContent = value;
+
+  return div.innerHTML;
+
+}
+
+
+function closeMedicalDocument(event) {
+
+  if (
+    event &&
+    event.target !== document.getElementById(
+      "medicalModal"
+    )
+  ) {
+    return;
+  }
+
+  document.getElementById(
+    "medicalModal"
+  ).classList.remove("show");
+
+}
+
+
+function printMedicalDocument() {
+
+  window.print();
+
+}
+
+
+document.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Escape") {
+
+      document.getElementById(
+        "medicalModal"
+      ).classList.remove("show");
+
+    }
+
+  }
+);
+
+</script>
+
+{% endblock %}
+

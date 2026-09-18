@@ -4,13 +4,14 @@ from .patient_form import *
 from .views.index import *
 from .doctor_dashboard import *
 from .symptoms import *
-
+from .views.ocr_views import medical_document_upload
 app_name = "myapp"
-
+from .views.ocr_views import medical_document_upload, medical_document_info
 urlpatterns = [
     path('home/', index, name='index'),
     path("patient-form/", patient_form, name="patient_form"),
     path("patient-registration/", patient_registration, name="patient_registration"),
+    path("symptoms/<int:patient_id>/", symptoms_form, name="symptoms"),
     path("patients", patient_list, name='patient_list'),
     path('patients/<int:pk>/edit/', patient_form, name='patient_edit'),
     path('token/<int:token_id>/', token_confirmation, name='token_confirmation'),
@@ -22,4 +23,10 @@ urlpatterns = [
     path('patients/<int:patient_id>/symptoms/', symptoms_form, name='symptoms_form'),
     path('patients/<int:patient_id>/save-symptoms/', save_symptoms, name='save_symptoms'),
     path('patients/login/', patient_login, name='patient_login'),
+    path('patients/dashboard/', patient_dashboard, name='patient_dashboard'),
+    path("patients/<int:patient_id>/medical-document/",medical_document_upload,name="medical_document_upload",),
+    path("medical-document/<int:document_id>/info/",medical_document_info,name="medical_document_info",),
+    
+    
+    
 ]

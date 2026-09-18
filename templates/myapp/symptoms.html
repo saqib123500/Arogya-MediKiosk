@@ -243,6 +243,7 @@ button:hover {
   window.PATIENT_ID = {{ patient.id }};
   window.PATIENT_LOGIN_URL = "{% url 'myapp:patient_login' %}";
   window.SAVE_SYMPTOMS_URL = "{% url 'myapp:save_symptoms' patient.id %}";
+  window.MEDICAL_DOCUMENT_URL = "{% url 'myapp:medical_document_upload' patient.id %}";
   {% if current_token %}
   window.TOKEN_CONFIRMATION_URL = "{% url 'myapp:token_confirmation' current_token.id %}";
   {% else %}
@@ -2916,7 +2917,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
                 alert("Could not save symptoms: " + (data.error || "unknown error"));
                 return;
             }
-            window.location.href = window.TOKEN_CONFIRMATION_URL;
+            window.location.href = window.MEDICAL_DOCUMENT_URL;
         })
         .catch(() => {
             alert("Network error saving symptoms.");

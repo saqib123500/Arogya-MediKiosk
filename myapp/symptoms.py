@@ -1,4 +1,5 @@
 import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -8,28 +9,52 @@ from myapp.models import Patient, Symptom, PainSymptom, PatientHistory
 
 def symptoms_form(request, patient_id):
     if (
+        request.user.is_authenticated
+        and hasattr(request.user, "patient_profile")
+        and request.user.patient_profile.id != patient_id
+    ):
+        return redirect("myapp:patient_dashboard")
+
+    if (
         not request.user.is_authenticated
         and request.session.get("patient_flow_id") != patient_id
     ):
         return redirect("myapp:patient_login")
 
     patient = get_object_or_404(Patient, pk=patient_id)
-    current_token = patient.tokens.order_by('-created_at').first()
+    current_token = patient.tokens.order_by("-created_at").first()
 
-    return render(request, 'myapp/symptoms.html', {
-        'patient': patient,
-        'current_token': current_token,
-    })
+    return render(
+        request,
+        "myapp/symptoms.html",
+        {
+            "patient": patient,
+            "current_token": current_token,
+        },
+    )
 
 
 @require_POST
 def save_symptoms(request, patient_id):
     if (
+        request.user.is_authenticated
+        and hasattr(request.user, "patient_profile")
+        and request.user.patient_profile.id != patient_id
+    ):
+        return JsonResponse(
+            {"success": False, "error": "Not authorized."},
+            status=403,
+        )
+
+    if (
         not request.user.is_authenticated
         and request.session.get("patient_flow_id") != patient_id
     ):
         return JsonResponse(
-            {"success": False, "error": "Patient session has expired."},
+            {
+                "success": False,
+                "error": "Patient session has expired.",
+            },
             status=403,
         )
 
@@ -38,7 +63,13 @@ def save_symptoms(request, patient_id):
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Invalid JSON",
+            },
+            status=400,
+        )
 
     symptom_record, _ = Symptom.objects.update_or_create(
         patient=patient,
@@ -48,7 +79,7 @@ def save_symptoms(request, patient_id):
             "fever_duration": data.get("fever_duration", ""),
             "other_symptoms": data.get("other_symptoms", ""),
             "language": data.get("language", ""),
-        }
+        },
     )
 
     symptom_record.pain_symptoms.all().delete()
@@ -74,11 +105,14 @@ def save_symptoms(request, patient_id):
         other_symptoms=data.get("other_symptoms", ""),
         fever_temperature=data.get("fever_temperature", ""),
         fever_duration=data.get("fever_duration", ""),
-    )    
+    )
 
-    current_token = patient.tokens.order_by('-created_at').first()
+    current_token = patient.tokens.order_by("-created_at").first()
 
-    return JsonResponse({
-        "success": True,
-        "token_id": current_token.id if current_token else None,
-    })
+    return JsonResponse(
+        {
+            "success": True,
+            "token_id": current_token.id if current_token else None,
+        }
+    )
+    

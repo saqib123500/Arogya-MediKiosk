@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Medical Document Results</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f8;
+            color: #263238;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        /* -------------------------------------------------
+           HEADER
+        ------------------------------------------------- */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #245c50;
+            font-size: 30px;
+        }
+
+        .patient-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #dfe5e3;
+        }
+
+        .patient-card strong {
+            color: #245c50;
+        }
+
+        /* -------------------------------------------------
+           SIGNIFICANT INFORMATION
+        ------------------------------------------------- */
+
+        .section-title {
+            font-size: 22px;
+            color: #245c50;
+            margin: 25px 0 12px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .info-card {
+            background: white;
+            border: 1px solid #dfe5e3;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .info-card h3 {
+            margin: 0 0 12px;
+            font-size: 17px;
+            color: #245c50;
+            border-bottom: 1px solid #e8eceb;
+            padding-bottom: 8px;
+        }
+
+        .info-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .info-card li {
+            margin-bottom: 7px;
+            line-height: 1.4;
+        }
+
+        .empty {
+            color: #777;
+            font-style: italic;
+        }
+
+        /* -------------------------------------------------
+           FULL OCR
+        ------------------------------------------------- */
+
+        .ocr-container {
+            background: white;
+            border: 1px solid #dfe5e3;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .ocr-text {
+            background: #f7f8f8;
+            border: 1px solid #e1e4e3;
+            border-radius: 8px;
+            padding: 15px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            max-height: 450px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        /* -------------------------------------------------
+           BUTTONS
+        ------------------------------------------------- */
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .button {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+            background: #245c50;
+            color: white;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        /* -------------------------------------------------
+           MOBILE
+        ------------------------------------------------- */
+
+        @media (max-width: 700px) {
+
+            .container {
+                margin: 10px auto;
+                padding: 12px;
+            }
+
+            .header {
+                display: block;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        /* -------------------------------------------------
+           PRINT
+        ------------------------------------------------- */
+
+        @media print {
+
+            body {
+                background: white;
+            }
+
+            .buttons {
+                display: none;
+            }
+
+            .ocr-text {
+                max-height: none;
+                overflow: visible;
+            }
+
+            .container {
+                max-width: 100%;
+                margin: 0;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- ================================================
+         HEADER
+    ================================================= -->
+
+    <div class="header">
+
+        <h1>
+            Medical Document Results
+        </h1>
+
+    </div>
+
+
+    <!-- ================================================
+         PATIENT
+    ================================================= -->
+
+    <div class="patient-card">
+
+        <strong>Patient:</strong>
+
+        {{ patient.name }}
+
+    </div>
+
+
+    <!-- ================================================
+         SIGNIFICANT INFORMATION
+    ================================================= -->
+
+    <h2 class="section-title">
+        Significant Medical Information
+    </h2>
+
+
+    <div class="info-grid">
+
+
+        <!-- DIAGNOSIS -->
+
+        {% if structured_data.diagnosis %}
+
+        <div class="info-card">
+
+            <h3>Diagnosis</h3>
+
+            <ul>
+
+                {% for item in structured_data.diagnosis %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- SYMPTOMS -->
+
+        {% if structured_data.symptoms %}
+
+        <div class="info-card">
+
+            <h3>Symptoms</h3>
+
+            <ul>
+
+                {% for item in structured_data.symptoms %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- MEDICATIONS -->
+
+        {% if structured_data.medications %}
+
+        <div class="info-card">
+
+            <h3>Medications</h3>
+
+            <ul>
+
+                {% for item in structured_data.medications %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ALLERGIES -->
+
+        {% if structured_data.allergies %}
+
+        <div class="info-card">
+
+            <h3>Allergies</h3>
+
+            <ul>
+
+                {% for item in structured_data.allergies %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- VITAL SIGNS -->
+
+        {% if structured_data.vital_signs %}
+
+        <div class="info-card">
+
+            <h3>Vital Signs</h3>
+
+            <ul>
+
+                {% for item in structured_data.vital_signs %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- BLOOD TESTS -->
+
+        {% if structured_data.blood_tests %}
+
+        <div class="info-card">
+
+            <h3>Blood Tests</h3>
+
+            <ul>
+
+                {% for item in structured_data.blood_tests %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- IMAGING -->
+
+        {% if structured_data.imaging_findings %}
+
+        <div class="info-card">
+
+            <h3>Imaging Findings</h3>
+
+            <ul>
+
+                {% for item in structured_data.imaging_findings %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ABNORMAL FINDINGS -->
+
+        {% if structured_data.abnormal_findings %}
+
+        <div class="info-card">
+
+            <h3>Abnormal Findings</h3>
+
+            <ul>
+
+                {% for item in structured_data.abnormal_findings %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- OTHER INFORMATION -->
+
+        {% if structured_data.other_significant_information %}
+
+        <div class="info-card">
+
+            <h3>Other Significant Information</h3>
+
+            <ul>
+
+                {% for item in structured_data.other_significant_information %}
+
+                <li>
+                    {{ item }}
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <!-- ================================================
+         NO INFORMATION
+    ================================================= -->
+
+    {% if not structured_data.diagnosis and not structured_data.symptoms and not structured_data.medications and not structured_data.allergies and not structured_data.vital_signs and not structured_data.blood_tests and not structured_data.imaging_findings and not structured_data.abnormal_findings and not structured_data.other_significant_information %}
+
+        <div class="info-card">
+
+            <p class="empty">
+                No significant medical information was extracted.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ================================================
+         COMPLETE OCR
+    ================================================= -->
+
+    <h2 class="section-title">
+        Complete Extracted Report
+    </h2>
+
+    <div class="ocr-container">
+
+        <div class="ocr-text">{{ ocr_text }}</div>
+
+    </div>
+
+
+    <!-- ================================================
+         BUTTONS
+    ================================================= -->
+
+    <div class="buttons">
+
+        <button
+            class="button"
+            onclick="window.print()"
+        >
+            Print
+        </button>
+
+
+        <a
+            href="{% url 'myapp:patient_dashboard' %}"
+            class="button"
+        >
+            Patient Dashboard
+        </a>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

@@ -234,6 +234,26 @@
 >
 {{ form.phone_number.errors }}
 
+  <h2>Patient Portal Account</h2>
+
+  <label for="id_username">Username {% if public_registration %}<span class="required">*</span>{% endif %}</label>
+  <input type="text" id="id_username" name="username" value="{% if patient.user %}{{ patient.user.username }}{% else %}{{ form.username.value|default:'' }}{% endif %}" autocomplete="username" {% if public_registration %}required{% endif %}>
+  {{ form.username.errors }}
+
+  <label for="id_password">Password {% if public_registration %}<span class="required">*</span>{% else %}(leave blank to keep current){% endif %}</label>
+  <input type="password" id="id_password" name="password" autocomplete="new-password" {% if public_registration %}required{% endif %}>
+  {{ form.password.errors }}
+  
+  {% if not public_registration %}
+  <p style="font-size: 13px; color: #6b7280; margin-top: 8px;">
+    {% if patient.user %}
+    Account exists: Username is <strong>{{ patient.user.username }}</strong>. Leave password blank to keep current password.
+    {% else %}
+    Optional: Provide username and password to create a patient portal account for login access.
+    {% endif %}
+  </p>
+  {% endif %}
+
   <label for="address">Address <span class="required">*</span></label>
   <textarea id="address" name="address" required>{{ form.address.value|default:'' }}</textarea>
   {{ form.address.errors }}
@@ -418,4 +438,13 @@
 </form>
 </div>
 </main>
+
+<script>
+  // Prevent an accidental double-click from sending the same form twice.
+  document.querySelector("main form").addEventListener("submit", function () {
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = "Saving…";
+  });
+</script>
 {% endblock %}

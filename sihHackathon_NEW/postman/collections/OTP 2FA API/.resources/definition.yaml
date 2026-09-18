@@ -1,3 +1,0 @@
-$kind: collection
-name: OTP 2FA API
-description: Collection to test the OTP-based two-factor authentication API running on localhost:9000

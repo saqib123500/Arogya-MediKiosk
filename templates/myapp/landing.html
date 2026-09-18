@@ -15,6 +15,8 @@
     --sage-light: #5C6B4F;
     --terracotta: #A1462F;
     --terracotta-deep: #8A3A26;
+    --ochre: #B08D2B;
+    --ochre-deep: #8F721F;
     --stone: #8A8272;
     --ink: #23261F;
   }
@@ -83,7 +85,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 32px;
+    padding: 48px 28px;
     text-decoration: none;
     position: relative;
     transition: filter 0.18s ease;
@@ -91,6 +93,11 @@
 
   .panel-patient {
     background: var(--terracotta);
+    color: #fff;
+  }
+
+  .panel-staff {
+    background: var(--ochre);
     color: #fff;
   }
 
@@ -134,7 +141,7 @@
   .panel p {
     margin: 0 0 28px;
     font-size: 15px;
-    max-width: 320px;
+    max-width: 300px;
     text-align: center;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.86);
@@ -144,13 +151,16 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 30px;
+    padding: 14px 28px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.95);
     font-weight: 600;
     font-size: 15px;
     color: var(--ink);
     transition: transform 0.15s ease;
+    border: none;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
   }
 
   .panel:hover .panel-cta {
@@ -158,6 +168,7 @@
   }
 
   .panel-patient .panel-cta { color: var(--terracotta-deep); }
+  .panel-staff .panel-cta { color: var(--ochre-deep); }
   .panel-doctor .panel-cta { color: var(--sage); }
 
   .divider {
@@ -175,7 +186,7 @@
     background: var(--cream);
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 900px) {
     .doorway { flex-direction: column; min-height: auto; }
     .divider { width: auto; height: 1px; }
     .panel { padding: 40px 24px; }
@@ -201,6 +212,7 @@
 
   <div class="doorway">
 
+    <!-- Patient card -->
     <a href="{% url 'myapp:patient_login' %}" class="panel panel-patient">
       <div class="panel-icon">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -208,13 +220,31 @@
         </svg>
       </div>
       <h2>Patient</h2>
-      <p>Check in with your ABHA ID and OTP to begin your visit.</p>
-      <span class="panel-cta">Continue as Patient</span>
+      <p>Check in with your username and password. </p>
+      <button type="button" class="panel-cta">Continue as Patient</button>
     </a>
 
     <div class="divider"></div>
 
-    <a href="{% url 'login' %}" class="panel panel-doctor"></a>
+    <!-- Staff card -->
+    <a href="{% url 'staff_login' %}" class="panel panel-staff">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 20V18C4 15.8 5.8 14 8 14H12C14.2 14 16 15.8 16 18V20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="10" cy="8" r="4" stroke="#fff" stroke-width="2"/>
+          <path d="M17 14C19.2 14 21 15.8 21 18V20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 4.3C16.2 4.7 17 5.8 17 7C17 8.2 16.2 9.3 15 9.7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Staff</h2>
+      <p>Sign in to manage registrations, queues, and front-desk tasks.</p>
+      <button type="button" class="panel-cta">Sign in as Staff</button>
+    </a>
+
+    <div class="divider"></div>
+
+    <!-- Doctor card -->
+    <a href="{% url 'login' %}" class="panel panel-doctor">
       <div class="panel-icon">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M9 3V8C9 10.2 10.8 12 13 12C15.2 12 17 10.2 17 8V3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -224,7 +254,7 @@
       </div>
       <h2>Doctor</h2>
       <p>Sign in to view today's patients and your dashboard.</p>
-      <span class="panel-cta">Sign in as Doctor</span>
+      <button type="button" class="panel-cta">Sign in as Doctor</button>
     </a>
 
   </div>

@@ -151,20 +151,26 @@
             </a>
         {% endif %}
         
-        {% if not user.doctor_profile %}
+        {% if user.patient_profile %}
+            <a href="{% url 'myapp:patient_dashboard' %}">
+                Patient Dashboard
+            </a>
+        {% endif %}
+        
+        {% if not user.doctor_profile and not user.patient_profile %}
           <a href="{% url 'myapp:index' %}">
               Dashboard
           </a>
         {% endif %}
 
-        {% if not user.doctor_profile %}
+        {% if not user.doctor_profile and not user.patient_profile %}
 
           <a href="{% url 'myapp:patient_list' %}">
               Patients
           </a>
         {% endif %}
 
-        {% if not user.doctor_profile %}
+        {% if not user.doctor_profile and not user.patient_profile %}
           <a href="{% url 'myapp:patient_form' %}">
               Add Patient
           </a>

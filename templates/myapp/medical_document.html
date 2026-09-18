@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Medical Document</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #20251f;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 70px auto;
+            padding: 30px;
+        }
+
+        .card {
+            background: #f9f6ee;
+            border: 1px solid #c9c0ac;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #5c6b4f;
+            margin-top: 0;
+        }
+
+        p {
+            color: #70766d;
+            line-height: 1.6;
+        }
+
+        .upload-box {
+            margin-top: 25px;
+            border: 2px dashed #5c6b4f;
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+        }
+
+        .upload-box:hover {
+            background: #efe9dd;
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        #fileName {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #5c6b4f;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #5c6b4f;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .formats {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #777;
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>
+            Upload Medical Document
+        </h1>
+
+        <p>
+            Please upload any previous medical report,
+            prescription, blood test report, scan report,
+            or other relevant medical document.
+        </p>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            <label
+                for="medical_document"
+                class="upload-box"
+            >
+
+                <div class="upload-icon">
+                    📄
+                </div>
+
+                <strong>
+                    Click here to upload
+                </strong>
+
+                <p>
+                    You can select a photo or PDF
+                    from your device.
+                </p>
+
+                <input
+                    type="file"
+                    id="medical_document"
+                    name="medical_document"
+                    accept="image/*,.pdf"
+                    required
+                >
+
+                <div id="fileName"></div>
+
+            </label>
+
+            <button type="submit">
+                Upload & Extract Information
+            </button>
+
+        </form>
+
+        <div class="formats">
+            Supported: JPG, JPEG, PNG, WEBP and PDF
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const fileInput =
+    document.getElementById("medical_document");
+
+const fileName =
+    document.getElementById("fileName");
+
+fileInput.addEventListener(
+    "change",
+    function () {
+
+        if (this.files.length > 0) {
+
+            fileName.textContent =
+                "Selected: " +
+                this.files[0].name;
+
+        } else {
+
+            fileName.textContent = "";
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

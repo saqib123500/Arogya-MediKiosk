@@ -1,93 +1,68 @@
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from django.utils import timezone
-from datetime import timedelta
-import random
 
 
 def patient_login(request):
-
     if request.method == "POST":
-        action = request.POST.get("action")
-        abha = request.POST.get("abha", "").replace("-", "").strip()
-        otp = request.POST.get("otp", "").strip()
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
 
-        # =====================================================
-        # SEND OTP
-        # =====================================================
-        if action == "send_otp":
+        # Check that both fields are provided
+        if not username or not password:
+            return render(
+                request,
+                "myapp/patient_login.html",
+                {
+                    "error": "Please enter your username and password.",
+                    "username": username,
+                },
+            )
 
-            if len(abha) != 14 or not abha.isdigit():
-                return render(request, "myapp/patient_login.html", {
-                    "error": "Please enter a valid 14-digit ABHA ID.",
-                    "abha": abha,
-                })
+        # Authenticate the patient
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
 
-            # TODO: replace this block with your real ABDM API call
-            # to actually send an OTP to the patient's registered mobile.
-            otp = str(random.randint(100000, 999999))
+        # Invalid credentials
+        if user is None:
+            return render(
+                request,
+                "myapp/patient_login.html",
+                {
+                    "error": "Invalid username or password.",
+                    "username": username,
+                },
+            )
 
-            request.session["pending_abha"] = abha
-            request.session["pending_otp"] = otp
-            request.session["otp_expires_at"] = (
-                timezone.now() + timedelta(minutes=2)
-            ).isoformat()
-            request.session.modified = True
+        # Make sure this account belongs to a patient
+        if not hasattr(user, "patient_profile"):
+            return render(
+                request,
+                "myapp/patient_login.html",
+                {
+                    "error": "This account is not registered as a patient.",
+                    "username": username,
+                },
+            )
 
-            print(f"\n=== OTP SIMULATOR === ABHA: {abha} OTP: {otp} ===\n")
+        # Log the patient in
+        login(request, user)
 
-            return render(request, "myapp/patient_login.html", {
-                "otp_sent": True,
-                "abha": abha,
-            })
+        # Get the patient's database record
+        patient = user.patient_profile
 
-        # =====================================================
-        # VERIFY OTP
-        # =====================================================
-        if action == "verify_otp":
+        # Store the patient ID for the patient flow
+        request.session["patient_flow_id"] = patient.id
+        request.session.modified = True
 
-            pending_abha = request.session.get("pending_abha")
-            expected_otp = request.session.get("pending_otp")
-            expires_at = request.session.get("otp_expires_at")
+        # Patient goes directly to the patient dashboard
+        return redirect("myapp:patient_dashboard")
 
-            if not pending_abha:
-                return render(request, "myapp/patient_login.html", {
-                    "error": "Please enter your ABHA ID first."
-                })
-
-            if not expected_otp:
-                return render(request, "myapp/patient_login.html", {
-                    "abha": pending_abha,
-                    "otp_sent": True,
-                    "error": "OTP was not generated yet.",
-                })
-
-            if expires_at:
-                expiry_time = timezone.datetime.fromisoformat(expires_at)
-                if timezone.now() >= expiry_time:
-                    request.session.pop("pending_abha", None)
-                    request.session.pop("pending_otp", None)
-                    request.session.pop("otp_expires_at", None)
-                    request.session.modified = True
-                    return render(request, "myapp/patient_login.html", {
-                        "error": "OTP has expired. Please request a new OTP."
-                    })
-
-            if otp != expected_otp:
-                return render(request, "myapp/patient_login.html", {
-                    "otp_sent": True,
-                    "abha": pending_abha,
-                    "error": "Wrong OTP",
-                })
-
-            # =================================================
-            # CORRECT OTP
-            # =================================================
-            request.session["verified_abha_number"] = pending_abha
-            request.session.pop("pending_abha", None)
-            request.session.pop("pending_otp", None)
-            request.session.pop("otp_expires_at", None)
-            request.session.modified = True
-
-            return redirect("myapp:patient_form")
-
-    return render(request, "myapp/patient_login.html")
+    return render(
+        request,
+        "myapp/patient_login.html"
+    )
+    
+    
