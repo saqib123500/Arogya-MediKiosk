@@ -170,6 +170,22 @@
   }
 
   .back-btn:hover { background: #35516c; }
+  .text-size-controls {
+    max-width: 760px;
+    margin: 0 auto 16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.text-size-controls button {
+    width: auto;
+    margin: 0;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
 
   @media (max-width: 600px) {
     h1 { padding: 18px 20px; font-size: 21px; }
@@ -192,6 +208,12 @@
       <button type="button" class="back-btn" onclick="history.back()">Go Back</button>
     {% endif %}
   </div>
+  <div class="text-size-controls">
+    <span>Text Size:</span>
+    <button type="button" onclick="changeTextSize('decrease')">Zoom Out</button>
+    <button type="button" onclick="changeTextSize('normal')">Normal</button>
+    <button type="button" onclick="changeTextSize('increase')">Zoom In</button>
+</div>
 
   {% if patient and current_token %}
     <div class="token-banner">
@@ -438,13 +460,27 @@
 </form>
 </div>
 </main>
-
 <script>
-  // Prevent an accidental double-click from sending the same form twice.
-  document.querySelector("main form").addEventListener("submit", function () {
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = "Saving…";
-  });
+    // Prevent an accidental double-click from sending the same form twice.
+    document.querySelector("main form").addEventListener("submit", function () {
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = "Saving…";
+    });
+
+    let textZoom = 1;
+
+    function changeTextSize(action) {
+        if (action === 'increase' && textZoom < 1.3) {
+            textZoom += 0.1;
+        } else if (action === 'decrease' && textZoom > 0.8) {
+            textZoom -= 0.1;
+        } else if (action === 'normal') {
+            textZoom = 1;
+        }
+
+        document.querySelector('form').style.zoom = textZoom;
+    }
 </script>
 {% endblock %}
+ 
