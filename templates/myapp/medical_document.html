@@ -89,9 +89,28 @@
             font-size: 17px;
             cursor: pointer;
         }
-
+        .btn-secondary {
+            background: #d1d5db;
+            color: #374151;
+            margin-top: 12px;
+        }
+        .btn-secondary:hover {
+            background: #9ca3af;
+        }
         button:hover {
             opacity: 0.9;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #5c6b4f;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-back:hover {
+            text-decoration: underline;
         }
 
         .formats {
@@ -110,10 +129,7 @@
 <div class="container">
 
     <div class="card">
-
-        <h1>
-            Upload Medical Document
-        </h1>
+        
 
         <p>
             Please upload any previous medical report,
@@ -151,7 +167,6 @@
                     id="medical_document"
                     name="medical_document"
                     accept="image/*,.pdf"
-                    required
                 >
 
                 <div id="fileName"></div>
@@ -160,6 +175,9 @@
 
             <button type="submit">
                 Upload & Extract Information
+            </button>
+            <button type="submit" class="btn-secondary" name="no_docs">
+                No documents to upload
             </button>
 
         </form>

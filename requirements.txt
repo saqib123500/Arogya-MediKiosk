@@ -3,3 +3,10 @@ django==4.2.30
 sqlparse==0.5.5
 typing-extensions==4.13.2
 tzdata==2026.3
+requests
+paddleocr
+paddlepaddle
+rapidfuzz
+pydantic
+pandas
+dateparser

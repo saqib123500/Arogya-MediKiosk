@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from myapp.landing import landing, DoctorLoginView, StaffLoginView
 
 urlpatterns = [
@@ -27,4 +29,7 @@ urlpatterns = [
     path("staff/login/", StaffLoginView.as_view(), name="staff_login"),
     path("logout/", auth_views.LogoutView.as_view(next_page='project_index'), name="logout"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

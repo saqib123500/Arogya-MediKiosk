@@ -1,0 +1,249 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Staff Dashboard | Clinic Management System{% endblock %}
+
+{% block extra_style %}
+<style>
+    .staff-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .staff-header h1 {
+        color: #235e50;
+        font-size: 28px;
+        margin: 0;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    .stat-card .label {
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .stat-card .value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #235e50;
+        margin-top: 8px;
+    }
+    .section {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .section-header {
+        padding: 18px 24px;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .section-header h2 {
+        font-size: 18px;
+        color: #235e50;
+        margin: 0;
+    }
+    .table-container {
+        padding: 0;
+        overflow-x: auto;
+    }
+    .staff-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .staff-table th {
+        background: #f3f4f6;
+        color: #4b5563;
+        text-align: left;
+        padding: 14px 24px;
+        font-weight: 600;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .staff-table td {
+        padding: 14px 24px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #374151;
+    }
+    .staff-table tr:hover {
+        background-color: #f9fafb;
+    }
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-block;
+    }
+    .btn-edit {
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #c7d2fe;
+    }
+    .btn-edit:hover {
+        background: #e0e7ff;
+    }
+    .btn-assign {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #a7f3d4;
+    }
+    .btn-assign:hover {
+        background: #d1fae5;
+    }
+    .btn-docs {
+        background: #fdf2f8;
+        color: #be185d;
+        border: 1px solid #fbcfe8;
+    }
+    .btn-docs:hover {
+        background: #fce7f3;
+    }
+    .badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-critical { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+    <div class="staff-header">
+        <h1>Staff Control Panel</h1>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="label">Total Patients</div>
+            <div class="value">{{ patients.count }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Active Doctors</div>
+            <div class="value">{{ doctors.count }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Waiting Tokens</div>
+            <div class="value">{{ waiting_count }}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Patient Management</h2>
+            <a href="{% url 'myapp:patient_form' %}" class="action-btn btn-assign">+ New Patient</a>
+        </div>
+        <div class="table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Phone</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Token</th>
+                        <th>Triage Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td><a href="{% url 'myapp:patient_detail' patient.pk %}" style="text-decoration: none; color: inherit;"><strong>{{ patient.name }}</strong></a></td>
+                        <td>{{ patient.phone_number }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.gender|capfirst }}</td>
+                        <td>{% if patient.latest_token %}#{{ patient.latest_token.token_number }}{% else %}-{% endif %}</td>
+                        <td>
+                            {% if patient.latest_token and patient.latest_token.triage_level %}
+                                <span class="badge {% if patient.latest_token.triage_level <= 2 %}badge-critical{% else %}badge-blue{% endif %}">
+                                    L{{ patient.latest_token.triage_level }} - {{ patient.latest_token.triage_recommendation }}
+                                </span>
+                            {% else %}
+                                <span class="badge" style="background: #e5e7eb; color: #6b7280;">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'myapp:patient_edit' patient.pk %}" class="action-btn btn-edit">Edit</a>
+                            <a href="{% url 'myapp:assign_doctor' patient.pk %}" class="action-btn btn-assign">Manage</a>
+                            <a href="{% url 'myapp:medical_document_upload' patient.pk %}" class="action-btn btn-docs">Documents</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            No patients found in the system.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-header">
+            <h2>Today's Tokens (Waiting)</h2>
+        </div>
+        <div class="table-container">
+            <table class="staff-table">
+                <thead>
+                    <tr>
+                        <th>Token #</th>
+                        <th>Patient Name</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for token in todays_tokens %}
+                    <tr>
+                        <td><strong>#{{ token.token_number }}</strong></td>
+                        <td>{{ token.patient.name }}</td>
+                        <td>Dr. {{ token.doctor.name }}</td>
+                        <td>
+                            {% if token.triage_level %}
+                                <span class="badge {% if token.triage_level <= 2 %}badge-critical{% else %}badge-blue{% endif %}">
+                                    L{{ token.triage_level }} - {{ token.triage_recommendation }}
+                                </span>
+                            {% else %}
+                                <span class="badge" style="background: #e5e7eb; color: #6b7280;">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            No waiting tokens for today.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -158,8 +158,8 @@
         {% endif %}
         
         {% if not user.doctor_profile and not user.patient_profile %}
-          <a href="{% url 'myapp:index' %}">
-              Dashboard
+          <a href="{% url 'myapp:staff_dashboard' %}">
+              Staff Dashboard
           </a>
         {% endif %}
 
@@ -208,4 +208,11 @@
 <footer>Clinic Management System</footer>
 
 </body>
+<script>
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
 </html>

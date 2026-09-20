@@ -1,0 +1,113 @@
+{% extends "myapp/public_base.html" %}
+
+{% block title %}Staff Login | Clinic Management System{% endblock %}
+
+{% block extra_style %}
+<style>
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+    .login-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid #e5e7eb;
+    }
+    .login-card h2 {
+        text-align: center;
+        color: #235e50;
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+    .login-card p {
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.2s;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: #235e50;
+        box-shadow: 0 0 0 3px rgba(35, 94, 80, 0.1);
+    }
+    .login-btn {
+        width: 100%;
+        background: #235e50;
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .login-btn:hover {
+        background: #1b4b40;
+    }
+    .error-msg {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #fca5a5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2>Staff Portal</h2>
+        <p>Please enter your credentials to access the management dashboard.</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-msg">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login as Staff</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

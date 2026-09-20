@@ -874,15 +874,15 @@
 
             <td>
 
-              <button
-                type="button"
-                class="medical-document-btn"
-                onclick="openMedicalDocument({{ doc.id }})"
-              >
-                {{ doc.document_type|default:"Medical Document" }}
-              </button>
+  <button
+    type="button"
+    class="medical-document-btn"
+    onclick="openMedicalDocument({{ doc.id }})"
+  >
+    {{ doc.document_type|default:doc.document.name|default:"Medical Document" }}
+  </button>
 
-            </td>
+</td>
 
             <td>
 
@@ -900,10 +900,82 @@
 
       {% else %}
 
-      <div class="empty-state">
-        No medical documents uploaded yet.
-      </div>
 
+<div class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Medical Documents
+    </h2>
+
+  </div>
+
+  <div class="section-content">
+
+    {% if medical_documents %}
+
+    <table class="history-table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Document
+          </th>
+
+          <th>
+            Uploaded Date
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {% for doc in medical_documents %}
+
+        <tr>
+
+          <td>
+
+            <button
+              type="button"
+              class="medical-document-btn"
+              onclick="openMedicalDocument({{ doc.id }})"
+            >
+              {{ doc.document_type|default:doc.document.name|default:"Medical Document" }}
+            </button>
+
+          </td>
+
+          <td>
+
+            {{ doc.uploaded_at|date:"d M Y, h:i A" }}
+
+          </td>
+
+        </tr>
+
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+    {% else %}
+
+    <div class="empty-state">
+      No useful medical documents have been uploaded yet.
+    </div>
+
+    {% endif %}
+
+  </div>
+
+</div>
       {% endif %}
 
     </div>
@@ -1009,7 +1081,7 @@ function openMedicalDocument(documentId) {
   `;
 
   fetch(
-    `/myapp/patients/medical-document/${documentId}/info/`
+    `/myapp/medical-document/${documentId}/info/`
   )
 
     .then(response => {
@@ -1087,9 +1159,6 @@ function renderMedicalInformation(data) {
 
   const labels = {
 
-    patient_information:
-      "Patient Information",
-
     diagnosis:
       "Diagnosis",
 
@@ -1105,20 +1174,17 @@ function renderMedicalInformation(data) {
     vital_signs:
       "Vital Signs",
 
-    blood_tests:
-      "Blood Tests",
-
-    urine_tests:
-      "Urine Tests",
+    lab_results:
+      "Laboratory Results",
 
     imaging_findings:
       "Imaging Findings",
 
-    abnormal_findings:
-      "Abnormal Findings",
-
     clinical_findings:
       "Clinical Findings",
+
+    impression:
+      "Impression",
 
     recommendations:
       "Recommendations",
@@ -1127,7 +1193,6 @@ function renderMedicalInformation(data) {
       "Other Significant Information"
 
   };
-
 
   let foundInformation = false;
 
@@ -1209,13 +1274,58 @@ function formatMedicalValue(value) {
 
       <ul>
 
-        ${value.map(item => `
+        ${value.map(item => {
 
-          <li>
-            ${escapeHtml(String(item))}
-          </li>
+          if (
+            item !== null &&
+            typeof item === "object"
+          ) {
 
-        `).join("")}
+            return `
+
+              <li>
+
+                ${Object.entries(item)
+                  .filter(
+                    ([key, val]) =>
+                      val !== null &&
+                      val !== undefined &&
+                      val !== ""
+                  )
+                  .map(
+                    ([key, val]) => `
+
+                      <div>
+                        <strong>
+                          ${escapeHtml(
+                            formatFieldName(key)
+                          )}:
+                        </strong>
+
+                        ${escapeHtml(
+                          String(val)
+                        )}
+                      </div>
+
+                    `
+                  )
+                  .join("")}
+
+              </li>
+
+            `;
+
+          }
+
+          return `
+
+            <li>
+              ${escapeHtml(String(item))}
+            </li>
+
+          `;
+
+        }).join("")}
 
       </ul>
 
@@ -1224,25 +1334,42 @@ function formatMedicalValue(value) {
   }
 
 
-  if (typeof value === "object") {
+  if (
+    value !== null &&
+    typeof value === "object"
+  ) {
 
     return `
 
       <ul>
 
-        ${Object.entries(value).map(
-          ([key, val]) => `
+        ${Object.entries(value)
+          .filter(
+            ([key, val]) =>
+              val !== null &&
+              val !== undefined &&
+              val !== ""
+          )
+          .map(
+            ([key, val]) => `
 
-            <li>
-              <strong>
-                ${escapeHtml(key)}:
-              </strong>
+              <li>
 
-              ${escapeHtml(String(val))}
-            </li>
+                <strong>
+                  ${escapeHtml(
+                    formatFieldName(key)
+                  )}:
+                </strong>
 
-          `
-        ).join("")}
+                ${escapeHtml(
+                  String(val)
+                )}
+
+              </li>
+
+            `
+          )
+          .join("")}
 
       </ul>
 
@@ -1254,12 +1381,41 @@ function formatMedicalValue(value) {
   return `
 
     <div class="medical-info-value">
-
       ${escapeHtml(String(value))}
-
     </div>
 
   `;
+
+}
+
+
+function formatFieldName(key) {
+
+  const names = {
+
+    name: "Medicine",
+    form: "Form",
+    strength: "Strength",
+    dose: "Dose",
+    frequency: "Frequency",
+    duration: "Duration",
+    route: "Route",
+    instructions: "Instructions",
+    raw_text: "Original Text",
+
+    test_name: "Test",
+    value: "Value",
+    unit: "Unit",
+    reference_range: "Reference Range",
+    flag: "Flag"
+
+  };
+
+  return names[key] || key
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, letter =>
+      letter.toUpperCase()
+    );
 
 }
 

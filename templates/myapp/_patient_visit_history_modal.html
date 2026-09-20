@@ -1,7 +1,35 @@
-<h3 style="margin:0 0 4px; font-size:18px;">Visit History</h3>
+<h3 style="margin:0 0 4px; font-size:18px; color:#235e50;">Patient Information</h3>
 <p style="margin:0 0 20px; color:#6b7280; font-size:14px;">
   {{ patient.name }} &nbsp;•&nbsp; {{ patient.get_gender_display }}, {{ patient.age }} &nbsp;•&nbsp; {{ patient.contact }}
 </p>
+
+<!-- Dashavidha Pariksha -->
+<div style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+  <h4 style="margin: 0 0 12px; font-size: 14px; color: #235e50;">Dashavidha Pariksha (Ten-fold Examination)</h4>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
+    {% for label, value in dashavidha %}
+    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e5e7eb; font-size: 13px;">
+      <span style="font-weight: 600; color: #4b5563;">{{ label }}:</span>
+      <span style="color: #374151;">{{ value|default:"Not assessed" }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Symptoms -->
+{% if symptoms_data %}
+<div style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+  <h4 style="margin: 0 0 12px; font-size: 14px; color: #235e50;">Reported Symptoms</h4>
+  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+    {% for symptom in symptoms_data %}
+    <span style="background: #e6f2ef; color: #235e50; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;">{{ symptom }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Visit History -->
+<h4 style="margin: 20px 0 12px; font-size: 16px; color: #235e50;">Visit History</h4>
 
 {% for token in tokens %}
 <div class="visit-card">
@@ -13,7 +41,7 @@
     <div style="display:flex; align-items:center; gap:10px;">
       <span class="status status-{{ token.status }}">{{ token.get_status_display }}</span>
       <span style="color:#9ca3af; font-size:12px;">
-        {{ token.date|date:"d M Y" }}{% if token.appointment_datetime %} • {{ token.appointment_datetime|date:"h:i A" }}{% endif %}
+        {{ token.created_at|date:"d M Y" }}{% if token.appointment_datetime %} • {{ token.appointment_datetime|date:"h:i A" }}{% endif %}
       </span>
     </div>
   </div>

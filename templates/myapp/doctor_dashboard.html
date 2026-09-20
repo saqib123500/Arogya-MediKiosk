@@ -627,7 +627,13 @@ grid-template-columns: 1fr;
 
 <div id="visit-history-modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:20px;">
   <div class="card" style="width:100%; max-width:720px; padding:26px; max-height:88vh; overflow-y:auto; position:relative;">
-    <button id="visit-history-modal-close" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:20px; cursor:pointer; color:#6b7280;">&times;</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0; font-size:18px; color:#235e50;">Patient Information</h3>
+      <div style="display:flex; gap:8px;">
+        <button id="print-patient-info" style="background:#2f7d6b; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer; font-weight:500;">🖨️ Print</button>
+        <button id="visit-history-modal-close" style="background:none; border:none; font-size:20px; cursor:pointer; color:#6b7280; padding:0 8px;">&times;</button>
+      </div>
+    </div>
     <div id="visit-history-modal-content">
       <p style="text-align:center; color:#9ca3af; padding:20px;">Loading...</p>
     </div>
@@ -727,6 +733,7 @@ document.addEventListener("DOMContentLoaded", function () {
 (function () {
   const backdrop = document.getElementById("visit-history-modal-backdrop");
   const closeBtn = document.getElementById("visit-history-modal-close");
+  const printBtn = document.getElementById("print-patient-info");
   const content = document.getElementById("visit-history-modal-content");
   const historyUrlTemplate = "{% url 'myapp:patient_visit_history_ajax' 0 %}";
 
@@ -753,7 +760,53 @@ document.addEventListener("DOMContentLoaded", function () {
     backdrop.style.display = "none";
   }
 
+  function printPatientInfo() {
+    const modalContent = document.getElementById("visit-history-modal-content");
+    const printWindow = window.open('', '', 'width=800,height=600');
+    
+    const printStyles = `
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; color: #374151; }
+        h3 { color: #235e50; margin-bottom: 10px; font-size: 18px; }
+        h4 { color: #235e50; margin: 20px 0 12px; font-size: 16px; }
+        p { margin: 0 0 20px; color: #6b7280; font-size: 14px; }
+        .visit-card { margin: 15px 0; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .visit-card-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .token-number { font-weight: 700; color: #235e50; }
+        .status { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .status-waiting { background: #fef3e2; color: #b45309; }
+        .status-seen { background: #e6f4ea; color: #1e7e34; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f3f4f6; font-weight: 600; }
+        .symptom-tag { display: inline-block; background: #e6f2ef; color: #235e50; padding: 4px 8px; border-radius: 12px; margin: 2px; font-size: 12px; }
+        .dashavidha-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
+        .dashavidha-item span:first-child { font-weight: 600; color: #4b5563; }
+        .empty-state { text-align: center; padding: 20px; color: #9ca3af; }
+        @media print { body { padding: 0; } }
+      </style>
+    `;
+    
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Patient Information</title>
+        ${printStyles}
+      </head>
+      <body>
+        ${modalContent.innerHTML}
+      </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  }
+
   closeBtn.addEventListener("click", closeModal);
+  printBtn.addEventListener("click", printPatientInfo);
   backdrop.addEventListener("click", function (e) {
     if (e.target === backdrop) closeModal();
   });

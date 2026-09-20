@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from myapp.models import Patient, Doctor, Token, Prescription, PrescriptionItem, PatientHistory
+from django.views.decorators.cache import never_cache
+from myapp.models import Patient, Doctor, Token, Prescription, PrescriptionItem, PatientHistory, Symptom
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -9,6 +10,7 @@ from django.db import transaction
  
 
 @login_required
+@never_cache
 def doctor_dashboard(request):
 
     # Check whether the logged-in user has a Doctor profile
@@ -127,6 +129,7 @@ def prescribe_token_ajax(request, token_id):
 
 
 @login_required
+@never_cache
 def patient_visit_history_ajax(request, patient_id):
     if not hasattr(request.user, "doctor_profile"):
         return JsonResponse({"success": False, "error": "Not authorized."}, status=403)
@@ -144,10 +147,65 @@ def patient_visit_history_ajax(request, patient_id):
     history = PatientHistory.objects.filter(
         patient=patient
     ).order_by("-visit_date")
+    
+    # Get symptom information
+    symptom_record = getattr(patient, "symptom_record", None)
+    symptoms_data = None
+    
+    if symptom_record:
+        symptom_labels = {
+            "fever": "Fever",
+            "dizziness": "Dizziness",
+            "weakness": "Weakness",
+            "tiredness": "Tiredness",
+            "cough": "Cough",
+            "cold": "Cold",
+            "nausea": "Nausea",
+            "vomiting": "Vomiting",
+            "diarrhea": "Diarrhea",
+            "breathingDifficulty": "Breathing Difficulty",
+            "itching": "Itching",
+            "skinRash": "Skin Rash",
+            "headache": "Headache",
+            "chestPain": "Chest Pain",
+            "stomachPain": "Stomach Pain",
+            "backPain": "Back Pain",
+            "jointPain": "Joint Pain",
+            "musclePain": "Muscle Pain",
+            "soreThroat": "Sore Throat",
+        }
+        
+        selected_symptom_ids = symptom_record.non_pain_symptoms if symptom_record else []
+        
+        if symptom_record:
+            selected_symptom_ids += list(
+                symptom_record.pain_symptoms.values_list("location", flat=True)
+            )
+        
+        symptoms_data = [
+            symptom_labels.get(symptom_id, symptom_id)
+            for symptom_id in selected_symptom_ids
+        ]
+    
+    # Get dashavidha information
+    dashavidha = [
+        ("Prakriti", patient.get_prakriti_display()),
+        ("Vikriti", patient.get_vikriti_display()),
+        ("Sara", patient.get_sara_display()),
+        ("Samhanana", patient.get_samhanana_display()),
+        ("Pramana", patient.get_pramana_display()),
+        ("Satmya", patient.get_satmya_display()),
+        ("Satva", patient.get_satva_display()),
+        ("Ahara Shakti", patient.get_ahara_shakti_display()),
+        ("Vyayama Shakti", patient.get_vyayama_shakti_display()),
+        ("Vaya", patient.get_vaya_display()),
+    ]
  
     return render(request, "myapp/_patient_visit_history_modal.html", {
         "patient": patient,
         "tokens": tokens,
         "history": history,
+        "symptoms_data": symptoms_data,
+        "dashavidha": dashavidha,
     })
  

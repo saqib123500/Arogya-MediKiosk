@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
+from django.views.decorators.cache import never_cache
 
 from myapp.models import Patient, Token
 
 
 @login_required
+@never_cache
 def index(request):
     total_patients = Patient.objects.count()
     recent_patients = Patient.objects.all().order_by('-created_at')[:5]

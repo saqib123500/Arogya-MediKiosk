@@ -1,0 +1,108 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block title %}Assign Doctor | Clinic Management System{% endblock %}
+
+{% block extra_style %}
+<style>
+    .assign-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .assign-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .assign-card h2 {
+        color: var(--primary-dark);
+        margin-bottom: 8px;
+        font-size: 24px;
+    }
+    .patient-info {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 16px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 14px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    .form-control:focus {
+        border-color: var(--primary);
+    }
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        transition: background 0.2s;
+    }
+    .btn-submit:hover {
+        background: var(--primary-dark);
+    }
+    .btn-back {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+    .btn-back:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="assign-container">
+    <div class="assign-card">
+        <h2>Assign Doctor</h2>
+        <div class="patient-info">
+            Patient: <strong>{{ patient.name }}</strong>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="doctor_id">Select Doctor</label>
+                <select name="doctor_id" id="doctor_id" class="form-control" required>
+                    <option value="" disabled selected>-- Choose a doctor --</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.id }}">{{ doctor.name }} ({{ doctor.specialty|capfirst }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Assign & Generate Token</button>
+        </form>
+
+        <a href="{% url 'myapp:staff_dashboard' %}" class="btn-back">← Back to Staff Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,10 +1,11 @@
 import json
+import requests
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from myapp.models import Patient, Symptom, PainSymptom, PatientHistory
+from myapp.models import Patient, Symptom, PainSymptom, PatientHistory, Token
 
 
 def symptoms_form(request, patient_id):
@@ -79,6 +80,11 @@ def save_symptoms(request, patient_id):
             "fever_duration": data.get("fever_duration", ""),
             "other_symptoms": data.get("other_symptoms", ""),
             "language": data.get("language", ""),
+            "sbp": data.get("sbp"),
+            "dbp": data.get("dbp"),
+            "hr": data.get("hr"),
+            "rr": data.get("rr"),
+            "saturation": data.get("saturation"),
         },
     )
 
@@ -108,6 +114,32 @@ def save_symptoms(request, patient_id):
     )
 
     current_token = patient.tokens.order_by("-created_at").first()
+
+    # --- Triage Integration ---
+    if current_token:
+        try:
+            triage_payload = {
+                "age": patient.age,
+                "sex": 1 if patient.gender == "male" else 2 if patient.gender == "female" else 2,
+                "mental": 1, # Default to normal
+                "pain": 1 if any(data.get("pain_symptoms", {})) else 0,
+                "nrs_pain": data.get("nrs_pain", 3),
+                "sbp": symptom_record.sbp or 120,
+                "dbp": symptom_record.dbp or 80,
+                "hr": symptom_record.hr or 75,
+                "rr": symptom_record.rr or 18,
+                "bt": float(symptom_record.fever_temperature) if symptom_record.fever_temperature and symptom_record.fever_temperature.replace('.','',1).isdigit() else 36.6,
+                "saturation": symptom_record.saturation or 98,
+            }
+            response = requests.post("http://localhost:8001/predict", json=triage_payload, timeout=2)
+            if response.status_code == 200:
+                result = response.json()
+                current_token.triage_level = result.get("priority_level")
+                current_token.triage_recommendation = result.get("description")
+                current_token.save()
+        except Exception as e:
+            print(f"Triage API Error: {e}")
+    # --------------------------
 
     return JsonResponse(
         {

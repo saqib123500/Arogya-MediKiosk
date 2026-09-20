@@ -12,17 +12,27 @@ from django.db.models import Q, Prefetch
 from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import never_cache
 from django.utils.dateparse import parse_datetime
 from django.db import transaction
 from functools import wraps
 
 def staff_required(view):
-    """Allow front-desk staff, but never patient or doctor accounts."""
+    """Allow ONLY front-desk staff. Block patients and doctors."""
+
+    # Apply never_cache to prevent browser from caching protected staff views
+    view = never_cache(view)
 
     @wraps(view)
     def wrapped_view(request, *args, **kwargs):
+        # 1. Must be logged in
         if not request.user.is_authenticated:
-            return redirect("login")
+            return redirect("myapp:staff_login")
+
+        # 2. Must be marked as staff in Django Admin
+        if not request.user.is_staff:
+            messages.error(request, "Access denied. This portal is for staff only.")
+            return redirect("myapp:staff_login")
 
         if hasattr(request.user, "patient_profile"):
             return redirect("myapp:patient_form")
@@ -236,6 +246,7 @@ def _patient_form(request, pk=None, public_registration=False):
     )
 
 
+@never_cache
 def patient_form(request, pk=None):
 
     # -------------------------------------------------
@@ -291,7 +302,9 @@ def patient_registration(request):
     )
 
 
+@never_cache
 def patient_dashboard(request):
+    
 
     if not request.user.is_authenticated:
         return redirect(
@@ -307,6 +320,10 @@ def patient_dashboard(request):
         )
 
     patient = request.user.patient_profile
+
+    # ---------------------------------------------------------
+    # SYMPTOM LABELS
+    # ---------------------------------------------------------
 
     symptom_labels = {
         "fever": "Fever",
@@ -330,6 +347,10 @@ def patient_dashboard(request):
         "soreThroat": "Sore Throat",
     }
 
+    # ---------------------------------------------------------
+    # SYMPTOMS
+    # ---------------------------------------------------------
+
     symptom_record = getattr(
         patient,
         "symptom_record",
@@ -337,19 +358,107 @@ def patient_dashboard(request):
     )
 
     selected_symptom_ids = (
-        symptom_record.non_pain_symptoms
+        list(symptom_record.non_pain_symptoms)
         if symptom_record
         else []
     )
 
     if symptom_record:
-
         selected_symptom_ids += list(
             symptom_record.pain_symptoms.values_list(
                 "location",
                 flat=True
             )
         )
+
+    # ---------------------------------------------------------
+    # MEDICAL DOCUMENTS
+    #
+    # Only show documents that contain meaningful
+    # extracted medical information.
+    # ---------------------------------------------------------
+
+    significant_fields = {
+        "diagnosis",
+        "symptoms",
+        "medications",
+        "allergies",
+        "vital_signs",
+        "lab_results",
+        "imaging_findings",
+        "clinical_findings",
+        "impression",
+        "recommendations",
+        "other_significant_information",
+    }
+
+    def has_meaningful_value(value):
+        """
+        Recursively checks whether a value actually contains
+        useful information.
+
+        Empty strings, empty lists, empty dictionaries,
+        None and whitespace-only values are ignored.
+        """
+
+        if value is None:
+            return False
+
+        if isinstance(value, str):
+            return bool(value.strip())
+
+        if isinstance(value, dict):
+            return any(
+                has_meaningful_value(v)
+                for v in value.values()
+            )
+
+        if isinstance(value, (list, tuple, set)):
+            return any(
+                has_meaningful_value(item)
+                for item in value
+            )
+
+        return True
+
+    useful_medical_documents = []
+
+    all_medical_documents = (
+        patient.medical_documents
+        .order_by("-uploaded_at")
+    )
+
+    for doc in all_medical_documents:
+
+        structured_data = getattr(
+            doc,
+            "structured_data",
+            None
+        )
+
+        # structured_data must be a dictionary
+        if not isinstance(
+            structured_data,
+            dict
+        ):
+            continue
+
+        # Check only fields that are actually
+        # considered significant medical information.
+        has_useful_information = any(
+            field in structured_data
+            and has_meaningful_value(
+                structured_data.get(field)
+            )
+            for field in significant_fields
+        )
+
+        if has_useful_information:
+            useful_medical_documents.append(doc)
+
+    # ---------------------------------------------------------
+    # DASHBOARD
+    # ---------------------------------------------------------
 
     return render(
         request,
@@ -369,9 +478,10 @@ def patient_dashboard(request):
                 "-visit_date"
             ),
 
-            "medical_documents": patient.medical_documents.order_by(
-                "-uploaded_at"
-            ),
+            # IMPORTANT:
+            # Only useful medical documents are sent
+            # to the template.
+            "medical_documents": useful_medical_documents,
 
             "selected_symptoms": [
                 symptom_labels.get(
@@ -425,7 +535,6 @@ def patient_dashboard(request):
             ],
         }
     )
-
 
 @staff_required
 def token_confirmation(request, token_id):
@@ -707,3 +816,52 @@ def patient_tokens_ajax(
             "history": history,
         }
     )
+    
+# Update to /Users/mohammadsaqib/Arogya-MediKiosk/myapp/patient_form.py
+
+
+@staff_required
+def patient_detail(request, pk):
+    """
+    Detailed view of patient credentials for staff.
+    """
+    patient = get_object_or_404(
+        Patient.objects.prefetch_related(
+            "symptom_record__pain_symptoms"
+        ),
+        pk=pk
+    )
+
+    # Map symptom IDs to labels
+    symptom_labels_map = {
+        "fever": "Fever",
+        "dizziness": "Dizziness",
+        "weakness": "Weakness",
+        "tiredness": "Tiredness",
+        "cough": "Cough",
+        "cold": "Cold",
+        "nausea": "Nausea",
+        "vomiting": "Vomiting",
+        "diarrhea": "Diarrhea",
+        "breathingDifficulty": "Breathing Difficulty",
+        "itching": "Itching",
+        "skinRash": "Skin Rash",
+        "headache": "Headache",
+        "chestPain": "Chest Pain",
+        "stomachPain": "Stomach Pain",
+        "backPain": "Back Pain",
+        "jointPain": "Joint Pain",
+        "musclePain": "Muscle Pain",
+        "soreThroat": "Sore Throat",
+    }
+
+    # Pre-process general symptoms into labels
+    display_symptoms = []
+    if hasattr(patient, "symptom_record"):
+        for s_id in patient.symptom_record.non_pain_symptoms:
+            display_symptoms.append(symptom_labels_map.get(s_id, s_id))
+
+    return render(request, "myapp/patient_detail.html", {
+        "patient": patient,
+        "display_symptoms": display_symptoms
+    })

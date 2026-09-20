@@ -154,6 +154,16 @@ class Token(models.Model):
         choices=STATUS_CHOICES,
         default="waiting"
     )
+    triage_level = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="KTAS priority level (1: Critical to 5: Non-Urgent)"
+    )
+    triage_recommendation = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
 
     created_at = models.DateTimeField(
         auto_now_add=True
@@ -252,6 +262,14 @@ class Symptom(models.Model):
     fever_duration = models.CharField(max_length=50, blank=True)
     other_symptoms = models.TextField(blank=True)
     language = models.CharField(max_length=10, blank=True)
+
+    # Vitals for Triage ML
+    sbp = models.IntegerField(null=True, blank=True)
+    dbp = models.IntegerField(null=True, blank=True)
+    hr = models.IntegerField(null=True, blank=True)
+    rr = models.IntegerField(null=True, blank=True)
+    saturation = models.IntegerField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

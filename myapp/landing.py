@@ -12,10 +12,13 @@ from django.db import transaction
 
 
 def landing(request):
-    if request.user.is_authenticated and hasattr(request.user, "doctor_profile"):
-        return redirect("myapp:doctor_dashboard")
-    if request.user.is_authenticated and hasattr(request.user, "patient_profile"):
-        return redirect("myapp:patient_dashboard")
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect("myapp:staff_dashboard")
+        if hasattr(request.user, "doctor_profile"):
+            return redirect("myapp:doctor_dashboard")
+        if hasattr(request.user, "patient_profile"):
+            return redirect("myapp:patient_dashboard")
     return render(request, "myapp/landing.html")
 
 
@@ -49,9 +52,20 @@ class StaffLoginView(LoginView):
     template_name = "myapp/login.html"
     redirect_authenticated_user = True
 
+    def form_valid(self, form):
+        """Check that the user is not a doctor before allowing staff login."""
+        user = form.get_user()
+        
+        # Prevent doctors from logging in via staff login
+        if hasattr(user, "doctor_profile"):
+            form.add_error(None, "Invalid username or password.")
+            return self.form_invalid(form)
+        
+        return super().form_valid(form)
+
     def get_success_url(self):
         redirect_to = self.get_redirect_url()
-        return redirect_to or reverse("myapp:index")
+        return redirect_to or reverse("myapp:staff_dashboard")
 
 
 
