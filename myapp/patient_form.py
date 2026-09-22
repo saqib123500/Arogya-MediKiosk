@@ -17,6 +17,139 @@ from django.utils.dateparse import parse_datetime
 from django.db import transaction
 from functools import wraps
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+from myapp.models import PatientHistory
+def visit_history_info(request, history_id):
+
+    history = get_object_or_404(
+        PatientHistory.objects.select_related(
+            "patient",
+            "token__doctor",
+            "token__prescription",
+        ),
+        id=history_id,
+    )
+
+    patient = history.patient
+    token = history.token
+
+    visit_data = history.visit_data or {}
+    dashavidha = visit_data.get("dashavidha", {})
+    
+
+    # ---------------------------------------------------------
+    # DOCTOR
+    # ---------------------------------------------------------
+
+    doctor_name = None
+
+    if token and token.doctor:
+        doctor_name = token.doctor.name
+
+
+    # ---------------------------------------------------------
+    # TRIAGE
+    # ---------------------------------------------------------
+
+    triage = {}
+
+    if token:
+
+        triage = {
+            "level": token.triage_level,
+            "recommendation":
+                token.triage_recommendation,
+        }
+
+
+    # ---------------------------------------------------------
+    # PRESCRIPTION
+    # ---------------------------------------------------------
+
+    prescription_data = None
+
+    if token:
+
+        try:
+
+            prescription = token.prescription
+
+            prescription_data = {
+                "diagnosis":
+                    prescription.diagnosis,
+
+                "notes":
+                    prescription.notes,
+
+                "items": [
+                    {
+                        "medicine_name":
+                            item.medicine_name,
+
+                        "dosage":
+                            item.dosage,
+
+                        "timing":
+                            item.timing,
+
+                        "duration":
+                            item.duration,
+                    }
+
+                    for item in prescription.items.all()
+                ],
+            }
+
+        except Exception:
+
+            prescription_data = None
+
+
+    # ---------------------------------------------------------
+    # RESPONSE
+    # ---------------------------------------------------------
+
+    return JsonResponse({
+    "success": True,
+
+    "visit_date": history.visit_date.strftime(
+        "%d %B %Y, %I:%M %p"
+    ),
+
+    "patient": {
+        "name": patient.name,
+        "age": patient.age,
+        "gender": patient.get_gender_display(),
+        "phone": patient.phone_number,
+    },
+
+    "doctor": doctor_name,
+
+    "token": {
+        "number": token.token_number if token else None,
+        "date": token.date.strftime("%d %b %Y") if token else None,
+        "status": token.get_status_display() if token else None,
+    },
+
+    "dashavidha": dashavidha,
+
+    "visit": {
+        "complaint": history.complaint,
+        "symptoms": history.symptoms or [],
+        "other_symptoms": history.other_symptoms,
+        "fever_temperature": history.fever_temperature,
+        "fever_duration": history.fever_duration,
+    },
+
+    "visit_data": visit_data,
+
+    "triage": triage,
+
+    "prescription": prescription_data,
+})
+
 def staff_required(view):
     """Allow ONLY front-desk staff. Block patients and doctors."""
 
@@ -865,3 +998,10 @@ def patient_detail(request, pk):
         "patient": patient,
         "display_symptoms": display_symptoms
     })
+    
+def patient_form_view(request):
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('myapp:symptoms_form')

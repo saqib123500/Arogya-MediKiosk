@@ -20,6 +20,8 @@ from .doctor_dashboard import (
 )
 from .symptoms import symptoms_form, save_symptoms
 from .views.ocr_views import medical_document_upload, medical_document_info
+
+from .patient_form import visit_history_info
 app_name = "myapp"
 urlpatterns = [
     path('home/', index, name='index'),
@@ -44,4 +46,6 @@ urlpatterns = [
     path('patients/dashboard/', patient_dashboard, name='patient_dashboard'),
     path("patients/<int:patient_id>/medical-document/",medical_document_upload,name="medical_document_upload",),
     path("medical-document/<int:document_id>/info/",medical_document_info,name="medical_document_info",),
+    path("visit-history/<int:history_id>/info/",visit_history_info,name="visit_history_info",),
+    
 ]

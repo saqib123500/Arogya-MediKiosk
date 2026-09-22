@@ -299,20 +299,56 @@ class PainSymptom(models.Model):
 
         
 class PatientHistory(models.Model):
+
     patient = models.ForeignKey(
         Patient,
         on_delete=models.CASCADE,
         related_name="history"
     )
+
+    token = models.ForeignKey(
+        Token,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="visit_history"
+    )
+
     complaint = models.TextField(blank=True)
-    symptoms = models.JSONField(default=list, blank=True)
-    other_symptoms = models.TextField(blank=True)
-    fever_temperature = models.CharField(max_length=50, blank=True)
-    fever_duration = models.CharField(max_length=50, blank=True)
-    visit_date = models.DateTimeField(auto_now_add=True)
+
+    symptoms = models.JSONField(
+        default=list,
+        blank=True
+    )
+
+    other_symptoms = models.TextField(
+        blank=True
+    )
+
+    fever_temperature = models.CharField(
+        max_length=50,
+        blank=True
+    )
+
+    fever_duration = models.CharField(
+        max_length=50,
+        blank=True
+    )
+
+    visit_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    visit_data = models.JSONField(
+        default=dict,
+        blank=True
+    )
 
     def __str__(self):
-        return f"History — {self.patient.name} — {self.visit_date:%d %b %Y}"
+        return (
+            f"History — {self.patient.name} — "
+            f"{self.visit_date:%d %b %Y}"
+        )
 
 
 class MedicalDocument(models.Model):

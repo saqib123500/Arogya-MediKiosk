@@ -3,6 +3,50 @@
 {% block title %}Patient Dashboard | Clinic Management System{% endblock %}
 
 {% block extra_style %}
+.check-in-btn {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.check-in-btn:hover {
+  background: var(--primary-dark);
+}
+.visit-date-btn {
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    color: #235e50;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+}
+
+
+
+.visit-time {
+    display: block;
+    margin-top: 8px;
+    padding-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    opacity: 0.7;
+    text-decoration: none;
+}
+
+.visit-date-btn:hover {
+  color: #1b4b40;
+}
 
 .dashboard-header {
   margin-bottom: 28px;
@@ -439,7 +483,17 @@
   .medical-info-grid {
     grid-template-columns: 1fr;
   }
-
+  .visit-time {
+    display: block;
+    margin-top: 7px;
+    padding-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    opacity: 0.7;
+    text-decoration: none;
+}
+}
   .tokens-table,
   .history-table {
     font-size: 13px;
@@ -457,6 +511,15 @@
     align-items: flex-start;
     gap: 12px;
   }
+  .dashboard-actions {
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.check-in-btn,
+.print-btn {
+  flex: 1;
+}
 
 }
 
@@ -509,19 +572,28 @@
 
   <!-- Dashboard Header -->
 
-  <div class="dashboard-header">
+<div class="dashboard-header">
 
-    <div>
+  <div>
 
-      <h1>
-        Patient Dashboard
-      </h1>
+    <h1>
+      Patient Dashboard
+    </h1>
 
-      <p>
-        Welcome back, {{ patient.name }}
-      </p>
+    <p>
+      Welcome back, {{ patient.name }}
+    </p>
 
-    </div>
+  </div>
+
+  <div class="dashboard-actions">
+
+    <a
+      href="{% url 'myapp:patient_form' %}?flow=checkin"
+      class="check-in-btn"
+    >
+      Check In
+    </a>
 
     <button
       class="print-btn"
@@ -531,6 +603,8 @@
     </button>
 
   </div>
+
+</div>
 
 
   <!-- Patient Information -->
@@ -735,21 +809,23 @@
   </div>
 
 
+  
+
   <!-- Visit History -->
 
-  <div class="section">
+<div class="section">
 
-    <div class="section-header">
+  <div class="section-header">
 
-      <h2>
-        Visit History
-      </h2>
+    <h2>
+      Visit History
+    </h2>
 
-    </div>
+  </div>
 
-    <div class="section-content">
+  <div class="section-content">
 
-      {% if history %}
+    {% if history %}
 
       <table class="history-table">
 
@@ -781,25 +857,52 @@
 
           {% for visit in history %}
 
-          <tr>
+            <tr>
 
-            <td>
-              {{ visit.visit_date|date:"d M Y" }}
-            </td>
+              <td>
+    <button
+        type="button"
+        class="visit-date-btn"
+        onclick="openVisitDetails({{ visit.id }})"
+    >
+        {{ visit.visit_date|date:"d M Y" }}
+        <span class="visit-time">
+            {{ visit.visit_date|date:"h:i A" }}
+        </span>
+    </button>
+</td>
 
-            <td>
-              Dr. {{ visit.doctor.name }}
-            </td>
+<td>
+    {% if visit.token and visit.token.doctor %}
+        Dr. {{ visit.token.doctor.name }}
+    {% else %}
+        -
+    {% endif %}
+</td>
 
-            <td>
-              {{ visit.diagnosis|default:"-" }}
-            </td>
+<td>
+    {% if visit.token and visit.token.prescription %}
+        {{ visit.token.prescription.diagnosis|default:"-" }}
+    {% else %}
+        -
+    {% endif %}
+</td>
 
-            <td>
-              {{ visit.prescription|default:"-" }}
-            </td>
+<td>
+    {% if visit.token and visit.token.prescription %}
+        {% with items=visit.token.prescription.items.all %}
+            {% if items %}
+                {{ items|length }} medicine{{ items|length|pluralize }}
+            {% else %}
+                -
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        -
+    {% endif %}
+</td>
 
-          </tr>
+            </tr>
 
           {% endfor %}
 
@@ -807,17 +910,17 @@
 
       </table>
 
-      {% else %}
+    {% else %}
 
       <div class="empty-state">
         No visit history recorded yet.
       </div>
 
-      {% endif %}
-
-    </div>
+    {% endif %}
 
   </div>
+
+</div>
 
 
   <!-- Edit Patient Information -->
@@ -829,24 +932,117 @@
     Edit Patient Information
   </a>
 
-
   <!-- =====================================================
-       MEDICAL DOCUMENTS
-  ====================================================== -->
+     VISIT DETAILS MODAL
+====================================================== -->
 
-  <div class="section">
+<div
+  id="visitModal"
+  class="modal-overlay"
+  onclick="closeVisitDetails(event)"
+>
 
-    <div class="section-header">
+  <div
+    class="medical-modal"
+    onclick="event.stopPropagation()"
+  >
 
-      <h2>
-        Medical Documents
-      </h2>
+    <div class="modal-header">
+
+    <h2>Visit Details</h2>
+
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+    ">
+
+        <button
+            type="button"
+            id="print-visit-details-btn"
+            onclick="printVisitDetails()"
+            style="
+                border:none;
+                background:#2f7d6b;
+                color:white;
+                padding:7px 13px;
+                border-radius:7px;
+                font-size:13px;
+                font-weight:600;
+                cursor:pointer;
+            "
+        >
+            Print
+        </button>
+
+        <button
+            type="button"
+            onclick="closeVisitDetails(event)"
+            style="
+                border:none;
+                background:#f3f4f6;
+                color:#6b7280;
+                width:30px;
+                height:30px;
+                border-radius:50%;
+                font-size:20px;
+                cursor:pointer;
+                line-height:28px;
+            "
+        >
+            &times;
+        </button>
 
     </div>
 
-    <div class="section-content">
+</div>
 
-      {% if medical_documents %}
+    <div
+      id="visitModalBody"
+      class="modal-body"
+    >
+
+      <div class="loading">
+        Loading visit information...
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="modal-cancel-btn"
+        onclick="closeVisitDetails()"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+  <!-- =====================================================
+     MEDICAL DOCUMENTS
+====================================================== -->
+
+<div class="section">
+
+  <div class="section-header">
+
+    <h2>
+      Medical Documents
+    </h2>
+
+  </div>
+
+  <div class="section-content">
+
+    {% if medical_documents %}
 
       <table class="history-table">
 
@@ -870,27 +1066,27 @@
 
           {% for doc in medical_documents %}
 
-          <tr>
+            <tr>
 
-            <td>
+              <td>
 
-  <button
-    type="button"
-    class="medical-document-btn"
-    onclick="openMedicalDocument({{ doc.id }})"
-  >
-    {{ doc.document_type|default:doc.document.name|default:"Medical Document" }}
-  </button>
+                <button
+                  type="button"
+                  class="medical-document-btn"
+                  onclick="openMedicalDocument({{ doc.id }})"
+                >
+                  {{ doc.document_type|default:doc.document.name|default:"Medical Document" }}
+                </button>
 
-</td>
+              </td>
 
-            <td>
+              <td>
 
-              {{ doc.uploaded_at|date:"d M Y, h:i A" }}
+                {{ doc.uploaded_at|date:"d M Y, h:i A" }}
 
-            </td>
+              </td>
 
-          </tr>
+            </tr>
 
           {% endfor %}
 
@@ -898,92 +1094,17 @@
 
       </table>
 
-      {% else %}
-
-
-<div class="section">
-
-  <div class="section-header">
-
-    <h2>
-      Medical Documents
-    </h2>
-
-  </div>
-
-  <div class="section-content">
-
-    {% if medical_documents %}
-
-    <table class="history-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            Document
-          </th>
-
-          <th>
-            Uploaded Date
-          </th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        {% for doc in medical_documents %}
-
-        <tr>
-
-          <td>
-
-            <button
-              type="button"
-              class="medical-document-btn"
-              onclick="openMedicalDocument({{ doc.id }})"
-            >
-              {{ doc.document_type|default:doc.document.name|default:"Medical Document" }}
-            </button>
-
-          </td>
-
-          <td>
-
-            {{ doc.uploaded_at|date:"d M Y, h:i A" }}
-
-          </td>
-
-        </tr>
-
-        {% endfor %}
-
-      </tbody>
-
-    </table>
-
     {% else %}
 
-    <div class="empty-state">
-      No useful medical documents have been uploaded yet.
-    </div>
+      <div class="empty-state">
+        No medical documents have been uploaded yet.
+      </div>
 
     {% endif %}
 
   </div>
 
 </div>
-      {% endif %}
-
-    </div>
-
-  </div>
-
-</div>
-
 
 <!-- =========================================================
      MEDICAL DOCUMENT MODAL
@@ -1056,6 +1177,7 @@
     </div>
 
   </div>
+  
 
 </div>
 
@@ -1473,7 +1595,1231 @@ document.addEventListener(
   }
 );
 
+function openVisitDetails(historyId) {
+
+    const modal = document.getElementById("visitModal");
+    const body = document.getElementById("visitModalBody");
+
+    modal.classList.add("show");
+
+    body.innerHTML = `
+        <div class="loading">
+            Loading visit information...
+        </div>
+    `;
+
+    fetch(`/myapp/visit-history/${historyId}/info/`)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load visit information."
+                );
+            }
+
+            return response.json();
+        })
+
+        .then(data => {
+
+            if (!data.success) {
+
+                body.innerHTML = `
+                    <p class="no-medical-data">
+                        ${escapeHtml(
+                            data.error ||
+                            "No visit information available."
+                        )}
+                    </p>
+                `;
+
+                return;
+            }
+
+            renderVisitDetails(data);
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            body.innerHTML = `
+                <p class="no-medical-data">
+                    Unable to load visit information.
+                </p>
+            `;
+        });
+}
+
+
+
+function renderVisitDetails(data) {
+
+    const body =
+        document.getElementById("visitModalBody");
+
+    const visit =
+        data.visit || {};
+
+    const patient =
+        data.patient || {};
+
+    const symptoms =
+        Array.isArray(visit.symptoms)
+            ? visit.symptoms
+            : [];
+
+    const vitals =
+        data.visit_data &&
+        data.visit_data.vitals
+            ? data.visit_data.vitals
+            : {};
+
+    const dashavidha =
+        data.dashavidha || {};
+
+    const visitData =
+        data.visit_data || {};
+
+    const pain =
+        visitData.pain || {};
+
+    const socrates =
+        pain.socrates || {};
+
+
+    let html = `
+
+        <div class="document-meta">
+
+            <p>
+                <strong>Date:</strong>
+                ${escapeHtml(
+                    data.visit_date || "-"
+                )}
+            </p>
+
+            <p>
+                <strong>Patient:</strong>
+                ${escapeHtml(
+                    patient.name || "-"
+                )}
+            </p>
+
+            <p>
+                <strong>Age:</strong>
+                ${escapeHtml(
+                    String(patient.age ?? "-")
+                )}
+            </p>
+
+            <p>
+                <strong>Gender:</strong>
+                ${escapeHtml(
+                    patient.gender || "-"
+                )}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                ${escapeHtml(
+                    patient.phone || "-"
+                )}
+            </p>
+
+            <p>
+                <strong>Doctor:</strong>
+                ${escapeHtml(
+                    data.doctor || "-"
+                )}
+            </p>
+
+        </div>
+
+        <div class="medical-info-grid">
+    `;
+
+
+    // =====================================================
+    // DASHAVIDHA PARIKSHA
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Dashavidha Pariksha
+            </h3>
+
+            <ul>
+
+                <li>
+                    <strong>Prakriti:</strong>
+                    ${escapeHtml(
+                        dashavidha.prakriti || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Vikriti:</strong>
+                    ${escapeHtml(
+                        dashavidha.vikriti || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Sara:</strong>
+                    ${escapeHtml(
+                        dashavidha.sara || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Samhanana:</strong>
+                    ${escapeHtml(
+                        dashavidha.samhanana || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Pramana:</strong>
+                    ${escapeHtml(
+                        dashavidha.pramana || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Satmya:</strong>
+                    ${escapeHtml(
+                        dashavidha.satmya || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Satva:</strong>
+                    ${escapeHtml(
+                        dashavidha.satva || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Ahara Shakti:</strong>
+                    ${escapeHtml(
+                        dashavidha.ahara_shakti || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Vyayama Shakti:</strong>
+                    ${escapeHtml(
+                        dashavidha.vyayama_shakti || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Vaya:</strong>
+                    ${escapeHtml(
+                        dashavidha.vaya || "-"
+                    )}
+                </li>
+
+            </ul>
+
+        </div>
+    `;
+
+
+    // =====================================================
+    // CHIEF COMPLAINT
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Chief Complaint
+            </h3>
+
+            <div class="medical-info-value">
+
+                ${escapeHtml(
+                    visit.complaint || "-"
+                )}
+
+            </div>
+
+        </div>
+    `;
+
+
+    // =====================================================
+    // SYMPTOMS
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Reported Symptoms
+            </h3>
+    `;
+
+    if (symptoms.length > 0) {
+
+        html += `<ul>`;
+
+        symptoms.forEach(symptom => {
+
+            html += `
+                <li>
+                    ${escapeHtml(
+                        String(symptom)
+                    )}
+                </li>
+            `;
+
+        });
+
+        html += `</ul>`;
+
+    } else {
+
+        html += `
+            <div class="medical-info-value">
+                No non-pain symptoms reported.
+            </div>
+        `;
+
+    }
+
+    html += `
+        </div>
+    `;
+
+
+    // =====================================================
+    // PAIN
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Pain Assessment
+            </h3>
+    `;
+
+    if (
+        pain.has_pain === true
+    ) {
+
+        html += `
+
+            <div class="medical-info-value">
+
+                <p>
+                    <strong>
+                        Pain:
+                    </strong>
+                    Yes
+                </p>
+
+                <p>
+                    <strong>
+                        Location:
+                    </strong>
+                    ${escapeHtml(
+                        pain.location || "-"
+                    )}
+                </p>
+
+            </div>
+
+        `;
+
+
+        // -------------------------------------------------
+        // SOCRATES
+        // -------------------------------------------------
+
+        html += `
+
+            <h4
+                style="
+                    margin-top: 16px;
+                    margin-bottom: 10px;
+                "
+            >
+                SOCRATES Assessment
+            </h4>
+
+            <ul>
+
+                <li>
+                    <strong>Site:</strong>
+                    ${escapeHtml(
+                        socrates.site || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Onset:</strong>
+                    ${escapeHtml(
+                        socrates.onset || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Character:</strong>
+                    ${escapeHtml(
+                        socrates.character || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Radiation:</strong>
+                    ${escapeHtml(
+                        socrates.radiation || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>
+                        Associated Symptoms:
+                    </strong>
+                    ${escapeHtml(
+                        socrates.associated_symptoms || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Timing:</strong>
+                    ${escapeHtml(
+                        socrates.timing || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>
+                        Exacerbating / Relieving:
+                    </strong>
+                    ${escapeHtml(
+                        socrates.exacerbating_relieving || "-"
+                    )}
+                </li>
+
+                <li>
+                    <strong>Severity:</strong>
+                    ${escapeHtml(
+                        String(
+                            socrates.severity ??
+                            "-"
+                        )
+                    )}
+                    / 10
+                </li>
+
+            </ul>
+
+        `;
+
+    } else {
+
+        html += `
+
+            <div class="medical-info-value">
+                No pain reported.
+            </div>
+
+        `;
+
+    }
+
+    html += `
+        </div>
+    `;
+
+
+    // =====================================================
+    // OTHER SYMPTOMS
+    // =====================================================
+
+    if (
+        visit.other_symptoms
+    ) {
+
+        html += `
+
+            <div class="medical-info-card">
+
+                <h3>
+                    Other Symptoms
+                </h3>
+
+                <div class="medical-info-value">
+
+                    ${escapeHtml(
+                        visit.other_symptoms
+                    )}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =====================================================
+    // FEVER
+    // =====================================================
+
+    if (
+        visit.fever_temperature ||
+        visit.fever_duration
+    ) {
+
+        html += `
+
+            <div class="medical-info-card">
+
+                <h3>
+                    Fever
+                </h3>
+
+                <ul>
+
+                    <li>
+                        <strong>
+                            Temperature:
+                        </strong>
+
+                        ${escapeHtml(
+                            visit.fever_temperature || "-"
+                        )}
+                    </li>
+
+                    <li>
+                        <strong>
+                            Duration:
+                        </strong>
+
+                        ${escapeHtml(
+                            visit.fever_duration || "-"
+                        )}
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =====================================================
+    // VITAL SIGNS
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Vital Signs
+            </h3>
+
+            <ul>
+
+                <li>
+                    <strong>
+                        Blood Pressure:
+                    </strong>
+
+                    ${escapeHtml(
+                        String(
+                            vitals.sbp ?? "-"
+                        )
+                    )}
+                    /
+                    ${escapeHtml(
+                        String(
+                            vitals.dbp ?? "-"
+                        )
+                    )}
+                    mmHg
+                </li>
+
+                <li>
+                    <strong>
+                        Heart Rate:
+                    </strong>
+
+                    ${escapeHtml(
+                        String(
+                            vitals.hr ?? "-"
+                        )
+                    )}
+                    bpm
+                </li>
+
+                <li>
+                    <strong>
+                        Respiratory Rate:
+                    </strong>
+
+                    ${escapeHtml(
+                        String(
+                            vitals.rr ?? "-"
+                        )
+                    )}
+                    /min
+                </li>
+
+                <li>
+                    <strong>
+                        SpO₂:
+                    </strong>
+
+                    ${escapeHtml(
+                        String(
+                            vitals.saturation ?? "-"
+                        )
+                    )}
+                    %
+                </li>
+
+            </ul>
+
+        </div>
+    `;
+
+
+    // =====================================================
+    // TRIAGE
+    // =====================================================
+
+    const triage =
+        data.triage || {};
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Triage
+            </h3>
+
+            <div class="medical-info-value">
+
+                <p>
+                    <strong>
+                        Priority Level:
+                    </strong>
+
+                    ${escapeHtml(
+                        triage.level !== null &&
+                        triage.level !== undefined
+                            ? String(triage.level)
+                            : "-"
+                    )}
+                </p>
+
+                <p>
+                    <strong>
+                        Recommendation:
+                    </strong>
+
+                    ${escapeHtml(
+                        triage.recommendation || "-"
+                    )}
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+
+    // =====================================================
+    // DIAGNOSIS
+    // =====================================================
+
+    const prescription =
+        data.prescription || null;
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Diagnosis
+            </h3>
+
+            <div class="medical-info-value">
+
+                ${escapeHtml(
+                    prescription &&
+                    prescription.diagnosis
+                        ? prescription.diagnosis
+                        : "-"
+                )}
+
+            </div>
+
+        </div>
+    `;
+
+
+    // =====================================================
+    // PRESCRIPTION
+    // =====================================================
+
+    html += `
+
+        <div class="medical-info-card">
+
+            <h3>
+                Prescription
+            </h3>
+    `;
+
+    if (
+        prescription &&
+        Array.isArray(
+            prescription.items
+        ) &&
+        prescription.items.length > 0
+    ) {
+
+        html += `<ul>`;
+
+        prescription.items.forEach(
+            item => {
+
+                html += `
+
+                    <li>
+
+                        <strong>
+                            ${escapeHtml(
+                                item.medicine_name || "-"
+                            )}
+                        </strong>
+
+                        <br>
+
+                        Dosage:
+                        ${escapeHtml(
+                            item.dosage || "-"
+                        )}
+
+                        <br>
+
+                        Timing:
+                        ${escapeHtml(
+                            item.timing || "-"
+                        )}
+
+                        <br>
+
+                        Duration:
+                        ${escapeHtml(
+                            item.duration || "-"
+                        )}
+
+                    </li>
+
+                `;
+
+            }
+        );
+
+        html += `</ul>`;
+
+    } else {
+
+        html += `
+
+            <div class="medical-info-value">
+
+                No prescription available.
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        prescription &&
+        prescription.notes
+    ) {
+
+        html += `
+
+            <div
+                class="medical-info-value"
+                style="margin-top: 12px;"
+            >
+
+                <strong>
+                    Doctor's Notes:
+                </strong>
+
+                <br>
+
+                ${escapeHtml(
+                    prescription.notes
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+
+    html += `
+        </div>
+    `;
+
+
+    // =====================================================
+    // CLOSE GRID
+    // =====================================================
+
+    html += `
+        </div>
+    `;
+
+
+    // =====================================================
+    // DISPLAY
+    // =====================================================
+
+    body.innerHTML = html;
+}
+
+function closeVisitDetails(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    document
+        .getElementById("visitModal")
+        .classList.remove("show");
+}
+
+
+
+</script>
+<script>
+function printVisitDetails() {
+
+    const modal = document.getElementById("visitModal");
+
+    if (!modal) {
+        alert("Visit details could not be found.");
+        return;
+    }
+
+    /*
+     * Get only the actual Visit Details popup.
+     */
+    const medicalModal =
+        modal.querySelector(".medical-modal");
+
+    if (!medicalModal) {
+        alert("Visit details could not be found.");
+        return;
+    }
+
+    /*
+     * Clone the popup so we don't modify
+     * the actual dashboard.
+     */
+    const printContent =
+        medicalModal.cloneNode(true);
+
+    /*
+     * Remove buttons from printed version.
+     *
+     * This removes:
+     * - Print button
+     * - X button
+     * - Close button
+     */
+    printContent
+        .querySelectorAll("button")
+        .forEach(function(button) {
+            button.remove();
+        });
+
+    /*
+     * Remove the modal footer completely.
+     */
+    const footer =
+        printContent.querySelector(".modal-footer");
+
+    if (footer) {
+        footer.remove();
+    }
+
+    /*
+     * Open a completely separate window.
+     */
+    const printWindow = window.open(
+        "",
+        "_blank",
+        "width=900,height=700"
+    );
+
+    if (!printWindow) {
+
+        alert(
+            "Please allow pop-ups in your browser to print the visit details."
+        );
+
+        return;
+    }
+
+    /*
+     * Print-specific CSS.
+     */
+    const printStyles = `
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                padding: 25px;
+
+                background: white;
+
+                color: #374151;
+
+                font-family:
+                    Arial,
+                    Helvetica,
+                    sans-serif;
+
+                line-height: 1.5;
+            }
+
+
+            /* =========================
+               HEADER
+            ========================= */
+
+            .print-header {
+                border-bottom:
+                    2px solid #235e50;
+
+                padding-bottom: 12px;
+
+                margin-bottom: 20px;
+            }
+
+            .print-header h1 {
+                margin: 0;
+
+                color: #235e50;
+
+                font-size: 24px;
+            }
+
+            .print-header p {
+                margin: 4px 0 0;
+
+                color: #6b7280;
+
+                font-size: 13px;
+            }
+
+
+            /* =========================
+               MODAL
+            ========================= */
+
+            .medical-modal {
+                width: 100% !important;
+
+                max-width: none !important;
+
+                max-height: none !important;
+
+                overflow: visible !important;
+
+                background: white !important;
+
+                border-radius: 0 !important;
+
+                box-shadow: none !important;
+            }
+
+
+            /* =========================
+               MODAL HEADER
+            ========================= */
+
+            .modal-header {
+                position: static !important;
+
+                display: block !important;
+
+                background: white !important;
+
+                border-bottom:
+                    1px solid #d1d5db;
+
+                padding:
+                    0 0 12px 0;
+
+                margin-bottom: 18px;
+            }
+
+            .modal-header h2 {
+                color: #235e50;
+
+                font-size: 21px;
+
+                margin: 0;
+            }
+
+
+            /* =========================
+               MODAL BODY
+            ========================= */
+
+            .modal-body {
+                padding: 0 !important;
+            }
+
+
+            /* =========================
+               INFORMATION META
+            ========================= */
+
+            .document-meta {
+                background: #f0f7f5;
+
+                border:
+                    1px solid #d6e9e4;
+
+                border-radius: 8px;
+
+                padding: 14px 16px;
+
+                margin-bottom: 18px;
+            }
+
+            .document-meta p {
+                margin: 5px 0;
+
+                font-size: 13px;
+            }
+
+            .document-meta strong {
+                color: #235e50;
+            }
+
+
+            /* =========================
+               INFORMATION GRID
+            ========================= */
+
+            .medical-info-grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 14px;
+            }
+
+
+            /* =========================
+               INFORMATION CARDS
+            ========================= */
+
+            .medical-info-card {
+                border:
+                    1px solid #d1d5db;
+
+                border-radius: 8px;
+
+                padding: 14px;
+
+                background: white;
+
+                break-inside: avoid;
+
+                page-break-inside: avoid;
+            }
+
+            .medical-info-card h3 {
+                margin:
+                    0 0 10px 0;
+
+                padding-bottom: 7px;
+
+                border-bottom:
+                    1px solid #e5e7eb;
+
+                color: #235e50;
+
+                font-size: 15px;
+            }
+
+            .medical-info-card h4 {
+                color: #235e50;
+
+                font-size: 14px;
+            }
+
+            .medical-info-card ul {
+                margin: 0;
+
+                padding-left: 20px;
+            }
+
+            .medical-info-card li {
+                margin-bottom: 5px;
+
+                font-size: 13px;
+
+                line-height: 1.5;
+            }
+
+            .medical-info-value {
+                font-size: 13px;
+
+                line-height: 1.5;
+            }
+
+
+            /* =========================
+               FOOTER
+            ========================= */
+
+            .print-footer {
+                margin-top: 25px;
+
+                padding-top: 10px;
+
+                border-top:
+                    1px solid #d1d5db;
+
+                text-align: center;
+
+                color: #6b7280;
+
+                font-size: 11px;
+            }
+
+
+            /* =========================
+               PRINT PAGE
+            ========================= */
+
+            @page {
+                size: A4;
+
+                margin: 15mm;
+            }
+
+            @media print {
+
+                body {
+                    padding: 0;
+                }
+
+            }
+
+        </style>
+    `;
+
+
+    /*
+     * Build the print document.
+     */
+    printWindow.document.open();
+
+    printWindow.document.write(`
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <meta charset="UTF-8">
+
+            <title>
+                Patient Visit Details
+            </title>
+
+            ${printStyles}
+
+        </head>
+
+        <body>
+
+            <div class="print-header">
+
+                <h1>
+                    Arogya MediKiosk
+                </h1>
+
+                <p>
+                    Patient Visit Details
+                </p>
+
+            </div>
+
+            ${printContent.outerHTML}
+
+            <div class="print-footer">
+
+                Arogya MediKiosk
+                — Patient Visit Record
+
+            </div>
+
+        </body>
+
+        </html>
+    `);
+
+    printWindow.document.close();
+
+
+    /*
+     * Wait for the new window to load,
+     * then open the browser print dialog.
+     */
+    printWindow.onload = function() {
+
+        setTimeout(function() {
+
+            printWindow.focus();
+
+            printWindow.print();
+
+        }, 300);
+
+    };
+
+}
 </script>
 
 {% endblock %}
-

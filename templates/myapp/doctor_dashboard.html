@@ -1,816 +1,2081 @@
 {% extends "myapp/base.html" %}
 
-{% block title %}Doctor Dashboard | Clinic Management System{% endblock %}
+{% block title %}
+Doctor Dashboard | Clinic Management System
+{% endblock %}
 
 {% block nav_dashboard %}active{% endblock %}
 
 {% block extra_style %}
 
 .dashboard-header {
-margin-bottom: 28px;
+    margin-bottom: 28px;
 }
 
 .dashboard-header h1 {
-margin: 0;
-font-size: 28px;
-color: #235e50;
+    margin: 0;
+    font-size: 28px;
+    color: #235e50;
 }
 
 .dashboard-header p {
-margin: 8px 0 0;
-color: #6b7280;
-font-size: 14px;
+    margin: 8px 0 0;
+    color: #6b7280;
+    font-size: 14px;
 }
 
 .doctor-info {
-background: #e6f2ef;
-border: 1px solid #cce5df;
-border-radius: 12px;
-padding: 18px 20px;
-margin-bottom: 25px;
+    background: #e6f2ef;
+    border: 1px solid #cce5df;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 25px;
 }
 
 .doctor-info strong {
-color: #235e50;
+    color: #235e50;
 }
 
 .doctor-specialty {
-color: #6b7280;
-font-size: 13px;
-margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+    margin-top: 5px;
 }
 
-/* Statistics */
+/* =========================================================
+   STATISTICS
+========================================================= */
 
 .stats-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 16px;
-margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
 }
 
 .stat-card {
-background: #ffffff;
-border: 1px solid #e5e7eb;
-border-radius: 12px;
-padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
 }
 
 .stat-label {
-font-size: 13px;
-color: #6b7280;
-margin-bottom: 8px;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
 }
 
 .stat-number {
-font-size: 30px;
-font-weight: 700;
-color: #1f2937;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1f2937;
 }
 
 .stat-description {
-margin-top: 5px;
-font-size: 12px;
-color: #9ca3af;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #9ca3af;
 }
 
-/* Main layout */
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
 
 .dashboard-grid {
-display: grid;
-grid-template-columns: 2fr 1fr;
-gap: 22px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 22px;
 }
 
 .card {
-background: #ffffff;
-border: 1px solid #e5e7eb;
-border-radius: 12px;
-overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .card-header {
-padding: 18px 20px;
-border-bottom: 1px solid #e5e7eb;
-display: flex;
-align-items: center;
-justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .card-header h2 {
-margin: 0;
-font-size: 17px;
-color: #1f2937;
+    margin: 0;
+    font-size: 17px;
+    color: #1f2937;
 }
 
 .card-header span {
-font-size: 12px;
-color: #6b7280;
+    font-size: 12px;
+    color: #6b7280;
 }
 
-/* Queue */
+/* =========================================================
+   QUEUE
+========================================================= */
 
 .queue-table {
-width: 100%;
-border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .queue-table th {
-text-align: left;
-padding: 12px 16px;
-font-size: 12px;
-color: #6b7280;
-background: #f9fafb;
-border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .queue-table td {
-padding: 14px 16px;
-font-size: 13px;
-border-bottom: 1px solid #f0f1f2;
+    padding: 14px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f1f2;
 }
 
 .queue-table tr:last-child td {
-border-bottom: none;
+    border-bottom: none;
 }
 
 .token-number {
-font-weight: 700;
-color: #235e50;
-font-size: 16px;
+    font-weight: 700;
+    color: #235e50;
+    font-size: 16px;
 }
 
 .patient-name {
-font-weight: 600;
-color: #1f2937;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .patient-name.clickable {
-cursor: pointer;
+    cursor: pointer;
 }
 
 .patient-name.clickable:hover {
-color: #235e50;
-text-decoration: underline;
+    color: #235e50;
+    text-decoration: underline;
 }
 
 .patient-info {
-color: #6b7280;
-font-size: 12px;
-margin-top: 3px;
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 3px;
 }
 
-/* Status */
+/* =========================================================
+   STATUS
+========================================================= */
 
 .status {
-display: inline-block;
-padding: 5px 10px;
-border-radius: 20px;
-font-size: 11px;
-font-weight: 600;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
 }
 
 .status-waiting {
-background: #fff7ed;
-color: #c2410c;
+    background: #fff7ed;
+    color: #c2410c;
 }
 
 .status-seen {
-background: #ecfdf5;
-color: #047857;
+    background: #ecfdf5;
+    color: #047857;
 }
 
 .status-cancelled {
-background: #fdecea;
-color: #b91c1c;
+    background: #fdecea;
+    color: #b91c1c;
 }
 
-/* Prescription */
+/* =========================================================
+   PRESCRIPTION
+========================================================= */
 
 .prescription-list {
-padding: 0;
+    padding: 0;
 }
 
 .prescription-item {
-padding: 15px 18px;
-border-bottom: 1px solid #f0f1f2;
+    padding: 15px 18px;
+    border-bottom: 1px solid #f0f1f2;
 }
 
 .prescription-item:last-child {
-border-bottom: none;
+    border-bottom: none;
 }
 
 .prescription-patient {
-font-size: 14px;
-font-weight: 600;
-color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .prescription-patient.clickable {
-cursor: pointer;
+    cursor: pointer;
 }
 
 .prescription-patient.clickable:hover {
-color: #235e50;
-text-decoration: underline;
+    color: #235e50;
+    text-decoration: underline;
 }
 
 .prescription-date {
-font-size: 11px;
-color: #9ca3af;
-margin-top: 4px;
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
 }
 
 .prescription-diagnosis {
-font-size: 12px;
-color: #6b7280;
-margin-top: 7px;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 7px;
 }
 
-/* Visit history modal */
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.prescribe-button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.prescribe-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================================================
+   VISIT HISTORY
+========================================================= */
 
 .visit-card {
-border: 1px solid #e5e7eb;
-border-radius: 10px;
-margin-bottom: 14px;
-overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
 }
 
 .visit-card:last-child {
-margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .visit-card-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-flex-wrap: wrap;
-gap: 8px;
-padding: 12px 16px;
-background: #f9fafb;
-border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .visit-card-body {
-padding: 14px 16px;
+    padding: 14px 16px;
 }
 
-/* Empty */
+/* =========================================================
+   EMPTY
+========================================================= */
 
 .empty-state {
-padding: 35px 20px;
-text-align: center;
-color: #9ca3af;
-font-size: 13px;
+    padding: 35px 20px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 13px;
 }
 
-/* Responsive */
+/* =========================================================
+   PRESCRIBE MODAL
+========================================================= */
+
+.prescribe-modal-card {
+    width: 100%;
+    max-width: 620px;
+    padding: 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.prescribe-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 22px;
+    line-height: 30px;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.prescribe-close-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.vital-signs-box {
+    background: #f7faf9;
+    border: 1px solid #dfe8e5;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.vital-signs-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #235e50;
+    margin-bottom: 14px;
+}
+
+.vital-signs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.vital-field label {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.vital-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 13px;
+    background: white;
+}
+
+.vital-field input:focus {
+    outline: none;
+    border-color: #235e50;
+    box-shadow: 0 0 0 2px rgba(35, 94, 80, 0.1);
+}
+
+/* =========================================================
+   MEDICINE ROW
+========================================================= */
+
+.medicine-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.medicine-row input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.medicine-row input:focus {
+    outline: none;
+    border-color: #235e50;
+}
+
+.remove-medicine-row {
+    background: none;
+    border: none;
+    color: #b91c1c;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 900px) {
-.stats-grid {
-grid-template-columns: repeat(2, 1fr);
-}
 
-```
-.dashboard-grid {
-    grid-template-columns: 1fr;
-}
-```
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 600px) {
-.stats-grid {
-grid-template-columns: 1fr;
-}
 
-```
-.queue-table {
-    min-width: 650px;
-}
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
 
-.card {
-    overflow-x: auto;
-}
+    .queue-table {
+        min-width: 650px;
+    }
 
-.dashboard-header h1 {
-    font-size: 23px;
-}
-```
+    .card {
+        overflow-x: auto;
+    }
+
+    .dashboard-header h1 {
+        font-size: 23px;
+    }
+
+    .vital-signs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .medicine-row {
+        grid-template-columns: 1fr;
+    }
 
 }
 
 {% endblock %}
+
 
 {% block content %}
 
 <div class="page-wrap">
 
-<!-- Header -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-<div class="dashboard-header">
+    <div class="dashboard-header">
 
-    <h1>
-        Welcome, Dr. {{ doctor.name }}
-    </h1>
+        <h1>
+            Welcome, Dr. {{ doctor.name }}
+        </h1>
 
-    <p>
-        Doctor Dashboard
-        &nbsp;•&nbsp;
-        {{ today|date:"d M Y" }}
-    </p>
+        <p>
+            Doctor Dashboard
+            &nbsp;•&nbsp;
+            {{ today|date:"d M Y" }}
+        </p>
 
-</div>
-
-
-<!-- Doctor Information -->
-
-<div class="doctor-info">
-
-    <strong>
-        Dr. {{ doctor.name }}
-    </strong>
-
-    <div class="doctor-specialty">
-        {{ doctor.get_specialty_display }}
     </div>
 
-</div>
 
+    <!-- =====================================================
+         DOCTOR INFORMATION
+    ====================================================== -->
 
-<!-- Statistics -->
+    <div class="doctor-info">
 
-<div class="stats-grid">
+        <strong>
+            Dr. {{ doctor.name }}
+        </strong>
 
-    <div class="stat-card">
-
-        <div class="stat-label">
-            Today's Patients
-        </div>
-
-        <div class="stat-number">
-            {{ total_today }}
-        </div>
-
-        <div class="stat-description">
-            Total tokens today
+        <div class="doctor-specialty">
+            {{ doctor.get_specialty_display }}
         </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
 
-        <div class="stat-label">
-            Waiting
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Today's Patients
+            </div>
+
+            <div class="stat-number">
+                {{ total_today }}
+            </div>
+
+            <div class="stat-description">
+                Total tokens today
+            </div>
+
         </div>
 
-        <div class="stat-number">
-            {{ waiting_count }}
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Waiting
+            </div>
+
+            <div class="stat-number">
+                {{ waiting_count }}
+            </div>
+
+            <div class="stat-description">
+                Patients waiting
+            </div>
+
         </div>
 
-        <div class="stat-description">
-            Patients waiting
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Completed
+            </div>
+
+            <div class="stat-number">
+                {{ seen_count }}
+            </div>
+
+            <div class="stat-description">
+                Consultations completed
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total Patients
+            </div>
+
+            <div class="stat-number">
+                {{ total_patients }}
+            </div>
+
+            <div class="stat-description">
+                Registered patients
+            </div>
+
         </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- =====================================================
+         DASHBOARD CONTENT
+    ====================================================== -->
 
-        <div class="stat-label">
-            Completed
+    <div class="dashboard-grid">
+
+
+        <!-- =================================================
+             TODAY'S QUEUE
+        ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h2>
+                    Today's Patient Queue
+                </h2>
+
+                <span>
+                    {{ total_today }}
+                    patient{{ total_today|pluralize }}
+                </span>
+
+            </div>
+
+
+            {% if todays_tokens %}
+
+            <div style="overflow-x:auto;">
+
+                <table class="queue-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Appt. Date
+                            </th>
+
+                            <th>
+                                Token
+                            </th>
+
+                            <th>
+                                Patient
+                            </th>
+
+                            <th>
+                                Age
+                            </th>
+
+                            <th>
+                                Gender
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Prescribe
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for token in todays_tokens %}
+
+                        <tr>
+
+                            <!-- Appointment -->
+
+                            <td>
+
+                                <span class="appointment-date">
+
+                                    {{ token.appointment_datetime|date:"d/m/Y H:i" }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Token -->
+
+                            <td>
+
+                                <span class="token-number">
+
+                                    #{{ token.token_number }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Patient -->
+
+                            <td>
+
+                                <div
+                                    class="patient-name clickable"
+                                    onclick="openVisitHistoryModal({{ token.patient.pk }}, '{{ token.patient.name|escapejs }}')"
+                                    title="View visit history"
+                                >
+                                    {{ token.patient.name }}
+                                </div>
+
+                                <div class="patient-info">
+
+                                    {{ token.patient.contact }}
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Age -->
+
+                            <td>
+                                {{ token.patient.age }}
+                            </td>
+
+
+                            <!-- Gender -->
+
+                            <td>
+                                {{ token.patient.get_gender_display }}
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if token.status == "waiting" %}
+
+                                    <span class="status status-waiting">
+                                        Waiting
+                                    </span>
+
+                                {% elif token.status == "seen" %}
+
+                                    <span class="status status-seen">
+                                        Seen
+                                    </span>
+
+                                {% elif token.status == "cancelled" %}
+
+                                    <span class="status status-cancelled">
+                                        Cancelled
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status">
+                                        {{ token.get_status_display }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- PRESCRIBE -->
+
+                            <td>
+
+                                {% if token.status == "waiting" %}
+
+                                    <button
+                                        type="button"
+                                        class="btn-edit prescribe-button"
+                                        data-token-id="{{ token.id }}"
+                                        data-patient-name="{{ token.patient.name|escapejs }}"
+                                    >
+                                        Prescribe
+                                    </button>
+
+                                {% else %}
+
+                                    <span
+                                        style="
+                                            color:var(--text-muted);
+                                            font-size:12px;
+                                        "
+                                    >
+                                        Done
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    No patients in today's queue.
+                </div>
+
+            {% endif %}
+
         </div>
 
-        <div class="stat-number">
-            {{ seen_count }}
-        </div>
 
-        <div class="stat-description">
-            Consultations completed
-        </div>
+        <!-- =================================================
+             RECENT PRESCRIPTIONS
+        ================================================== -->
 
-    </div>
+        <div class="card">
 
+            <div class="card-header">
 
-    <div class="stat-card">
+                <h2>
+                    Recent Prescriptions
+                </h2>
 
-        <div class="stat-label">
-            Total Patients
-        </div>
+                <span>
+                    Latest 5
+                </span>
 
-        <div class="stat-number">
-            {{ total_patients }}
-        </div>
-
-        <div class="stat-description">
-            Registered patients
-        </div>
-
-    </div>
-
-</div>
+            </div>
 
 
-<!-- Dashboard Content -->
+            {% if recent_prescriptions %}
 
-<div class="dashboard-grid">
+                <div class="prescription-list">
 
+                    {% for prescription in recent_prescriptions %}
 
-    <!-- Today's Queue -->
+                        <div class="prescription-item">
 
-    <div class="card">
-
-        <div class="card-header">
-
-            <h2>
-                Today's Patient Queue
-            </h2>
-
-            <span>
-                {{ total_today }} patient{{ total_today|pluralize }}
-            </span>
-
-        </div>
-
-
-        {% if todays_tokens %}
-
-        <div style="overflow-x:auto;">
-
-            <table class="queue-table">
-                <thead>
-                    <tr>
-                        <th>Appt. Date</th>
-                        <th>Token</th>
-                        <th>Patient</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Status</th>
-                        <th>Prescribe</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% for token in todays_tokens %}
-
-                    <tr>
-
-               
-
-                        <td><span class="appointment-date">
-                            {{ token.appointment_datetime|date:"d/m/Y H:i" }}
-                        </span></td>
-
-
-                        <td>
-                            <span class="token-number">
-                                #{{ token.token_number }}
-                            </span>
-                        </td>
-
-
-                        <td>
-
-                            <div class="patient-name clickable" onclick="openVisitHistoryModal({{ token.patient.pk }}, '{{ token.patient.name|escapejs }}')" title="View visit history">
-                                {{ token.patient.name }}
+                            <div
+                                class="prescription-patient clickable"
+                                onclick="openVisitHistoryModal({{ prescription.patient.pk }}, '{{ prescription.patient.name|escapejs }}')"
+                                title="View visit history"
+                            >
+                                {{ prescription.patient.name }}
                             </div>
 
-                            <div class="patient-info">
-                                {{ token.patient.contact }}
+
+                            <div class="prescription-date">
+
+                                {{ prescription.created_at|date:"d M Y, h:i A" }}
+
                             </div>
 
-                        </td>
 
+                            {% if prescription.diagnosis %}
 
-                        <td>
-                            {{ token.patient.age }}
-                        </td>
+                                <div class="prescription-diagnosis">
 
+                                    {{ prescription.diagnosis|truncatechars:100 }}
 
-                        <td>
-                            {{ token.patient.get_gender_display }}
-                        </td>
+                                </div>
 
-                        <td>
-                            {% if token.status == "waiting" %}
-                                <span class="status status-waiting">Waiting</span>
                             {% else %}
-                                <span class="status status-seen">Seen</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if token.status == "waiting" %}
-                                <a href="#" class="btn-edit" onclick="openPrescribeModal({{ token.id }}, '{{ token.patient.name|escapejs }}'); return false;">Prescribe</a>
-                            {% else %}
-                                <span style="color:var(--text-muted); font-size:12px;">Done</span>
-                            {% endif %}
-                        </td>
 
-                    </tr>
+                                <div class="prescription-diagnosis">
+
+                                    No diagnosis recorded.
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
                     {% endfor %}
 
-                </tbody>
+                </div>
 
-            </table>
+            {% else %}
+
+                <div class="empty-state">
+
+                    No prescriptions yet.
+
+                </div>
+
+            {% endif %}
 
         </div>
-
-        {% else %}
-
-            <div class="empty-state">
-                No patients in today's queue.
-            </div>
-
-        {% endif %}
 
     </div>
 
-
-    <!-- Recent Prescriptions -->
-
-    <div class="card">
-
-        <div class="card-header">
-
-            <h2>
-                Recent Prescriptions
-            </h2>
-
-            <span>
-                Latest 5
-            </span>
-
-        </div>
+</div>
 
 
-        {% if recent_prescriptions %}
+<!-- =========================================================
+     PRESCRIBE MODAL
+========================================================== -->
 
-            <div class="prescription-list">
+<div
+    id="prescribe-modal-backdrop"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.45);
+        z-index:1000;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
 
-                {% for prescription in recent_prescriptions %}
-
-                    <div class="prescription-item">
-
-                        <div class="prescription-patient clickable" onclick="openVisitHistoryModal({{ prescription.patient.pk }}, '{{ prescription.patient.name|escapejs }}')" title="View visit history">
-                            {{ prescription.patient.name }}
-                        </div>
-
-                        <div class="prescription-date">
-                            {{ prescription.created_at|date:"d M Y, h:i A" }}
-                        </div>
+    <div class="card prescribe-modal-card">
 
 
-                        {% if prescription.diagnosis %}
+        <!-- CLOSE BUTTON -->
 
-                            <div class="prescription-diagnosis">
-                                {{ prescription.diagnosis|truncatechars:100 }}
-                            </div>
+        <button
+            type="button"
+            id="prescribe-close-btn"
+            class="prescribe-close-btn"
+            aria-label="Close"
+        >
+            &times;
+        </button>
 
-                        {% else %}
 
-                            <div class="prescription-diagnosis">
-                                No diagnosis recorded.
-                            </div>
+        <!-- TITLE -->
 
-                        {% endif %}
+        <h3
+            style="
+                margin:0 0 4px;
+                font-size:18px;
+                padding-right:40px;
+            "
+        >
+            Prescribe
+        </h3>
+
+
+        <p
+            id="prescribe-patient-name"
+            style="
+                margin:0 0 20px;
+                color:var(--text-muted);
+                font-size:14px;
+            "
+        ></p>
+
+
+        <!-- =================================================
+             PRESCRIPTION FORM
+        ================================================== -->
+
+        <form id="prescribe-form">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                id="prescribe-token-id"
+                name="token_id"
+            >
+
+
+            <!-- =================================================
+                 VITAL SIGNS
+            ================================================== -->
+
+            <div class="vital-signs-box">
+
+                <div class="vital-signs-title">
+                    Vital Signs
+                </div>
+
+
+                <div class="vital-signs-grid">
+
+
+                    <!-- SBP -->
+
+                    <div class="vital-field">
+
+                        <label for="prescribe-sbp">
+                            Systolic BP (SBP)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="prescribe-sbp"
+                            name="sbp"
+                            min="0"
+                            max="300"
+                            placeholder="e.g. 120"
+                        >
 
                     </div>
 
-                {% endfor %}
+
+                    <!-- DBP -->
+
+                    <div class="vital-field">
+
+                        <label for="prescribe-dbp">
+                            Diastolic BP (DBP)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="prescribe-dbp"
+                            name="dbp"
+                            min="0"
+                            max="200"
+                            placeholder="e.g. 80"
+                        >
+
+                    </div>
+
+
+                    <!-- HEART RATE -->
+
+                    <div class="vital-field">
+
+                        <label for="prescribe-hr">
+                            Heart Rate (bpm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="prescribe-hr"
+                            name="hr"
+                            min="0"
+                            max="300"
+                            placeholder="e.g. 75"
+                        >
+
+                    </div>
+
+
+                    <!-- RESPIRATORY RATE -->
+
+                    <div class="vital-field">
+
+                        <label for="prescribe-rr">
+                            Respiratory Rate (/min)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="prescribe-rr"
+                            name="rr"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 18"
+                        >
+
+                    </div>
+
+
+                    <!-- SpO2 -->
+
+                    <div class="vital-field">
+
+                        <label for="prescribe-saturation">
+                            SpO₂ (%)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="prescribe-saturation"
+                            name="saturation"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 98"
+                        >
+
+                    </div>
+
+                </div>
 
             </div>
 
-        {% else %}
 
-            <div class="empty-state">
-                No prescriptions yet.
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            <div
+                id="prescribe-error"
+                style="
+                    display:none;
+                    background:#fdecea;
+                    color:#b91c1c;
+                    padding:8px 12px;
+                    border-radius:6px;
+                    font-size:13px;
+                    margin-bottom:14px;
+                "
+            ></div>
+
+
+            <!-- =================================================
+                 DIAGNOSIS
+            ================================================== -->
+
+            <label
+                style="
+                    display:block;
+                    font-size:13px;
+                    font-weight:600;
+                    margin-bottom:6px;
+                "
+            >
+                Diagnosis
+            </label>
+
+            <textarea
+                name="diagnosis"
+                rows="2"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:9px 12px;
+                    border:1px solid var(--border);
+                    border-radius:8px;
+                    font-size:14px;
+                    margin-bottom:14px;
+                "
+            ></textarea>
+
+
+            <!-- =================================================
+                 NOTES
+            ================================================== -->
+
+            <label
+                style="
+                    display:block;
+                    font-size:13px;
+                    font-weight:600;
+                    margin-bottom:6px;
+                "
+            >
+                Notes
+            </label>
+
+            <textarea
+                name="notes"
+                rows="2"
+                style="
+                    width:100%;
+                    box-sizing:border-box;
+                    padding:9px 12px;
+                    border:1px solid var(--border);
+                    border-radius:8px;
+                    font-size:14px;
+                    margin-bottom:18px;
+                "
+            ></textarea>
+
+
+            <!-- =================================================
+                 MEDICINES
+            ================================================== -->
+
+            <label
+                style="
+                    display:block;
+                    font-size:13px;
+                    font-weight:600;
+                    margin-bottom:8px;
+                "
+            >
+                Medicines
+            </label>
+
+
+            <div id="medicine-rows"></div>
+
+
+            <button
+                type="button"
+                id="add-medicine-row"
+                class="btn-edit"
+                style="margin-bottom:20px;"
+            >
+                + Add Medicine
+            </button>
+
+
+            <!-- =================================================
+                 SAVE
+            ================================================== -->
+
+            <button
+                type="submit"
+                class="btn-add"
+                style="
+                    width:100%;
+                    justify-content:center;
+                "
+            >
+                Save Prescription
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     PATIENT VISIT HISTORY MODAL
+========================================================== -->
+
+<div
+    id="visit-history-modal-backdrop"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.45);
+        z-index:1000;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+    "
+>
+
+    <div
+        class="card"
+        style="
+            width:100%;
+            max-width:720px;
+            padding:26px;
+            max-height:88vh;
+            overflow-y:auto;
+            position:relative;
+        "
+    >
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:16px;
+            "
+        >
+
+            <h3
+                style="
+                    margin:0;
+                    font-size:18px;
+                    color:#235e50;
+                "
+            >
+                Patient Information
+            </h3>
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:8px;
+                "
+            >
+
+                <button
+                    id="print-patient-info"
+                    style="
+                        background:#2f7d6b;
+                        color:white;
+                        border:none;
+                        padding:6px 12px;
+                        border-radius:6px;
+                        font-size:13px;
+                        cursor:pointer;
+                        font-weight:500;
+                    "
+                >
+                    Print
+                </button>
+
+
+                <button
+                    id="visit-history-modal-close"
+                    style="
+                        background:none;
+                        border:none;
+                        font-size:20px;
+                        cursor:pointer;
+                        color:#6b7280;
+                        padding:0 8px;
+                    "
+                >
+                    &times;
+                </button>
+
             </div>
 
-        {% endif %}
+        </div>
+
+
+        <div id="visit-history-modal-content">
+
+            <p
+                style="
+                    text-align:center;
+                    color:#9ca3af;
+                    padding:20px;
+                "
+            >
+                Loading...
+            </p>
+
+        </div>
 
     </div>
 
 </div>
 
-</div>
 
-
-<div id="prescribe-modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:560px; padding:24px; max-height:90vh; overflow-y:auto;">
-    <h3 style="margin:0 0 4px; font-size:18px;">Prescribe</h3>
-    <p id="prescribe-patient-name" style="margin:0 0 18px; color:var(--text-muted); font-size:14px;"></p>
-
-    <div id="prescribe-error" style="display:none; background:#fdecea; color:#b91c1c; padding:8px 12px; border-radius:6px; font-size:13px; margin-bottom:14px;"></div>
-
-    <form id="prescribe-form">
-      {% csrf_token %}
-      <input type="hidden" id="prescribe-token-id" name="token_id">
-
-      <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Diagnosis</label>
-      <textarea name="diagnosis" rows="2" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:14px;"></textarea>
-
-      <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Notes</label>
-      <textarea name="notes" rows="2" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:18px;"></textarea>
-
-      <label style="display:block; font-size:13px; font-weight:600; margin-bottom:8px;">Medicines</label>
-
-      <div id="medicine-rows"></div>
-
-      <button type="button" id="add-medicine-row" class="btn-edit" style="margin-bottom:20px;">+ Add Medicine</button>
-
-      <button type="submit" class="btn-add" style="width:100%; justify-content:center;">Save Prescription</button>
-    </form>
-  </div>
-</div>
-
-<div id="visit-history-modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:20px;">
-  <div class="card" style="width:100%; max-width:720px; padding:26px; max-height:88vh; overflow-y:auto; position:relative;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="margin:0; font-size:18px; color:#235e50;">Patient Information</h3>
-      <div style="display:flex; gap:8px;">
-        <button id="print-patient-info" style="background:#2f7d6b; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer; font-weight:500;">🖨️ Print</button>
-        <button id="visit-history-modal-close" style="background:none; border:none; font-size:20px; cursor:pointer; color:#6b7280; padding:0 8px;">&times;</button>
-      </div>
-    </div>
-    <div id="visit-history-modal-content">
-      <p style="text-align:center; color:#9ca3af; padding:20px;">Loading...</p>
-    </div>
-  </div>
-</div>
+<!-- =========================================================
+     MEDICINE TEMPLATE
+========================================================== -->
 
 <template id="medicine-row-template">
-  <div class="medicine-row" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px; margin-bottom:8px; align-items:center;">
-    <input type="text" name="medicine_name[]" placeholder="Medicine name" style="padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
-    <input type="text" name="dosage[]" placeholder="Dosage" style="padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
-    <input type="text" name="timing[]" placeholder="Timing" style="padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
-    <input type="text" name="duration[]" placeholder="Duration" style="padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;">
-    <button type="button" class="remove-medicine-row" style="background:none; border:none; color:#b91c1c; font-size:18px; cursor:pointer; padding:0 4px;">&times;</button>
-  </div>
+
+    <div class="medicine-row">
+
+        <input
+            type="text"
+            name="medicine_name[]"
+            placeholder="Medicine name"
+        >
+
+        <input
+            type="text"
+            name="dosage[]"
+            placeholder="Dosage"
+        >
+
+        <input
+            type="text"
+            name="timing[]"
+            placeholder="Timing"
+        >
+
+        <input
+            type="text"
+            name="duration[]"
+            placeholder="Duration"
+        >
+
+        <button
+            type="button"
+            class="remove-medicine-row"
+        >
+            &times;
+        </button>
+
+    </div>
+
 </template>
 
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const backdrop = document.getElementById("prescribe-modal-backdrop");
-  const form = document.getElementById("prescribe-form");
-  const errorBox = document.getElementById("prescribe-error");
-  const patientNameEl = document.getElementById("prescribe-patient-name");
-  const tokenIdInput = document.getElementById("prescribe-token-id");
-  const rowsContainer = document.getElementById("medicine-rows");
-  const rowTemplate = document.getElementById("medicine-row-template");
-  const addRowBtn = document.getElementById("add-medicine-row");
 
-  function addMedicineRow() {
-    const clone = rowTemplate.content.cloneNode(true);
-    rowsContainer.appendChild(clone);
-  }
+/* =========================================================
+   PRESCRIPTION MODAL
+========================================================= */
 
-  addRowBtn.addEventListener("click", addMedicineRow);
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-  rowsContainer.addEventListener("click", function (e) {
-    if (e.target.classList.contains("remove-medicine-row")) {
-      e.target.closest(".medicine-row").remove();
-    }
-  });
+        const backdrop =
+            document.getElementById(
+                "prescribe-modal-backdrop"
+            );
 
-  window.openPrescribeModal = function (tokenId, patientName) {
-    tokenIdInput.value = tokenId;
-    patientNameEl.textContent = "for " + patientName;
-    errorBox.style.display = "none";
-    form.reset();
-    tokenIdInput.value = tokenId;
-    rowsContainer.innerHTML = "";
-    addMedicineRow(); // start with one row
-    backdrop.style.display = "flex";
-  };
+        const closePrescribeBtn =
+            document.getElementById(
+                "prescribe-close-btn"
+            );
 
-  backdrop.addEventListener("click", function (e) {
-    if (e.target === backdrop) backdrop.style.display = "none";
-  });
+        const form =
+            document.getElementById(
+                "prescribe-form"
+            );
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    errorBox.style.display = "none";
+        const errorBox =
+            document.getElementById(
+                "prescribe-error"
+            );
 
-    const tokenId = tokenIdInput.value;
-    const formData = new FormData(form);
-    const csrfToken = form.querySelector("[name=csrfmiddlewaretoken]").value;
-    const bookUrl = "{% url 'myapp:prescribe_token_ajax' 0 %}".replace('/0/', `/${tokenId}/`);
+        const patientNameEl =
+            document.getElementById(
+                "prescribe-patient-name"
+            );
 
-    const submitBtn = form.querySelector("button[type=submit]");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Saving...";
+        const tokenIdInput =
+            document.getElementById(
+                "prescribe-token-id"
+            );
 
-    fetch(bookUrl, {
-      method: "POST",
-      headers: { "X-CSRFToken": csrfToken, "X-Requested-With": "XMLHttpRequest" },
-      body: formData,
-    })
-      .then((res) => res.json().then((data) => ({ status: res.status, data })))
-      .then(({ data }) => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Save Prescription";
+        const rowsContainer =
+            document.getElementById(
+                "medicine-rows"
+            );
 
-        if (!data.success) {
-          errorBox.textContent = data.error || "Something went wrong.";
-          errorBox.style.display = "block";
-          return;
+        const rowTemplate =
+            document.getElementById(
+                "medicine-row-template"
+            );
+
+        const addRowBtn =
+            document.getElementById(
+                "add-medicine-row"
+            );
+
+
+        /* =====================================================
+           ADD MEDICINE ROW
+        ===================================================== */
+
+        function addMedicineRow() {
+
+            const clone =
+                rowTemplate.content.cloneNode(
+                    true
+                );
+
+            rowsContainer.appendChild(
+                clone
+            );
         }
 
-        backdrop.style.display = "none";
-        window.location.reload(); // simplest way to refresh queue + recent prescriptions
-      })
-      .catch(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Save Prescription";
-        errorBox.textContent = "Network error. Please try again.";
-        errorBox.style.display = "block";
-      });
-  });
-});
+
+        addRowBtn.addEventListener(
+            "click",
+            addMedicineRow
+        );
+
+
+        /* =====================================================
+           REMOVE MEDICINE ROW
+        ===================================================== */
+
+        rowsContainer.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target.classList.contains(
+                        "remove-medicine-row"
+                    )
+                ) {
+
+                    const row =
+                        event.target.closest(
+                            ".medicine-row"
+                        );
+
+                    if (row) {
+                        row.remove();
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           OPEN PRESCRIBE MODAL
+        ===================================================== */
+
+        function openPrescribeModal(
+            tokenId,
+            patientName
+        ) {
+
+            tokenIdInput.value =
+                tokenId;
+
+            patientNameEl.textContent =
+                "for " + patientName;
+
+            errorBox.style.display =
+                "none";
+
+            form.reset();
+
+            tokenIdInput.value =
+                tokenId;
+
+            rowsContainer.innerHTML =
+                "";
+
+            addMedicineRow();
+
+            backdrop.style.display =
+                "flex";
+        }
+
+
+        /* Make function available to page */
+
+        window.openPrescribeModal =
+            openPrescribeModal;
+
+
+        /* =====================================================
+           PRESCRIBE BUTTONS
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".prescribe-button"
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            openPrescribeModal(
+                                this.dataset.tokenId,
+                                this.dataset.patientName
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           CLOSE PRESCRIBE MODAL
+        ===================================================== */
+
+        closePrescribeBtn.addEventListener(
+            "click",
+            function () {
+
+                backdrop.style.display =
+                    "none";
+
+                window.location.href =
+                    "{% url 'myapp:doctor_dashboard' %}";
+
+            }
+        );
+
+
+        /* =====================================================
+           CLICK OUTSIDE MODAL
+        ===================================================== */
+
+        backdrop.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target === backdrop
+                ) {
+
+                    backdrop.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           SUBMIT PRESCRIPTION
+        ===================================================== */
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+                errorBox.style.display =
+                    "none";
+
+
+                const tokenId =
+                    tokenIdInput.value;
+
+
+                const formData =
+                    new FormData(form);
+
+
+                const csrfToken =
+                    form.querySelector(
+                        "[name=csrfmiddlewaretoken]"
+                    ).value;
+
+
+                const bookUrl =
+                    "{% url 'myapp:prescribe_token_ajax' 0 %}"
+                    .replace(
+                        "/0/",
+                        `/${tokenId}/`
+                    );
+
+
+                const submitBtn =
+                    form.querySelector(
+                        "button[type=submit]"
+                    );
+
+
+                submitBtn.disabled =
+                    true;
+
+                submitBtn.textContent =
+                    "Saving...";
+
+
+                fetch(
+                    bookUrl,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken":
+                                csrfToken,
+
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+                        },
+
+                        body:
+                            formData,
+                    }
+                )
+
+                .then(
+                    function (response) {
+
+                        return response
+                            .json()
+                            .then(
+                                function (data) {
+
+                                    return {
+                                        status:
+                                            response.status,
+
+                                        data:
+                                            data,
+                                    };
+
+                                }
+                            );
+
+                    }
+                )
+
+                .then(
+                    function (result) {
+
+                        submitBtn.disabled =
+                            false;
+
+                        submitBtn.textContent =
+                            "Save Prescription";
+
+
+                        if (
+                            !result.data.success
+                        ) {
+
+                            errorBox.textContent =
+                                result.data.error ||
+                                "Something went wrong.";
+
+                            errorBox.style.display =
+                                "block";
+
+                            return;
+                        }
+
+
+                        backdrop.style.display =
+                            "none";
+
+
+                        /*
+                         * Reload dashboard so:
+                         *
+                         * Waiting -> Seen
+                         * prescription appears
+                         * statistics update
+                         */
+
+                        window.location.reload();
+
+                    }
+                )
+
+                .catch(
+                    function (error) {
+
+                        console.error(
+                            "Prescription error:",
+                            error
+                        );
+
+
+                        submitBtn.disabled =
+                            false;
+
+                        submitBtn.textContent =
+                            "Save Prescription";
+
+
+                        errorBox.textContent =
+                            "Network error. Please try again.";
+
+                        errorBox.style.display =
+                            "block";
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   PATIENT VISIT HISTORY MODAL
+========================================================= */
 
 (function () {
-  const backdrop = document.getElementById("visit-history-modal-backdrop");
-  const closeBtn = document.getElementById("visit-history-modal-close");
-  const printBtn = document.getElementById("print-patient-info");
-  const content = document.getElementById("visit-history-modal-content");
-  const historyUrlTemplate = "{% url 'myapp:patient_visit_history_ajax' 0 %}";
 
-  window.openVisitHistoryModal = function (patientId) {
-    content.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:20px;">Loading...</p>';
-    backdrop.style.display = "flex";
+    const backdrop =
+        document.getElementById(
+            "visit-history-modal-backdrop"
+        );
 
-    fetch(historyUrlTemplate.replace("/0/", `/${patientId}/`), {
-      headers: { "X-Requested-With": "XMLHttpRequest" },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Request failed");
-        return res.text();
-      })
-      .then((html) => {
-        content.innerHTML = html;
-      })
-      .catch(() => {
-        content.innerHTML = '<p style="text-align:center; color:#b91c1c; padding:20px;">Couldn\'t load visit history. Please try again.</p>';
-      });
-  };
+    const closeBtn =
+        document.getElementById(
+            "visit-history-modal-close"
+        );
 
-  function closeModal() {
-    backdrop.style.display = "none";
-  }
+    const printBtn =
+        document.getElementById(
+            "print-patient-info"
+        );
 
-  function printPatientInfo() {
-    const modalContent = document.getElementById("visit-history-modal-content");
-    const printWindow = window.open('', '', 'width=800,height=600');
-    
-    const printStyles = `
-      <style>
-        body { font-family: Arial, sans-serif; padding: 20px; color: #374151; }
-        h3 { color: #235e50; margin-bottom: 10px; font-size: 18px; }
-        h4 { color: #235e50; margin: 20px 0 12px; font-size: 16px; }
-        p { margin: 0 0 20px; color: #6b7280; font-size: 14px; }
-        .visit-card { margin: 15px 0; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; }
-        .visit-card-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .token-number { font-weight: 700; color: #235e50; }
-        .status { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-        .status-waiting { background: #fef3e2; color: #b45309; }
-        .status-seen { background: #e6f4ea; color: #1e7e34; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { background: #f3f4f6; font-weight: 600; }
-        .symptom-tag { display: inline-block; background: #e6f2ef; color: #235e50; padding: 4px 8px; border-radius: 12px; margin: 2px; font-size: 12px; }
-        .dashavidha-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
-        .dashavidha-item span:first-child { font-weight: 600; color: #4b5563; }
-        .empty-state { text-align: center; padding: 20px; color: #9ca3af; }
-        @media print { body { padding: 0; } }
-      </style>
-    `;
-    
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>Patient Information</title>
-        ${printStyles}
-      </head>
-      <body>
-        ${modalContent.innerHTML}
-      </body>
-      </html>
-    `);
-    
-    printWindow.document.close();
-    setTimeout(() => {
-      printWindow.print();
-    }, 250);
-  }
+    const content =
+        document.getElementById(
+            "visit-history-modal-content"
+        );
 
-  closeBtn.addEventListener("click", closeModal);
-  printBtn.addEventListener("click", printPatientInfo);
-  backdrop.addEventListener("click", function (e) {
-    if (e.target === backdrop) closeModal();
-  });
+    const historyUrlTemplate =
+        "{% url 'myapp:patient_visit_history_ajax' 0 %}";
+
+
+    /* =====================================================
+       OPEN PATIENT HISTORY
+    ===================================================== */
+
+    window.openVisitHistoryModal =
+        function (patientId) {
+
+            content.innerHTML =
+                `
+                    <p
+                        style="
+                            text-align:center;
+                            color:#9ca3af;
+                            padding:20px;
+                        "
+                    >
+                        Loading...
+                    </p>
+                `;
+
+
+            backdrop.style.display =
+                "flex";
+
+
+            fetch(
+                historyUrlTemplate.replace(
+                    "/0/",
+                    `/${patientId}/`
+                ),
+                {
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest",
+                    },
+                }
+            )
+
+            .then(
+                function (response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Request failed"
+                        );
+
+                    }
+
+                    return response.text();
+
+                }
+            )
+
+            .then(
+                function (html) {
+
+                    content.innerHTML =
+                        html;
+
+                }
+            )
+
+            .catch(
+                function (error) {
+
+                    console.error(
+                        error
+                    );
+
+                    content.innerHTML =
+                        `
+                            <p
+                                style="
+                                    text-align:center;
+                                    color:#b91c1c;
+                                    padding:20px;
+                                "
+                            >
+                                Couldn't load visit history.
+                                Please try again.
+                            </p>
+                        `;
+
+                }
+            );
+
+        };
+
+
+    /* =====================================================
+       CLOSE PATIENT HISTORY
+    ===================================================== */
+
+    function closeModal() {
+
+        backdrop.style.display =
+            "none";
+
+    }
+
+
+    closeBtn.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    backdrop.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target === backdrop
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       PRINT PATIENT INFORMATION
+    ===================================================== */
+
+    function printPatientInfo() {
+
+        const modalContent =
+            document.getElementById(
+                "visit-history-modal-content"
+            );
+
+
+        const printWindow =
+            window.open(
+                "",
+                "",
+                "width=800,height=600"
+            );
+
+
+        if (!printWindow) {
+
+            return;
+
+        }
+
+
+        const printStyles = `
+            <style>
+
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                    color: #374151;
+                }
+
+                h3 {
+                    color: #235e50;
+                    margin-bottom: 10px;
+                    font-size: 18px;
+                }
+
+                h4 {
+                    color: #235e50;
+                    margin: 20px 0 12px;
+                    font-size: 16px;
+                }
+
+                p {
+                    margin: 0 0 20px;
+                    color: #6b7280;
+                    font-size: 14px;
+                }
+
+                .visit-card {
+                    margin: 15px 0;
+                    padding: 15px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                }
+
+                .visit-card-header {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                }
+
+                .token-number {
+                    font-weight: 700;
+                    color: #235e50;
+                }
+
+                .status {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                }
+
+                .status-waiting {
+                    background: #fef3e2;
+                    color: #b45309;
+                }
+
+                .status-seen {
+                    background: #e6f4ea;
+                    color: #1e7e34;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+
+                th,
+                td {
+                    padding: 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+
+                th {
+                    background: #f3f4f6;
+                    font-weight: 600;
+                }
+
+                .symptom-tag {
+                    display: inline-block;
+                    background: #e6f2ef;
+                    color: #235e50;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    margin: 2px;
+                    font-size: 12px;
+                }
+
+                .dashavidha-item {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 4px 0;
+                    border-bottom: 1px solid #e5e7eb;
+                    font-size: 13px;
+                }
+
+                .dashavidha-item span:first-child {
+                    font-weight: 600;
+                    color: #4b5563;
+                }
+
+                .empty-state {
+                    text-align: center;
+                    padding: 20px;
+                    color: #9ca3af;
+                }
+
+                @media print {
+
+                    body {
+                        padding: 0;
+                    }
+
+                }
+
+            </style>
+        `;
+
+
+        printWindow.document.write(
+            `
+                <html>
+
+                <head>
+
+                    <title>
+                        Patient Information
+                    </title>
+
+                    ${printStyles}
+
+                </head>
+
+                <body>
+
+                    ${modalContent.innerHTML}
+
+                </body>
+
+                </html>
+            `
+        );
+
+
+        printWindow.document.close();
+
+
+        setTimeout(
+            function () {
+
+                printWindow.print();
+
+            },
+            250
+        );
+
+    }
+
+
+    printBtn.addEventListener(
+        "click",
+        printPatientInfo
+    );
+
+
 })();
 </script>
 
 {% endblock %}
+
