@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arogya MediKiosk</title>
+
+    <style>
+        :root {
+            --paper: #faf9f6;
+            --card: #ffffff;
+            --ink: #262626;
+            --muted: #737373;
+
+            --line: #dbdbdb;
+
+            --accent: #5c6b4f;
+            --accent-dark: #46533c;
+            --accent-light: #f0f3ed;
+
+            --soft: #f5f6f2;
+            --white: #ffffff;
+        }
+
+
+        /* =========================
+   RESET
+========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(circle at 15% 10%,
+                    rgba(92, 107, 79, 0.08),
+                    transparent 30%),
+                radial-gradient(circle at 85% 90%,
+                    rgba(92, 107, 79, 0.07),
+                    transparent 30%),
+                var(--paper);
+
+            color: var(--ink);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px 20px;
+
+            overflow: hidden;
+        }
+
+
+        /* =========================
+   MAIN PAGE
+========================= */
+
+        .page {
+
+            width: 100%;
+            max-width: 1000px;
+            min-height: 650px;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1.15fr;
+
+            align-items: center;
+
+            gap: 55px;
+
+        }
+
+
+        /* =========================
+   LEFT SECTION
+========================= */
+
+        .intro {
+
+            padding: 30px;
+
+            animation:
+                fadeLeft .7s ease;
+        }
+
+
+        /* LOGO */
+
+        .logo {
+
+            width: 74px;
+            height: 74px;
+
+            border-radius: 21px;
+
+            background:
+                linear-gradient(135deg,
+                    #748567,
+                    #46533c);
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 31px;
+
+            box-shadow:
+                0 12px 25px rgba(70, 83, 60, 0.18);
+
+            margin-bottom: 24px;
+
+            position: relative;
+        }
+
+
+        /* small decorative circle */
+
+        .logo::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 12px;
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #dfe6d9;
+
+            right: -5px;
+            top: -5px;
+
+        }
+
+
+        /* BRAND */
+
+        .brand-small {
+
+            color: var(--accent);
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 14px;
+        }
+
+
+        h1 {
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size:
+                clamp(48px, 6vw, 70px);
+
+            line-height: .98;
+
+            font-weight: 500;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 22px;
+        }
+
+
+        h1 span {
+
+            color: var(--accent);
+
+        }
+
+
+        .description {
+
+            max-width: 440px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        /* FEATURES */
+
+        .features {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 13px;
+
+        }
+
+
+        .feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #606060;
+
+            font-size: 12px;
+
+        }
+
+
+        .feature-icon {
+
+            width: 31px;
+            height: 31px;
+
+            border-radius: 9px;
+
+            background: var(--accent-light);
+
+            color: var(--accent-dark);
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =========================
+   RIGHT CARD
+========================= */
+
+        .card-wrapper {
+
+            animation:
+                fadeUp .7s ease;
+
+        }
+
+
+        .card {
+
+            background:
+                rgba(255, 255, 255, .96);
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 18px;
+
+            padding: 42px 40px;
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .07);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        /* top decorative line */
+
+        .card::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 4px;
+
+            background:
+                linear-gradient(90deg,
+                    var(--accent),
+                    #879779,
+                    var(--accent-dark));
+
+        }
+
+
+        /* CARD HEADER */
+
+        .card-header {
+
+            margin-bottom: 32px;
+
+        }
+
+
+        .card-header h2 {
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 27px;
+
+            font-weight: 500;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .card-header p {
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =========================
+   START AREA
+========================= */
+
+        .start-area {
+
+            margin-top: 10px;
+
+        }
+
+
+        /* BUTTON */
+
+        .start-button {
+
+            width: 100%;
+
+            height: 56px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(135deg,
+                    var(--accent),
+                    var(--accent-dark));
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            letter-spacing: .2px;
+
+            cursor: pointer;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 12px;
+
+            box-shadow:
+                0 8px 18px rgba(70, 83, 60, .17);
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .start-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 25px rgba(70, 83, 60, .23);
+
+        }
+
+
+        .start-button:active {
+
+            transform: scale(.98);
+
+        }
+
+
+        .arrow {
+
+            width: 26px;
+            height: 26px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, .15);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+
+        }
+
+
+        /* =========================
+   INFO ROW
+========================= */
+
+        .info-row {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 10px;
+
+            margin-top: 25px;
+
+        }
+
+
+        .info {
+
+            padding: 13px 8px;
+
+            border:
+                1px solid #eeeeee;
+
+            border-radius: 9px;
+
+            background: #fafafa;
+
+            text-align: center;
+
+        }
+
+
+        .info strong {
+
+            display: block;
+
+            font-size: 11px;
+
+            color: var(--accent-dark);
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .info span {
+
+            font-size: 9px;
+
+            color: #8a8a8a;
+
+        }
+
+
+        /* SECURITY */
+
+        .security {
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #8a8a8a;
+
+            font-size: 9.5px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .security-icon {
+
+            margin-right: 4px;
+
+        }
+
+
+        /* =========================
+   FOOTER
+========================= */
+
+        .footer {
+
+            position: fixed;
+
+            bottom: 18px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            color: #999;
+
+            font-size: 9px;
+
+            letter-spacing: .5px;
+
+        }
+
+
+        /* =========================
+   ANIMATIONS
+========================= */
+
+        @keyframes fadeLeft {
+
+            from {
+                opacity: 0;
+                transform: translateX(-18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =========================
+   MOBILE
+========================= */
+
+        @media(max-width:800px) {
+
+            body {
+
+                overflow: auto;
+
+                padding:
+                    25px 15px 50px;
+
+            }
+
+
+            .page {
+
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+
+                min-height: auto;
+
+                max-width: 500px;
+
+            }
+
+
+            .intro {
+
+                padding: 15px 10px;
+
+                text-align: center;
+
+            }
+
+
+            .logo {
+
+                margin:
+                    0 auto 20px;
+
+            }
+
+
+            h1 {
+
+                font-size: 48px;
+
+            }
+
+
+            .description {
+
+                margin:
+                    0 auto 25px;
+
+            }
+
+
+            .features {
+
+                align-items: center;
+
+            }
+
+
+            .card {
+
+                padding:
+                    32px 25px;
+
+            }
+
+
+            .footer {
+
+                position: static;
+
+                transform: none;
+
+                margin-top: 25px;
+
+                text-align: center;
+
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="page">
+
+
+        <!-- =========================
+         LEFT INTRO
+    ========================== -->
+
+        <section class="intro">
+
+
+            <div class="logo">
+                ✚
+            </div>
+
+
+            <div class="brand-small">
+                Smart Healthcare Interface
+            </div>
+
+
+            <h1>
+                Arogya<br>
+                <span>MediKiosk</span>
+            </h1>
+
+
+            <p class="description">
+
+                A patient-friendly digital platform
+                designed to make clinical history
+                collection simpler, clearer and more
+                organised for healthcare professionals.
+
+            </p>
+
+
+            <div class="features">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    Simple patient interaction
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ◉
+                    </div>
+
+                    Structured health information
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        →
+                    </div>
+
+                    Faster clinical workflow
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+         RIGHT CARD
+    ========================== -->
+
+        <section class="card-wrapper">
+
+
+            <div class="card">
+
+
+                <div class="card-header">
+
+                    <h2>
+                        Welcome
+                    </h2>
+
+                    <p>
+                        Begin your patient journey with
+                        Arogya MediKiosk.
+                    </p>
+
+                </div>
+
+
+                <div class="start-area">
+
+
+                    <a href="landing.html">
+                        <button class="start-button" onclick="startKiosk()">
+
+                            Get Started
+
+                            <span class="arrow">
+                                →
+                            </span>
+
+                        </button>
+                    </a>
+
+
+                </div>
+
+
+
+                <!-- INFO -->
+
+                <div class="info-row">
+
+
+                    <div class="info">
+
+                        <strong>
+                            SIMPLE
+                        </strong>
+
+                        <span>
+                            Easy interaction
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <strong>
+                            SECURE
+                        </strong>
+
+                        <span>
+                            Protected data
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <strong>
+                            SMART
+                        </strong>
+
+                        <span>
+                            Clinical workflow
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="security">
+
+                    <span class="security-icon">
+                        🔒
+                    </span>
+
+                    Your information is handled securely.
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+
+
+    <div class="footer">
+
+        Arogya MediKiosk · Smart Patient Case-Taking
+
+    </div>
+
+
+
+    <script>
+
+        function startKiosk() {
+
+            const button =
+                document.querySelector(".start-button");
+
+
+            button.innerHTML =
+                `Starting
+         <span class="arrow">✓</span>`;
+
+
+            button.style.pointerEvents =
+                "none";
+
+
+            setTimeout(() => {
+
+                /*
+                 * Replace this filename with
+                 * your actual next page.
+                 */
+
+                window.location.href =
+                    "landing.html";
+
+            }, 700);
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
