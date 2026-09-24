@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import transaction
 
+from myapp.languages import get_patient_language
 from myapp.models import (
     Patient,
     Symptom,
@@ -70,6 +71,7 @@ def symptoms_form(request, patient_id):
         {
             "patient": patient,
             "current_token": current_token,
+            "patient_language": get_patient_language(request),
         },
     )
 
