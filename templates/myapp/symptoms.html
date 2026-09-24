@@ -5,20 +5,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>MediKiosk — Symptoms</title>
-
     <style>
-
         * {
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #5c6b4f;
+            --primary-dark: #46543d;
+            --primary-light: #e9eee3;
+            --cream: #f8f5ed;
+            --card: #ffffff;
+            --border: #e4dfd3;
+            --text: #30382f;
+            --muted: #747b70;
+            --soft: #faf8f2;
+            --danger: #b75c52;
         }
 
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f9f6ee;
-            color: #2f3b2f;
+            background:
+                radial-gradient(circle at top left, #eef1e9 0, transparent 30%),
+                var(--cream);
+            color: var(--text);
+            min-height: 100vh;
         }
 
         /* ==============================
@@ -26,64 +39,161 @@
         ============================== */
 
         .header {
-            background: #5c6b4f;
+            background: linear-gradient(135deg, #5c6b4f, #46543d);
             color: white;
-            padding: 22px 40px;
+            padding: 18px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 18px rgba(45, 55, 40, 0.15);
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
         }
 
         .brand {
-            font-size: 26px;
+            font-size: 25px;
             font-weight: 700;
-            
+            letter-spacing: -0.4px;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 3px;
         }
 
         /* ==============================
-           MAIN CONTAINER
+           MAIN
         ============================== */
 
         .container {
-            width: min(900px, 92%);
-            margin: 40px auto;
+            width: min(920px, 92%);
+            margin: 38px auto 60px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
         }
 
         .page-title {
-            margin-bottom: 8px;
-            font-size: 30px;
+            margin: 0 0 8px;
+            font-size: 32px;
             color: #394634;
+            letter-spacing: -0.6px;
         }
 
         .page-description {
-            color: #6c7468;
-            margin-bottom: 30px;
+            color: var(--muted);
+            margin: 0;
             font-size: 15px;
+            line-height: 1.6;
         }
 
         /* ==============================
-           CARD
+           PROGRESS
+        ============================== */
+
+        .progress-card {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 17px 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4c5847;
+        }
+
+        .progress-step {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .progress-track {
+            height: 7px;
+            background: #e8e4da;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, #5c6b4f, #849375);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        /* ==============================
+           CARDS
         ============================== */
 
         .card {
-            background: #ffffff;
-            border: 1px solid #e5dfd2;
-            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
             padding: 28px;
             margin-bottom: 22px;
-            box-shadow: 0 5px 18px rgba(70, 70, 50, 0.05);
+            box-shadow: 0 6px 22px rgba(70, 70, 50, 0.045);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 22px;
+        }
+
+        .card-number {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
         }
 
         .card-title {
-            margin: 0 0 6px;
+            margin: 0 0 5px;
             font-size: 20px;
             color: #3f4d3b;
         }
 
         .card-description {
-            margin: 0 0 22px;
+            margin: 0;
             color: #7a8177;
             font-size: 14px;
+            line-height: 1.5;
         }
 
         /* ==============================
@@ -107,7 +217,7 @@
         select {
             width: 100%;
             border: 1px solid #d8d2c5;
-            border-radius: 10px;
+            border-radius: 11px;
             padding: 13px 14px;
             font-size: 15px;
             font-family: inherit;
@@ -122,6 +232,7 @@
         select:focus {
             border-color: #718362;
             box-shadow: 0 0 0 3px rgba(113, 131, 98, 0.12);
+            background: #fff;
         }
 
         textarea {
@@ -134,15 +245,15 @@
         }
 
         /* ==============================
-           HIDDEN SECTIONS
+           HIDDEN
         ============================== */
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         /* ==============================
-           SYMPTOM GRID
+           SYMPTOMS
         ============================== */
 
         .symptom-grid {
@@ -163,9 +274,12 @@
 
         .symptom-option label {
             margin: 0;
-            padding: 13px 14px;
+            padding: 14px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
             border: 1px solid #ddd7ca;
-            border-radius: 10px;
+            border-radius: 11px;
             background: #fcfaf5;
             cursor: pointer;
             font-weight: 500;
@@ -174,6 +288,7 @@
 
         .symptom-option label:hover {
             border-color: #89977d;
+            transform: translateY(-1px);
         }
 
         .symptom-option input:checked + label {
@@ -181,23 +296,30 @@
             border-color: #5c6b4f;
             color: #43513d;
             font-weight: 600;
+            box-shadow: 0 3px 10px rgba(92, 107, 79, 0.08);
         }
 
         /* ==============================
            SOCRATES
         ============================== */
 
+        .socrates-heading {
+            margin: 26px 0 18px;
+            color: #43503e;
+            font-size: 17px;
+        }
+
         .socrates-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 15px;
         }
 
         .socrates-item {
             background: #faf8f2;
             border: 1px solid #e5dfd2;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 13px;
+            padding: 17px;
         }
 
         .socrates-letter {
@@ -225,10 +347,11 @@
             font-size: 12px;
             color: #777d73;
             margin-bottom: 9px;
+            line-height: 1.4;
         }
 
         /* ==============================
-           NRS
+           SEVERITY
         ============================== */
 
         .severity-wrapper {
@@ -237,7 +360,7 @@
 
         .severity-value {
             text-align: center;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
             color: #5c6b4f;
             margin-bottom: 10px;
@@ -246,6 +369,7 @@
         input[type="range"] {
             padding: 0;
             accent-color: #5c6b4f;
+            cursor: pointer;
         }
 
         .range-labels {
@@ -257,7 +381,7 @@
         }
 
         /* ==============================
-           FEVER
+           TWO COLUMN
         ============================== */
 
         .two-column {
@@ -267,7 +391,7 @@
         }
 
         /* ==============================
-           BUTTONS
+           ACTIONS
         ============================== */
 
         .actions {
@@ -275,12 +399,13 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 30px;
+            gap: 15px;
         }
 
         .btn {
             border: none;
-            border-radius: 10px;
-            padding: 13px 25px;
+            border-radius: 11px;
+            padding: 14px 27px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -297,12 +422,113 @@
         }
 
         .btn-continue {
-            background: #5c6b4f;
+            background: linear-gradient(135deg, #5c6b4f, #4d5b43);
             color: white;
+            min-width: 150px;
+            box-shadow: 0 5px 15px rgba(92, 107, 79, 0.2);
         }
 
         .btn-continue:hover {
-            background: #4d5b43;
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(92, 107, 79, 0.25);
+        }
+
+        .btn-continue:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==============================
+           INLINE VOICE BUTTONS
+        ============================== */
+
+        .card-header-with-mic {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .card-header-text {
+            display: flex;
+            gap: 13px;
+            align-items: flex-start;
+        }
+
+        .voice-input-button {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border: none;
+            border-radius: 50%;
+            background: #e9eee3;
+            color: #526149;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+            box-shadow: 0 3px 10px rgba(70, 80, 60, 0.08);
+        }
+
+        .voice-input-button:hover {
+            background: #dce5d5;
+            transform: translateY(-1px);
+        }
+
+        .voice-input-button.listening {
+            background: #5c6b4f;
+            color: white;
+            animation: micPulse 1.4s infinite;
+        }
+
+        @keyframes micPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(92, 107, 79, 0.35);
+            }
+            70% {
+                box-shadow: 0 0 0 13px rgba(92, 107, 79, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(92, 107, 79, 0);
+            }
+        }
+
+        .voice-field-status {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #788073;
+            min-height: 17px;
+        }
+
+        .voice-field-status.active {
+            color: #526149;
+            font-weight: 600;
+        }
+
+        .voice-field-status.error {
+            color: #a6534c;
+        }
+
+        /* ==============================
+           SAVE MESSAGE
+        ============================== */
+
+        .save-status {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--muted);
+            display: none;
+        }
+
+        .save-status.visible {
+            display: block;
         }
 
         /* ==============================
@@ -310,56 +536,58 @@
         ============================== */
 
         @media (max-width: 700px) {
-
             .header {
-                padding: 18px 20px;
+                padding: 16px 20px;
             }
-
             .container {
                 width: 94%;
-                margin: 25px auto;
+                margin: 25px auto 45px;
             }
-
+            .page-title {
+                font-size: 27px;
+            }
             .card {
                 padding: 20px;
             }
-
             .symptom-grid {
                 grid-template-columns: 1fr 1fr;
             }
-
             .socrates-grid {
                 grid-template-columns: 1fr;
             }
-
             .two-column {
                 grid-template-columns: 1fr;
             }
-
             .actions {
                 gap: 12px;
             }
-
             .btn {
                 flex: 1;
             }
         }
 
         @media (max-width: 450px) {
-
+            .brand {
+                font-size: 21px;
+            }
+            .header-subtitle {
+                display: none;
+            }
             .symptom-grid {
                 grid-template-columns: 1fr;
             }
-
             .page-title {
                 font-size: 25px;
             }
-
+            .voice-input-button {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: 18px;
+            }
         }
-
     </style>
 </head>
-
 <body>
 
 <!-- =========================================
@@ -367,14 +595,20 @@
 ========================================= -->
 
 <header class="header">
-
-    <div class="brand">
-        MediKiosk
+    <div class="brand-area">
+        <div class="brand-icon">
+            +
+        </div>
+        <div>
+            <div class="brand">
+                MediKiosk
+            </div>
+            <div class="header-subtitle">
+                Patient symptom assessment
+            </div>
+        </div>
     </div>
-
-    
 </header>
-
 
 <!-- =========================================
      MAIN
@@ -382,451 +616,318 @@
 
 <main class="container">
 
-    <h1 class="page-title">
-        Symptoms
-    </h1>
+    <div class="page-heading">
+        <h1 class="page-title">
+            Tell us how you're feeling
+        </h1>
+        <p class="page-description">
+            Provide information about your current health problem.
+            You can fill in the form manually or use the microphone next to each section.
+        </p>
+    </div>
 
-    <p class="page-description">
-        Please provide information about your current health problem.
-    </p>
+    <!-- =====================================
+         PROGRESS
+    ====================================== -->
 
+    <div class="progress-card">
+        <div class="progress-top">
+            <span class="progress-label">
+                Patient assessment
+            </span>
+            <span class="progress-step">
+                Symptoms
+            </span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
 
     <!-- =====================================
          MAIN COMPLAINT
     ====================================== -->
 
     <section class="card">
-
-        <h2 class="card-title">
-            Main Complaint
-        </h2>
-
-        <p class="card-description">
-            What is the main problem that brought you to the clinic?
-        </p>
-
+        <div class="card-header card-header-with-mic">
+            <div class="card-header-text">
+                <div class="card-number">
+                    01
+                </div>
+                <div>
+                    <h2 class="card-title">
+                        Main Complaint
+                    </h2>
+                    <p class="card-description">
+                        What is the main problem that brought you to the clinic?
+                    </p>
+                </div>
+            </div>
+            <button
+                type="button"
+                class="voice-input-button"
+                id="micMainComplaint"
+                aria-label="Speak main complaint"
+                title="Speak your main complaint"
+            >
+                🎙
+            </button>
+        </div>
         <div class="form-group">
-
             <label for="mainComplaint">
-                Chief Complaint
+                Describe your main problem
             </label>
-
             <textarea
                 id="mainComplaint"
-                placeholder="Describe your main problem..."
+                placeholder="e.g. chest pain since yesterday"
             ></textarea>
-
+            <div
+                class="voice-field-status"
+                id="mainComplaintVoiceStatus"
+            ></div>
         </div>
-
     </section>
-
 
     <!-- =====================================
          PAIN
     ====================================== -->
 
     <section class="card">
-
-        <h2 class="card-title">
-            Pain Assessment
-        </h2>
-
-        <p class="card-description">
-            Tell us whether you are experiencing pain.
-        </p>
-
+        <div class="card-header card-header-with-mic">
+            <div class="card-header-text">
+                <div class="card-number">
+                    02
+                </div>
+                <div>
+                    <h2 class="card-title">
+                        Pain Assessment
+                    </h2>
+                    <p class="card-description">
+                        Tell us whether you are experiencing pain.
+                    </p>
+                </div>
+            </div>
+            <button
+                type="button"
+                class="voice-input-button"
+                id="micPain"
+                aria-label="Speak pain information"
+                title="Speak pain information"
+            >
+                🎙
+            </button>
+        </div>
 
         <div class="form-group">
-
             <label for="painSelect">
                 Do you have pain?
             </label>
-
             <select id="painSelect">
-
                 <option value="">
                     Select an option
                 </option>
-
                 <option value="yes">
                     Yes
                 </option>
-
                 <option value="no">
                     No
                 </option>
-
             </select>
-
+            <div
+                class="voice-field-status"
+                id="painVoiceStatus"
+            ></div>
         </div>
 
-
         <!-- PAIN DETAILS -->
-
-        <div id="painDetails" class="hidden">
-
-
+        <div
+            id="painDetails"
+            class="hidden"
+        >
             <!-- LOCATION -->
-
             <div class="form-group">
-
                 <label for="painLocation">
                     Where is the pain?
                 </label>
-
                 <select id="painLocation">
-
                     <option value="">
                         Select pain location
                     </option>
-
-                    <option value="head">
-                        Head
-                    </option>
-
-                    <option value="face">
-                        Face
-                    </option>
-
-                    <option value="neck">
-                        Neck
-                    </option>
-
-                    <option value="chest">
-                        Chest
-                    </option>
-
-                    <option value="abdomen">
-                        Abdomen
-                    </option>
-
-                    <option value="back">
-                        Back
-                    </option>
-
-                    <option value="pelvis">
-                        Pelvis
-                    </option>
-
-                    <option value="shoulder">
-                        Shoulder
-                    </option>
-
-                    <option value="arm">
-                        Arm
-                    </option>
-
-                    <option value="elbow">
-                        Elbow
-                    </option>
-
-                    <option value="wrist">
-                        Wrist
-                    </option>
-
-                    <option value="hand">
-                        Hand
-                    </option>
-
-                    <option value="hip">
-                        Hip
-                    </option>
-
-                    <option value="thigh">
-                        Thigh
-                    </option>
-
-                    <option value="knee">
-                        Knee
-                    </option>
-
-                    <option value="leg">
-                        Leg
-                    </option>
-
-                    <option value="ankle">
-                        Ankle
-                    </option>
-
-                    <option value="foot">
-                        Foot
-                    </option>
-
-                    <option value="other">
-                        Other
-                    </option>
-
+                    <option value="head">Head</option>
+                    <option value="face">Face</option>
+                    <option value="neck">Neck</option>
+                    <option value="chest">Chest</option>
+                    <option value="abdomen">Abdomen</option>
+                    <option value="back">Back</option>
+                    <option value="pelvis">Pelvis</option>
+                    <option value="shoulder">Shoulder</option>
+                    <option value="arm">Arm</option>
+                    <option value="elbow">Elbow</option>
+                    <option value="wrist">Wrist</option>
+                    <option value="hand">Hand</option>
+                    <option value="hip">Hip</option>
+                    <option value="thigh">Thigh</option>
+                    <option value="knee">Knee</option>
+                    <option value="leg">Leg</option>
+                    <option value="ankle">Ankle</option>
+                    <option value="foot">Foot</option>
+                    <option value="other">Other</option>
                 </select>
-
             </div>
 
-
-            <!-- =================================
-                 SOCRATES
-            ================================== -->
-
-            <div id="socratesSection" class="hidden">
-
-                <h3 style="margin-bottom: 18px;">
+            <!-- SOCRATES -->
+            <div
+                id="socratesSection"
+                class="hidden"
+            >
+                <h3 class="socrates-heading">
                     Pain Details — SOCRATES
                 </h3>
-
-
                 <div class="socrates-grid">
-
-
                     <!-- S -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 S
                             </span>
-
                             Site
-
                         </div>
-
                         <div class="socrates-description">
                             Where exactly is the pain?
                         </div>
-
                         <input
                             type="text"
                             id="socratesSite"
                             placeholder="Describe the exact site"
                         >
-
                     </div>
-
-
                     <!-- O -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 O
                             </span>
-
                             Onset
-
                         </div>
-
                         <div class="socrates-description">
                             When did the pain start?
                         </div>
-
                         <input
                             type="text"
                             id="socratesOnset"
                             placeholder="e.g. 2 days ago"
                         >
-
                     </div>
-
-
                     <!-- C -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 C
                             </span>
-
                             Character
-
                         </div>
-
                         <div class="socrates-description">
                             What does the pain feel like?
                         </div>
-
                         <select id="socratesCharacter">
-
                             <option value="">
                                 Select
                             </option>
-
-                            <option value="sharp">
-                                Sharp
-                            </option>
-
-                            <option value="dull">
-                                Dull
-                            </option>
-
-                            <option value="burning">
-                                Burning
-                            </option>
-
-                            <option value="stabbing">
-                                Stabbing
-                            </option>
-
-                            <option value="aching">
-                                Aching
-                            </option>
-
-                            <option value="throbbing">
-                                Throbbing
-                            </option>
-
-                            <option value="cramping">
-                                Cramping
-                            </option>
-
-                            <option value="pressure">
-                                Pressure
-                            </option>
-
-                            <option value="other">
-                                Other
-                            </option>
-
+                            <option value="sharp">Sharp</option>
+                            <option value="dull">Dull</option>
+                            <option value="burning">Burning</option>
+                            <option value="stabbing">Stabbing</option>
+                            <option value="aching">Aching</option>
+                            <option value="throbbing">Throbbing</option>
+                            <option value="cramping">Cramping</option>
+                            <option value="pressure">Pressure</option>
+                            <option value="other">Other</option>
                         </select>
-
                     </div>
-
-
                     <!-- R -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 R
                             </span>
-
                             Radiation
-
                         </div>
-
                         <div class="socrates-description">
                             Does the pain move to another area?
                         </div>
-
                         <input
                             type="text"
                             id="socratesRadiation"
                             placeholder="e.g. moves to left arm"
                         >
-
                     </div>
-
-
                     <!-- A -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 A
                             </span>
-
                             Associated Symptoms
-
                         </div>
-
                         <div class="socrates-description">
                             Are there other symptoms with the pain?
                         </div>
-
                         <textarea
                             id="socratesAssociated"
                             placeholder="e.g. nausea, sweating..."
                         ></textarea>
-
                     </div>
-
-
                     <!-- T -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 T
                             </span>
-
                             Timing
-
                         </div>
-
                         <div class="socrates-description">
                             How does the pain occur?
                         </div>
-
                         <input
                             type="text"
                             id="socratesTiming"
                             placeholder="e.g. constant / intermittent"
                         >
-
                     </div>
-
-
                     <!-- E -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 E
                             </span>
-
                             Exacerbating / Relieving
-
                         </div>
-
                         <div class="socrates-description">
                             What makes the pain better or worse?
                         </div>
-
                         <textarea
                             id="socratesExacerbating"
                             placeholder="e.g. movement makes it worse"
                         ></textarea>
-
                     </div>
-
-
                     <!-- S -->
-
                     <div class="socrates-item">
-
                         <div class="socrates-title">
-
                             <span class="socrates-letter">
                                 S
                             </span>
-
                             Severity
-
                         </div>
-
                         <div class="socrates-description">
                             Rate your pain from 0 to 10.
                         </div>
-
                         <div class="severity-wrapper">
-
                             <div
                                 class="severity-value"
                                 id="severityValue"
                             >
                                 0
                             </div>
-
                             <input
                                 type="range"
                                 id="painSeverity"
@@ -834,218 +935,103 @@
                                 max="10"
                                 value="0"
                             >
-
                             <div class="range-labels">
-
                                 <span>
                                     No pain
                                 </span>
-
                                 <span>
                                     Worst pain
                                 </span>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </section>
-
 
     <!-- =====================================
          OTHER SYMPTOMS
     ====================================== -->
 
     <section class="card">
-
-        <h2 class="card-title">
-            Other Symptoms
-        </h2>
-
-        <p class="card-description">
-            Select any symptoms you are currently experiencing.
-        </p>
-
-
-        <div class="symptom-grid">
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="fever"
-                    value="fever"
-                >
-
-                <label for="fever">
-                    Fever
-                </label>
-
+        <div class="card-header card-header-with-mic">
+            <div class="card-header-text">
+                <div class="card-number">
+                    03
+                </div>
+                <div>
+                    <h2 class="card-title">
+                        Other Symptoms
+                    </h2>
+                    <p class="card-description">
+                        Select any symptoms you are currently experiencing.
+                    </p>
+                </div>
             </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="weakness"
-                    value="weakness"
-                >
-
-                <label for="weakness">
-                    Weakness / Fatigue
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="dizziness"
-                    value="dizziness"
-                >
-
-                <label for="dizziness">
-                    Dizziness
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="cough"
-                    value="cough"
-                >
-
-                <label for="cough">
-                    Cough
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="cold"
-                    value="cold"
-                >
-
-                <label for="cold">
-                    Cold / Runny Nose
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="breathingDifficulty"
-                    value="breathingDifficulty"
-                >
-
-                <label for="breathingDifficulty">
-                    Difficulty Breathing
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="nausea"
-                    value="nausea"
-                >
-
-                <label for="nausea">
-                    Nausea
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="vomiting"
-                    value="vomiting"
-                >
-
-                <label for="vomiting">
-                    Vomiting
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="diarrhea"
-                    value="diarrhea"
-                >
-
-                <label for="diarrhea">
-                    Diarrhea
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="itching"
-                    value="itching"
-                >
-
-                <label for="itching">
-                    Itching
-                </label>
-
-            </div>
-
-
-            <div class="symptom-option">
-
-                <input
-                    type="checkbox"
-                    id="skinRash"
-                    value="skinRash"
-                >
-
-                <label for="skinRash">
-                    Skin Rash
-                </label>
-
-            </div>
-
+            <button
+                type="button"
+                class="voice-input-button"
+                id="micOtherSymptoms"
+                aria-label="Speak other symptoms"
+                title="Speak other symptoms"
+            >
+                🎙
+            </button>
         </div>
 
-    </section>
+        <div class="symptom-grid">
+            <div class="symptom-option">
+                <input type="checkbox" id="fever" value="fever">
+                <label for="fever">Fever</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="weakness" value="weakness">
+                <label for="weakness">Weakness / Fatigue</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="dizziness" value="dizziness">
+                <label for="dizziness">Dizziness</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="cough" value="cough">
+                <label for="cough">Cough</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="cold" value="cold">
+                <label for="cold">Cold / Runny Nose</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="breathingDifficulty" value="breathingDifficulty">
+                <label for="breathingDifficulty">Difficulty Breathing</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="nausea" value="nausea">
+                <label for="nausea">Nausea</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="vomiting" value="vomiting">
+                <label for="vomiting">Vomiting</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="diarrhea" value="diarrhea">
+                <label for="diarrhea">Diarrhea</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="itching" value="itching">
+                <label for="itching">Itching</label>
+            </div>
+            <div class="symptom-option">
+                <input type="checkbox" id="skinRash" value="skinRash">
+                <label for="skinRash">Skin Rash</label>
+            </div>
+        </div>
 
+        <div
+            class="voice-field-status"
+            id="otherSymptomsVoiceStatus"
+        ></div>
+    </section>
 
     <!-- =====================================
          FEVER DETAILS
@@ -1055,75 +1041,92 @@
         class="card hidden"
         id="feverDetails"
     >
-
-        <h2 class="card-title">
-            Fever Details
-        </h2>
-
+        <div class="card-header">
+            <div class="card-number">
+                04
+            </div>
+            <div>
+                <h2 class="card-title">
+                    Fever Details
+                </h2>
+                <p class="card-description">
+                    Provide additional information about the fever.
+                </p>
+            </div>
+        </div>
         <div class="two-column">
-
             <div class="form-group">
-
                 <label for="feverTemperature">
                     Temperature
                 </label>
-
                 <input
                     type="text"
                     id="feverTemperature"
                     placeholder="e.g. 101°F"
                 >
-
             </div>
-
-
             <div class="form-group">
-
                 <label for="feverDuration">
                     Duration
                 </label>
-
                 <input
                     type="text"
                     id="feverDuration"
                     placeholder="e.g. 2 days"
                 >
-
             </div>
-
         </div>
-
     </section>
 
-
     <!-- =====================================
-         OTHER
+         ANYTHING ELSE
     ====================================== -->
 
     <section class="card">
-
-        <h2 class="card-title">
-            Anything Else?
-        </h2>
-
-        <p class="card-description">
-            Add any other information you think the doctor should know.
-        </p>
-
-        <textarea
-            id="otherSymptoms"
-            placeholder="Enter any other symptoms or information..."
-        ></textarea>
-
+        <div class="card-header card-header-with-mic">
+            <div class="card-header-text">
+                <div class="card-number">
+                    05
+                </div>
+                <div>
+                    <h2 class="card-title">
+                        Anything Else?
+                    </h2>
+                    <p class="card-description">
+                        Add any other information you think the doctor should know.
+                    </p>
+                </div>
+            </div>
+            <button
+                type="button"
+                class="voice-input-button"
+                id="micAnythingElse"
+                aria-label="Speak additional information"
+                title="Speak additional information"
+            >
+                🎙
+            </button>
+        </div>
+        <div class="form-group">
+            <label for="otherSymptoms">
+                Additional information
+            </label>
+            <textarea
+                id="otherSymptoms"
+                placeholder="Anything else the doctor should know"
+            ></textarea>
+            <div
+                class="voice-field-status"
+                id="anythingElseVoiceStatus"
+            ></div>
+        </div>
     </section>
-
 
     <!-- =====================================
          ACTIONS
     ====================================== -->
 
     <div class="actions">
-
         <button
             type="button"
             class="btn btn-back"
@@ -1131,7 +1134,6 @@
         >
             Back
         </button>
-
         <button
             type="button"
             class="btn btn-continue"
@@ -1139,11 +1141,16 @@
         >
             Continue
         </button>
+    </div>
 
+    <div
+        class="save-status"
+        id="saveStatus"
+    >
+        Saving your symptoms...
     </div>
 
 </main>
-
 
 <!-- =========================================
      DJANGO CSRF
@@ -1153,19 +1160,90 @@
     {% csrf_token %}
 </form>
 
-
 <script>
+
+    /* =========================================================
+       DJANGO VARIABLES
+    ========================================================= */
+
     window.PATIENT_ID = {{ patient.id }};
 
-window.SAVE_SYMPTOMS_URL =
-    "{% url 'myapp:save_symptoms' patient.id %}";
+    window.PATIENT_LANGUAGE =
+        "{{ patient_language|default:'en'|escapejs }}";
 
-window.MEDICAL_DOCUMENT_URL =
-    "{% url 'myapp:medical_document_upload' patient.id %}";
+    window.SAVE_SYMPTOMS_URL =
+        "{% url 'myapp:save_symptoms' patient.id %}";
 
-    /* =========================================
+    window.MEDICAL_DOCUMENT_URL =
+        "{% url 'myapp:medical_document_upload' patient.id %}";
+
+
+    /* =========================================================
+       LANGUAGE HANDLING
+    ========================================================= */
+
+    function resolveVoiceLanguage(language) {
+
+        const value =
+            String(language || "")
+                .trim()
+                .toLowerCase();
+
+
+        if (
+            value === "te" ||
+            value === "te-in" ||
+            value.includes("telugu")
+        ) {
+            return "te-IN";
+        }
+
+
+        if (
+            value === "hi" ||
+            value === "hi-in" ||
+            value.includes("hindi")
+        ) {
+            return "hi-IN";
+        }
+
+
+        if (
+            value === "en" ||
+            value === "en-in" ||
+            value === "en-us" ||
+            value === "en-gb" ||
+            value.includes("english")
+        ) {
+            return "en-IN";
+        }
+
+
+        /*
+         * Django may already provide a
+         * valid BCP-47 language code.
+         */
+
+        if (/^[a-z]{2,3}-[a-z]{2}$/i.test(value)) {
+            return value;
+        }
+
+
+        return "en-IN";
+
+    }
+
+
+    const VOICE_LANGUAGE =
+        resolveVoiceLanguage(window.PATIENT_LANGUAGE);
+
+
+    document.documentElement.lang = VOICE_LANGUAGE;
+
+
+    /* =========================================================
        ELEMENTS
-    ========================================= */
+    ========================================================= */
 
     const painSelect =
         document.getElementById("painSelect");
@@ -1191,10 +1269,16 @@ window.MEDICAL_DOCUMENT_URL =
     const severityValue =
         document.getElementById("severityValue");
 
+    const mainComplaint =
+        document.getElementById("mainComplaint");
 
-    /* =========================================
+    const otherSymptoms =
+        document.getElementById("otherSymptoms");
+
+
+    /* =========================================================
        PAIN YES / NO
-    ========================================= */
+    ========================================================= */
 
     painSelect.addEventListener(
         "change",
@@ -1202,20 +1286,12 @@ window.MEDICAL_DOCUMENT_URL =
 
             if (this.value === "yes") {
 
-                painDetails.classList.remove(
-                    "hidden"
-                );
+                painDetails.classList.remove("hidden");
 
             } else {
 
-                painDetails.classList.add(
-                    "hidden"
-                );
-
-                socratesSection.classList.add(
-                    "hidden"
-                );
-
+                painDetails.classList.add("hidden");
+                socratesSection.classList.add("hidden");
                 painLocation.value = "";
 
             }
@@ -1224,9 +1300,9 @@ window.MEDICAL_DOCUMENT_URL =
     );
 
 
-    /* =========================================
+    /* =========================================================
        PAIN LOCATION
-    ========================================= */
+    ========================================================= */
 
     painLocation.addEventListener(
         "change",
@@ -1234,15 +1310,11 @@ window.MEDICAL_DOCUMENT_URL =
 
             if (this.value !== "") {
 
-                socratesSection.classList.remove(
-                    "hidden"
-                );
+                socratesSection.classList.remove("hidden");
 
             } else {
 
-                socratesSection.classList.add(
-                    "hidden"
-                );
+                socratesSection.classList.add("hidden");
 
             }
 
@@ -1250,9 +1322,9 @@ window.MEDICAL_DOCUMENT_URL =
     );
 
 
-    /* =========================================
+    /* =========================================================
        FEVER
-    ========================================= */
+    ========================================================= */
 
     feverCheckbox.addEventListener(
         "change",
@@ -1260,15 +1332,11 @@ window.MEDICAL_DOCUMENT_URL =
 
             if (this.checked) {
 
-                feverDetails.classList.remove(
-                    "hidden"
-                );
+                feverDetails.classList.remove("hidden");
 
             } else {
 
-                feverDetails.classList.add(
-                    "hidden"
-                );
+                feverDetails.classList.add("hidden");
 
             }
 
@@ -1276,39 +1344,34 @@ window.MEDICAL_DOCUMENT_URL =
     );
 
 
-    /* =========================================
+    /* =========================================================
        PAIN SEVERITY
-    ========================================= */
+    ========================================================= */
 
     painSeverity.addEventListener(
         "input",
         function () {
 
-            severityValue.textContent =
-                this.value;
+            severityValue.textContent = this.value;
 
         }
     );
 
 
-    /* =========================================
+    /* =========================================================
        COLLECT DATA
-    ========================================= */
+    ========================================================= */
 
     function collectSymptoms() {
 
         const selectedSymptoms = [];
 
         document
-            .querySelectorAll(
-                ".symptom-option input:checked"
-            )
+            .querySelectorAll(".symptom-option input:checked")
             .forEach(
                 function (checkbox) {
 
-                    selectedSymptoms.push(
-                        checkbox.value
-                    );
+                    selectedSymptoms.push(checkbox.value);
 
                 }
             );
@@ -1323,64 +1386,32 @@ window.MEDICAL_DOCUMENT_URL =
 
                 has_pain: true,
 
-                location:
-                    painLocation.value,
+                location: painLocation.value,
 
                 socrates: {
 
                     site:
-                        document
-                            .getElementById(
-                                "socratesSite"
-                            )
-                            .value,
+                        document.getElementById("socratesSite").value,
 
                     onset:
-                        document
-                            .getElementById(
-                                "socratesOnset"
-                            )
-                            .value,
+                        document.getElementById("socratesOnset").value,
 
                     character:
-                        document
-                            .getElementById(
-                                "socratesCharacter"
-                            )
-                            .value,
+                        document.getElementById("socratesCharacter").value,
 
                     radiation:
-                        document
-                            .getElementById(
-                                "socratesRadiation"
-                            )
-                            .value,
+                        document.getElementById("socratesRadiation").value,
 
                     associated_symptoms:
-                        document
-                            .getElementById(
-                                "socratesAssociated"
-                            )
-                            .value,
+                        document.getElementById("socratesAssociated").value,
 
                     timing:
-                        document
-                            .getElementById(
-                                "socratesTiming"
-                            )
-                            .value,
+                        document.getElementById("socratesTiming").value,
 
                     exacerbating_relieving:
-                        document
-                            .getElementById(
-                                "socratesExacerbating"
-                            )
-                            .value,
+                        document.getElementById("socratesExacerbating").value,
 
-                    severity:
-                        Number(
-                            painSeverity.value
-                        )
+                    severity: Number(painSeverity.value)
 
                 }
 
@@ -1391,153 +1422,914 @@ window.MEDICAL_DOCUMENT_URL =
 
         return {
 
-            complaint:
-                document
-                    .getElementById(
-                        "mainComplaint"
-                    )
-                    .value,
+            complaint: mainComplaint.value,
 
-            pain:
-                painData,
+            pain: painData,
 
-            symptoms:
-                selectedSymptoms,
+            symptoms: selectedSymptoms,
 
             fever_temperature:
-                document
-                    .getElementById(
-                        "feverTemperature"
-                    )
-                    .value,
+                document.getElementById("feverTemperature").value,
 
             fever_duration:
-                document
-                    .getElementById(
-                        "feverDuration"
-                    )
-                    .value,
+                document.getElementById("feverDuration").value,
 
-            other_symptoms:
-                document
-                    .getElementById(
-                        "otherSymptoms"
-                    )
-                    .value
+            other_symptoms: otherSymptoms.value,
+
+            language: window.PATIENT_LANGUAGE || ""
 
         };
 
     }
 
 
-    /* =========================================
-       CONTINUE
-    ========================================= */
+    /* =========================================================
+       SPEECH RECOGNITION
+    ========================================================= */
 
-    document
-    .getElementById("continueButton")
-    .addEventListener(
-        "click",
-        async function () {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
-            const data = collectSymptoms();
 
-            console.log(
-                "Submitting symptoms:",
-                data
-            );
+    let activeRecognition = null;
 
-            const csrfToken =
-                document.querySelector(
-                    '[name=csrfmiddlewaretoken]'
-                ).value;
+
+    function stopVoiceInput() {
+
+        if (activeRecognition) {
 
             try {
 
-                const response =
-                    await fetch(
-                        window.SAVE_SYMPTOMS_URL,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
-
-                                "X-CSRFToken":
-                                    csrfToken,
-                            },
-
-                            body:
-                                JSON.stringify(data),
-                        }
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        result.error ||
-                        "Unable to save symptoms."
-                    );
-
-                }
-
-
-                if (!result.success) {
-
-                    throw new Error(
-                        result.error ||
-                        "Symptoms could not be saved."
-                    );
-
-                }
-
-
-                console.log(
-                    "Symptoms saved successfully:",
-                    result
-                );
-
-
-                /*
-                 * Move to the medical document
-                 * upload page.
-                 */
-
-                window.location.href =
-                    window.MEDICAL_DOCUMENT_URL;
-
+                activeRecognition.stop();
 
             } catch (error) {
 
-                console.error(
-                    "Save symptoms error:",
-                    error
-                );
+                console.log(error);
 
-                alert(
-                    "Could not save symptoms.\n\n" +
-                    error.message
-                );
+            }
+
+            activeRecognition = null;
+
+        }
+
+
+        if ("speechSynthesis" in window) {
+
+            window.speechSynthesis.cancel();
+
+        }
+
+    }
+
+
+    /* =========================================================
+       TEXT TO SPEECH
+    ========================================================= */
+
+    function speakQuestion(text, callback) {
+
+        if (!("speechSynthesis" in window)) {
+
+            if (callback) {
+                callback();
+            }
+
+            return;
+
+        }
+
+
+        window.speechSynthesis.cancel();
+
+
+        const utterance =
+            new SpeechSynthesisUtterance(text);
+
+        utterance.lang = VOICE_LANGUAGE;
+        utterance.rate = 0.88;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+
+        utterance.onend =
+            function () {
+
+                if (callback) {
+                    callback();
+                }
+
+            };
+
+
+        utterance.onerror =
+            function (event) {
+
+                console.error("Speech synthesis error:", event);
+
+                if (callback) {
+                    callback();
+                }
+
+            };
+
+
+        window.speechSynthesis.speak(utterance);
+
+    }
+
+
+    /* =========================================================
+       START MICROPHONE
+    ========================================================= */
+
+    function startVoiceInput(button, statusElement, question, onResult) {
+
+        if (!SpeechRecognition) {
+
+            statusElement.textContent =
+                "Voice input is not supported in this browser. Please use Chrome or Edge.";
+
+            statusElement.classList.add("error");
+
+            return;
+
+        }
+
+
+        /*
+         * Only one microphone may run at a time.
+         */
+
+        stopVoiceInput();
+
+
+        const recognition = new SpeechRecognition();
+
+        activeRecognition = recognition;
+
+        recognition.lang = VOICE_LANGUAGE;
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+
+        button.classList.add("listening");
+        button.textContent = "■";
+
+        statusElement.textContent = "Listening...";
+        statusElement.classList.remove("error");
+        statusElement.classList.add("active");
+
+
+        function resetButton() {
+
+            button.classList.remove("listening");
+            button.textContent = "🎙";
+
+        }
+
+
+        recognition.onresult =
+            function (event) {
+
+                let transcript = "";
+
+
+                for (
+                    let i = event.resultIndex;
+                    i < event.results.length;
+                    i++
+                ) {
+
+                    transcript += event.results[i][0].transcript;
+
+                }
+
+
+                transcript = transcript.trim();
+
+
+                statusElement.textContent =
+                    "Heard: " + transcript;
+
+
+                resetButton();
+
+                activeRecognition = null;
+
+
+                if (transcript) {
+
+                    onResult(transcript);
+
+                }
+
+            };
+
+
+        recognition.onerror =
+            function (event) {
+
+                console.error("Voice error:", event.error);
+
+                resetButton();
+
+                activeRecognition = null;
+
+
+                if (event.error === "not-allowed") {
+
+                    statusElement.textContent =
+                        "Please allow microphone access.";
+
+                } else if (event.error === "no-speech") {
+
+                    statusElement.textContent =
+                        "No speech detected. Try again.";
+
+                } else if (event.error === "language-not-supported") {
+
+                    statusElement.textContent =
+                        "Voice input is not available for " +
+                        VOICE_LANGUAGE +
+                        " in this browser.";
+
+                } else {
+
+                    statusElement.textContent =
+                        "Voice input failed. Try again.";
+
+                }
+
+
+                statusElement.classList.remove("active");
+                statusElement.classList.add("error");
+
+            };
+
+
+        recognition.onend =
+            function () {
+
+                resetButton();
+
+                if (activeRecognition === recognition) {
+
+                    activeRecognition = null;
+
+                }
+
+            };
+
+
+        /*
+         * Ask the question first, then start
+         * the microphone so the assistant does
+         * not record its own voice.
+         */
+
+        speakQuestion(
+            question,
+            function () {
+
+                try {
+
+                    recognition.start();
+
+                } catch (error) {
+
+                    console.error("Recognition start error:", error);
+
+                    resetButton();
+
+                    activeRecognition = null;
+
+                    statusElement.textContent =
+                        "Could not start the microphone. Try again.";
+
+                    statusElement.classList.add("error");
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       QUESTIONS BY LANGUAGE
+    ========================================================= */
+
+    const VOICE_QUESTIONS = {
+
+        "te-IN": {
+
+            mainComplaint:
+                "మీ ప్రధాన ఆరోగ్య సమస్య ఏమిటో చెప్పండి.",
+
+            pain:
+                "మీకు నొప్పి ఉందా? అవును లేదా లేదు అని చెప్పండి.",
+
+            painLocation:
+                "నొప్పి ఎక్కడ ఉంది? ఉదాహరణకు ఛాతీ, పొత్తికడుపు, వెన్ను, తల లేదా కాలు.",
+
+            otherSymptoms:
+                "మీకు ఉన్న ఇతర లక్షణాలను చెప్పండి. ఉదాహరణకు జ్వరం, దగ్గు, తల తిరగడం లేదా వికారం.",
+
+            anythingElse:
+                "డాక్టర్ తెలుసుకోవాల్సిన ఇంకేమైనా సమాచారం ఉందా?"
+
+        },
+
+        "hi-IN": {
+
+            mainComplaint:
+                "कृपया अपनी मुख्य स्वास्थ्य समस्या बताएं।",
+
+            pain:
+                "क्या आपको दर्द हो रहा है? हाँ या नहीं बताएं।",
+
+            painLocation:
+                "दर्द कहाँ है? उदाहरण के लिए छाती, पेट, पीठ, सिर या पैर।",
+
+            otherSymptoms:
+                "आपको और कौन से लक्षण हैं? जैसे बुखार, खांसी, चक्कर या मतली।",
+
+            anythingElse:
+                "क्या डॉक्टर को बताने के लिए कोई और जानकारी है?"
+
+        },
+
+        "en-IN": {
+
+            mainComplaint:
+                "Please tell me your main health problem.",
+
+            pain:
+                "Are you experiencing pain? Please say yes or no.",
+
+            painLocation:
+                "Where is the pain? For example, chest, abdomen, back, head or leg.",
+
+            otherSymptoms:
+                "Please tell me about any other symptoms you are experiencing.",
+
+            anythingElse:
+                "Is there anything else you would like the doctor to know?"
+
+        }
+
+    };
+
+
+    function getVoiceQuestion(type) {
+
+        const questions =
+            VOICE_QUESTIONS[VOICE_LANGUAGE] ||
+            VOICE_QUESTIONS["en-IN"];
+
+
+        return (
+            questions[type] ||
+            VOICE_QUESTIONS["en-IN"][type]
+        );
+
+    }
+
+
+    /* =========================================================
+       PAIN LOCATION DETECTION
+    ========================================================= */
+
+    function detectPainLocation(answer) {
+
+        const text =
+            String(answer || "")
+                .toLowerCase()
+                .trim();
+
+
+        const locations = {
+
+            head: ["head", "सिर", "सर", "తల"],
+
+            face: ["face", "चेहरा", "ముఖం"],
+
+            neck: ["neck", "गर्दन", "మెడ"],
+
+            chest: ["chest", "सीना", "छाती", "ఛాతీ"],
+
+            abdomen: ["abdomen", "stomach", "पेट", "కడుపు"],
+
+            back: ["back", "पीठ", "వీపు"],
+
+            pelvis: ["pelvis", "श्रोणि", "పొత్తికడుపు"],
+
+            shoulder: ["shoulder", "कंधा", "భుజం"],
+
+            arm: ["arm", "बांह", "చేయి"],
+
+            elbow: ["elbow", "कोहनी", "మోచేయి"],
+
+            wrist: ["wrist", "कलाई", "మణికట్టు"],
+
+            hand: ["hand", "हाथ", "చేతి"],
+
+            hip: ["hip", "कूल्हा", "తుంటి"],
+
+            thigh: ["thigh", "जांघ", "తొడ"],
+
+            knee: ["knee", "घुटना", "మోకాలు"],
+
+            leg: ["leg", "पैर", "కాలికి"],
+
+            ankle: ["ankle", "टखना", "చీలమండ"],
+
+            foot: ["foot", "पांव", "పాదం"]
+
+        };
+
+
+        for (const location in locations) {
+
+            for (const keyword of locations[location]) {
+
+                if (text.includes(keyword)) {
+
+                    return location;
+
+                }
 
             }
 
         }
-    );
-    /* =========================================
+
+
+        return "other";
+
+    }
+
+
+    /* =========================================================
+       SYMPTOM DETECTION
+    ========================================================= */
+
+    function selectSymptomsFromVoice(answer) {
+
+        const text =
+            String(answer || "")
+                .toLowerCase()
+                .trim();
+
+
+        const symptomMap = {
+
+            fever: ["fever", "बुखार", "జ్వరం"],
+
+            weakness: [
+                "weakness",
+                "fatigue",
+                "tired",
+                "कमजोरी",
+                "थकान",
+                "బలహీనత"
+            ],
+
+            dizziness: ["dizziness", "dizzy", "चक्कर", "తల తిరగడం"],
+
+            cough: ["cough", "खांसी", "खाँसी", "దగ్గు"],
+
+            cold: ["cold", "runny nose", "सर्दी", "जुकाम", "జలుబు"],
+
+            breathingDifficulty: [
+                "difficulty breathing",
+                "breathing problem",
+                "shortness of breath",
+                "सांस लेने में दिक्कत",
+                "సరిగ్గా శ్వాస తీసుకోలేకపోవడం"
+            ],
+
+            nausea: ["nausea", "मतली", "వికారం"],
+
+            vomiting: ["vomiting", "vomit", "उल्टी", "వాంతులు"],
+
+            diarrhea: ["diarrhea", "loose motion", "दस्त", "విరేచనాలు"],
+
+            itching: ["itching", "खुजली", "దురద"],
+
+            skinRash: [
+                "rash",
+                "skin rash",
+                "चकत्ते",
+                "त्वचा पर दाने",
+                "చర్మంపై దద్దుర్లు"
+            ]
+
+        };
+
+
+        const selected = [];
+
+
+        for (const symptom in symptomMap) {
+
+            const matched =
+                symptomMap[symptom].some(
+                    function (keyword) {
+
+                        return text.includes(keyword);
+
+                    }
+                );
+
+
+            if (!matched) {
+                continue;
+            }
+
+
+            const checkbox =
+                document.getElementById(symptom);
+
+
+            if (checkbox) {
+
+                checkbox.checked = true;
+
+                checkbox.dispatchEvent(
+                    new Event("change")
+                );
+
+                selected.push(symptom);
+
+            }
+
+        }
+
+
+        return selected;
+
+    }
+
+
+    /* =========================================================
+       MAIN COMPLAINT MICROPHONE
+    ========================================================= */
+
+    document
+        .getElementById("micMainComplaint")
+        .addEventListener(
+            "click",
+            function () {
+
+                const button = this;
+
+                const status =
+                    document.getElementById("mainComplaintVoiceStatus");
+
+
+                startVoiceInput(
+                    button,
+                    status,
+                    getVoiceQuestion("mainComplaint"),
+                    function (answer) {
+
+                        mainComplaint.value = answer;
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+       PAIN MICROPHONE
+    ========================================================= */
+
+    document
+        .getElementById("micPain")
+        .addEventListener(
+            "click",
+            function () {
+
+                const button = this;
+
+                const status =
+                    document.getElementById("painVoiceStatus");
+
+
+                startVoiceInput(
+                    button,
+                    status,
+                    getVoiceQuestion("pain"),
+                    function (answer) {
+
+                        const normalized =
+                            answer.toLowerCase().trim();
+
+
+                        const isYes =
+                            normalized.includes("yes") ||
+                            normalized.includes("yeah") ||
+                            normalized.includes("हाँ") ||
+                            normalized.includes("हां") ||
+                            normalized.includes("అవును");
+
+
+                        const isNo =
+                            normalized === "no" ||
+                            normalized.includes("nope") ||
+                            normalized.includes("नहीं") ||
+                            normalized.includes("లేదు");
+
+
+                        if (isYes) {
+
+                            painSelect.value = "yes";
+
+                            painSelect.dispatchEvent(
+                                new Event("change")
+                            );
+
+
+                            setTimeout(
+                                function () {
+
+                                    askPainLocation(button, status);
+
+                                },
+                                500
+                            );
+
+                        } else if (isNo) {
+
+                            painSelect.value = "no";
+
+                            painSelect.dispatchEvent(
+                                new Event("change")
+                            );
+
+
+                            status.textContent = "Pain: No";
+
+                        } else {
+
+                            status.textContent =
+                                "Please say yes or no.";
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+       PAIN LOCATION
+    ========================================================= */
+
+    function askPainLocation(button, status) {
+
+        startVoiceInput(
+            button,
+            status,
+            getVoiceQuestion("painLocation"),
+            function (answer) {
+
+                painLocation.value =
+                    detectPainLocation(answer);
+
+
+                painLocation.dispatchEvent(
+                    new Event("change")
+                );
+
+
+                status.textContent =
+                    "Pain location: " +
+                    painLocation.options[
+                        painLocation.selectedIndex
+                    ].text.trim();
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       OTHER SYMPTOMS MICROPHONE
+    ========================================================= */
+
+    document
+        .getElementById("micOtherSymptoms")
+        .addEventListener(
+            "click",
+            function () {
+
+                const button = this;
+
+                const status =
+                    document.getElementById("otherSymptomsVoiceStatus");
+
+
+                startVoiceInput(
+                    button,
+                    status,
+                    getVoiceQuestion("otherSymptoms"),
+                    function (answer) {
+
+                        const selected =
+                            selectSymptomsFromVoice(answer);
+
+
+                        status.textContent =
+                            selected.length
+                                ? "Symptoms added: " + selected.join(", ")
+                                : "No known symptom was recognised.";
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+       ANYTHING ELSE MICROPHONE
+    ========================================================= */
+
+    document
+        .getElementById("micAnythingElse")
+        .addEventListener(
+            "click",
+            function () {
+
+                const button = this;
+
+                const status =
+                    document.getElementById("anythingElseVoiceStatus");
+
+
+                startVoiceInput(
+                    button,
+                    status,
+                    getVoiceQuestion("anythingElse"),
+                    function (answer) {
+
+                        otherSymptoms.value = answer;
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+       CONTINUE / SAVE
+    ========================================================= */
+
+    document
+        .getElementById("continueButton")
+        .addEventListener(
+            "click",
+            async function () {
+
+                stopVoiceInput();
+
+
+                const button = this;
+
+                const data = collectSymptoms();
+
+
+                const csrfElement =
+                    document.querySelector("[name=csrfmiddlewaretoken]");
+
+
+                if (!csrfElement) {
+
+                    alert("CSRF token was not found.");
+
+                    return;
+
+                }
+
+
+                const csrfToken = csrfElement.value;
+
+
+                button.disabled = true;
+
+                button.textContent = "Saving...";
+
+
+                const saveStatus =
+                    document.getElementById("saveStatus");
+
+
+                if (saveStatus) {
+
+                    saveStatus.classList.add("visible");
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            window.SAVE_SYMPTOMS_URL,
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "Content-Type": "application/json",
+
+                                    "X-CSRFToken": csrfToken
+
+                                },
+
+                                body: JSON.stringify(data)
+
+                            }
+                        );
+
+
+                    const result = await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.error ||
+                            "Unable to save symptoms."
+                        );
+
+                    }
+
+
+                    if (!result.success) {
+
+                        throw new Error(
+                            result.error ||
+                            "Symptoms could not be saved."
+                        );
+
+                    }
+
+
+                    window.location.href =
+                        window.MEDICAL_DOCUMENT_URL;
+
+
+                } catch (error) {
+
+                    console.error("Save symptoms error:", error);
+
+
+                    alert(
+                        "Could not save symptoms.\n\n" +
+                        error.message
+                    );
+
+
+                    button.disabled = false;
+
+                    button.textContent = "Continue";
+
+
+                    if (saveStatus) {
+
+                        saveStatus.classList.remove("visible");
+
+                    }
+
+                }
+
+            }
+        );
+
+
+    /* =========================================================
        BACK
-    ========================================= */
+    ========================================================= */
 
     document
         .getElementById("backButton")
         .addEventListener(
             "click",
             function () {
+
+                stopVoiceInput();
 
                 window.history.back();
 
